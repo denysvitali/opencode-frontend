@@ -38,7 +38,7 @@ function App() {
   }, [conversations.length, setActiveConversation]);
 
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <div className="min-h-screen bg-gray-900 text-white">
         <Layout>
           <Routes>
