@@ -83,45 +83,76 @@ function ConversationItem({ conversation, isActive, onClick }: ConversationItemP
   const lastMessage = conversation.messages[conversation.messages.length - 1];
   const timeAgo = formatTimeAgo(conversation.updatedAt);
 
+  const getSandboxStatusColor = (status?: string) => {
+    switch (status) {
+      case 'connected':
+        return 'bg-green-500';
+      case 'connecting':
+        return 'bg-yellow-500';
+      case 'error':
+        return 'bg-red-500';
+      case 'disconnected':
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
   return (
     <div
       onClick={onClick}
       className={`
-        group flex items-center justify-between p-4 rounded-xl cursor-pointer transition-all duration-200
+        group flex flex-col p-4 rounded-xl cursor-pointer transition-all duration-200 relative
         ${isActive 
           ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 shadow-lg' 
           : 'hover:bg-gray-700/50 border border-transparent'
         }
       `}
     >
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className={`text-sm font-semibold truncate ${
-            isActive ? 'text-blue-300' : 'text-white'
-          }`}>
-            {conversation.title}
-          </h3>
-          <span className="text-xs text-gray-400 ml-2 font-medium">
+      {/* Main content */}
+      <div className="flex items-start justify-between mb-1">
+        <h3 className={`text-sm font-semibold truncate pr-2 ${
+          isActive ? 'text-blue-300' : 'text-white'
+        }`}>
+          {conversation.title}
+        </h3>
+        <div className="relative flex items-center justify-end w-8">
+          {/* Time indicator - fades out on hover */}
+          <span className="absolute text-xs text-gray-400 font-medium whitespace-nowrap opacity-100 group-hover:opacity-0 transition-opacity duration-200">
             {timeAgo}
           </span>
+          {/* Three dots menu - fades in on hover */}
+          <button
+            className="absolute opacity-0 group-hover:opacity-100 p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-600 transition-opacity duration-200"
+            onClick={(e) => {
+              e.stopPropagation();
+              // TODO: Show conversation options menu
+            }}
+          >
+            <MoreHorizontal className="h-3 w-3" />
+          </button>
         </div>
-        {lastMessage && (
-          <p className="text-xs text-gray-400 truncate">
-            {lastMessage.type === 'user' ? '🙋 You: ' : '🤖 AI: '}
-            {lastMessage.content}
-          </p>
+      </div>
+
+      {/* Message preview and sandbox status */}
+      <div className="flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          {lastMessage ? (
+            <p className="text-xs text-gray-400 truncate">
+              {lastMessage.type === 'user' ? '🙋 You: ' : '🤖 AI: '}
+              {lastMessage.content}
+            </p>
+          ) : (
+            <p className="text-xs text-gray-400 italic">No messages yet</p>
+          )}
+        </div>
+        
+        {/* Sandbox status indicator */}
+        {conversation.sandboxStatus && (
+          <div className="flex items-center ml-2">
+            <div className={`w-2 h-2 rounded-full ${getSandboxStatusColor(conversation.sandboxStatus)}`} />
+          </div>
         )}
       </div>
-      
-      <button
-        className="opacity-0 group-hover:opacity-100 p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-600 transition-all duration-200 ml-2"
-        onClick={(e) => {
-          e.stopPropagation();
-          // TODO: Show conversation options menu
-        }}
-      >
-        <MoreHorizontal className="h-4 w-4" />
-      </button>
     </div>
   );
 }

@@ -1,16 +1,22 @@
-import { Menu, Plus, Settings } from 'lucide-react';
+import { Menu, Settings, Github } from 'lucide-react';
+import { useState } from 'react';
 import { useUIStore } from '../../stores/uiStore.js';
 import { useAppStore } from '../../stores/appStore.js';
+import SettingsDialog from '../ui/SettingsDialog.js';
 
 export default function Header() {
   const { toggleSidebar } = useUIStore();
-  const { connectionStatus, conversations, activeConversationId } = useAppStore();
+  const { conversations, activeConversationId } = useAppStore();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   // Get active conversation directly from the store data
   const activeConversation = conversations.find(conv => conv.id === activeConversationId);
+  
+  // Use the active conversation's sandbox status, fallback to 'disconnected'
+  const currentSandboxStatus = activeConversation?.sandboxStatus || 'disconnected';
 
   const getConnectionStatusColor = () => {
-    switch (connectionStatus) {
+    switch (currentSandboxStatus) {
       case 'connected':
         return 'bg-green-500';
       case 'connecting':
@@ -19,6 +25,19 @@ export default function Header() {
         return 'bg-red-500';
       default:
         return 'bg-gray-500';
+    }
+  };
+
+  const getSandboxStatusText = () => {
+    switch (currentSandboxStatus) {
+      case 'connected':
+        return 'Sandbox Ready';
+      case 'connecting':
+        return 'Connecting...';
+      case 'error':
+        return 'Sandbox Error';
+      default:
+        return 'Sandbox Offline';
     }
   };
 
@@ -55,24 +74,29 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Connection status */}
+          {/* Sandbox status */}
           <div className="flex items-center space-x-2 px-3 py-1.5 bg-gray-700 rounded-full">
             <div className={`h-2.5 w-2.5 rounded-full ${getConnectionStatusColor()}`} />
-            <span className="text-sm text-gray-300 capitalize font-medium">
-              {connectionStatus}
+            <span className="text-sm text-gray-300 font-medium">
+              {getSandboxStatusText()}
             </span>
           </div>
 
           {/* Actions */}
           <div className="flex items-center space-x-2">
-            <button
+            <a
+              href="https://github.com/denysvitali/opencode-frontend"
+              target="_blank"
+              rel="noopener noreferrer"
               className="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-              aria-label="New conversation"
+              aria-label="View on GitHub"
+              title="View on GitHub"
             >
-              <Plus className="h-5 w-5" />
-            </button>
+              <Github className="h-5 w-5" />
+            </a>
             
             <button
+              onClick={() => setIsSettingsOpen(true)}
               className="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
               aria-label="Settings"
             >
@@ -81,6 +105,12 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      {/* Settings Dialog */}
+      <SettingsDialog 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+      />
     </header>
   );
 }

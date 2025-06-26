@@ -13,6 +13,7 @@ export interface Conversation {
   updatedAt: Date;
   messages: Message[];
   isActive?: boolean;
+  sandboxStatus?: 'connected' | 'connecting' | 'disconnected' | 'error';
 }
 
 export type MessageType = 'user' | 'assistant' | 'system' | 'command' | 'code' | 'file';

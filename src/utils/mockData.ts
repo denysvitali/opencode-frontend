@@ -11,6 +11,7 @@ export function createMockData(): Conversation[] {
       title: 'React App Development',
       createdAt: twoDaysAgo,
       updatedAt: oneHourAgo,
+      sandboxStatus: 'connected',
       messages: [
         {
           id: 'm1',
@@ -51,6 +52,7 @@ export function createMockData(): Conversation[] {
       title: 'API Integration',
       createdAt: oneHourAgo,
       updatedAt: now,
+      sandboxStatus: 'connecting',
       messages: [
         {
           id: 'm4',
@@ -75,6 +77,7 @@ export function createMockData(): Conversation[] {
       title: 'Database Design',
       createdAt: now,
       updatedAt: now,
+      sandboxStatus: 'disconnected',
       messages: []
     }
   ];
