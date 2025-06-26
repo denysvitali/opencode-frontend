@@ -15,49 +15,49 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       case 'user':
         return {
           container: 'flex-row-reverse',
-          bubble: 'bg-gradient-to-br from-blue-500 to-blue-600 text-white relative',
-          arrow: 'absolute right-0 top-4 transform translate-x-2 w-0 h-0 border-l-8 border-l-blue-500 border-t-8 border-t-transparent border-b-8 border-b-transparent',
-          avatar: 'bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold',
+          bubble: 'bg-blue-600 text-white relative shadow-lg',
+          arrow: 'absolute right-0 top-4 transform translate-x-2 w-0 h-0 border-l-8 border-l-blue-600 border-t-8 border-t-transparent border-b-8 border-b-transparent',
+          avatar: 'bg-blue-600 text-white font-bold shadow-md',
           avatarText: 'You'
         };
       case 'assistant':
         return {
           container: 'flex-row',
-          bubble: 'bg-gradient-to-br from-gray-700 to-gray-800 text-white relative',
+          bubble: 'bg-gray-700 text-white relative shadow-lg',
           arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-gray-700 border-t-8 border-t-transparent border-b-8 border-b-transparent',
-          avatar: 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold',
+          avatar: 'bg-emerald-600 text-white font-bold shadow-md',
           avatarText: 'AI'
         };
       case 'system':
         return {
           container: 'flex-row',
-          bubble: 'bg-gradient-to-br from-amber-600 to-orange-600 text-white relative',
+          bubble: 'bg-amber-600 text-white relative shadow-lg',
           arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-amber-600 border-t-8 border-t-transparent border-b-8 border-b-transparent',
-          avatar: 'bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold',
+          avatar: 'bg-amber-600 text-white font-bold shadow-md',
           avatarText: 'SYS'
         };
       case 'command':
         return {
           container: 'flex-row',
-          bubble: 'bg-gradient-to-br from-purple-600 to-violet-700 text-white relative font-mono',
-          arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-purple-600 border-t-8 border-t-transparent border-b-8 border-b-transparent',
-          avatar: 'bg-gradient-to-br from-purple-500 to-violet-600 text-white font-bold',
+          bubble: 'bg-emerald-700 text-white relative font-mono shadow-lg',
+          arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-emerald-700 border-t-8 border-t-transparent border-b-8 border-b-transparent',
+          avatar: 'bg-emerald-700 text-white font-bold shadow-md',
           avatarText: 'CMD'
         };
       case 'code':
         return {
           container: 'flex-row',
-          bubble: 'bg-gradient-to-br from-slate-700 to-slate-800 text-green-400 relative font-mono border border-slate-600',
-          arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-slate-700 border-t-8 border-t-transparent border-b-8 border-b-transparent',
-          avatar: 'bg-gradient-to-br from-slate-600 to-slate-700 text-green-400 font-bold',
+          bubble: 'bg-gray-900 text-green-400 relative font-mono border border-green-500/30 shadow-lg',
+          arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-gray-900 border-t-8 border-t-transparent border-b-8 border-b-transparent',
+          avatar: 'bg-green-600 text-white font-bold shadow-md',
           avatarText: 'CODE'
         };
       default:
         return {
           container: 'flex-row',
-          bubble: 'bg-gradient-to-br from-gray-600 to-gray-700 text-white relative',
+          bubble: 'bg-gray-600 text-white relative shadow-lg',
           arrow: 'absolute left-0 top-4 transform -translate-x-2 w-0 h-0 border-r-8 border-r-gray-600 border-t-8 border-t-transparent border-b-8 border-b-transparent',
-          avatar: 'bg-gradient-to-br from-gray-500 to-gray-600 text-white font-bold',
+          avatar: 'bg-gray-600 text-white font-bold shadow-md',
           avatarText: '?'
         };
     }

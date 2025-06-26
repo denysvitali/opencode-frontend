@@ -26,9 +26,9 @@ export default function ChatView() {
 
   if (!activeConversation) {
     return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="h-full flex items-center justify-center bg-gray-900">
         <div className="text-center max-w-md mx-auto px-6">
-          <div className="w-20 h-20 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
             <span className="text-3xl">💬</span>
           </div>
           <h2 className="text-2xl font-bold text-white mb-4">
@@ -49,7 +49,7 @@ export default function ChatView() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="h-full flex flex-col bg-gray-900">
       {/* Chat Header */}
       <div className="border-b border-gray-700 bg-gray-800/50 backdrop-blur-xl">
         <div className="px-6 py-4">
@@ -136,7 +136,7 @@ export default function ChatView() {
           <button
             onClick={handleSendMessage}
             disabled={!message.trim()}
-            className="p-4 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 hover:from-blue-700 hover:via-blue-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
+            className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
           >
             <Send className="h-5 w-5" />
           </button>
