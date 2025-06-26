@@ -94,8 +94,11 @@ export interface AppState {
 }
 
 // UI state types
+export type ViewType = 'chat' | 'filesystem' | 'terminal' | 'git-diff';
+
 export interface UIState {
   isSidebarOpen: boolean;
   isMobile: boolean;
   theme: 'light' | 'dark' | 'system';
+  activeView: ViewType;
 }

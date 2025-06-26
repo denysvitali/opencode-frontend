@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useUIStore } from '../../stores/uiStore.js';
 import Header from './Header.js';
 import Sidebar from './Sidebar.js';
+import Navigation from './Navigation.js';
 
 interface LayoutProps {
   children: ReactNode;
@@ -34,6 +35,7 @@ export default function Layout({ children }: LayoutProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
+        <Navigation />
         <main className="flex-1 overflow-hidden">
           {children}
         </main>

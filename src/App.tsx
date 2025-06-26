@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { useUIStore } from './stores/uiStore.js';
 import { useAppStore } from './stores/appStore.js';
 import Layout from './components/layout/Layout.js';
-import ChatView from './components/chat/ChatView.js';
+import MainView from './components/layout/MainView.js';
 import { createMockData } from './utils/mockData.js';
 
 function App() {
@@ -41,10 +41,7 @@ function App() {
     <Router basename={import.meta.env.BASE_URL}>
       <div className="min-h-screen bg-gray-900 text-white">
         <Layout>
-          <Routes>
-            <Route path="/" element={<ChatView />} />
-            <Route path="/conversation/:id" element={<ChatView />} />
-          </Routes>
+          <MainView />
         </Layout>
       </div>
     </Router>

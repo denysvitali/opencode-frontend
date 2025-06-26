@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { UIState } from '../types/index.js';
+import type { UIState, ViewType } from '../types/index.js';
 
 interface UIStore extends UIState {
   // Actions
@@ -8,6 +8,7 @@ interface UIStore extends UIState {
   setSidebarOpen: (open: boolean) => void;
   setIsMobile: (isMobile: boolean) => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  setActiveView: (view: ViewType) => void;
 }
 
 export const useUIStore = create<UIStore>()(
@@ -17,6 +18,7 @@ export const useUIStore = create<UIStore>()(
       isSidebarOpen: false,
       isMobile: false,
       theme: 'system',
+      activeView: 'chat',
 
       // Actions
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
@@ -30,6 +32,8 @@ export const useUIStore = create<UIStore>()(
       }),
       
       setTheme: (theme) => set({ theme }),
+      
+      setActiveView: (view) => set({ activeView: view }),
     }),
     { name: 'OpenCode UI Store' }
   )
