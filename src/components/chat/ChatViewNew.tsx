@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import { Send, Paperclip, Smile } from 'lucide-react';
 import { useAppStore } from '../../stores/appStore.js';
 import MessageBubble from './MessageBubble.js';
@@ -17,7 +18,7 @@ export default function ChatView() {
     setMessage('');
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();

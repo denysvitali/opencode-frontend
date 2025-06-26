@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useUIStore } from '../../stores/uiStore.js';
 import Header from './Header.js';
 import Sidebar from './Sidebar.js';
