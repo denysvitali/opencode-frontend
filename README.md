@@ -1,6 +1,7 @@
 # OpenCode Frontend
 
-**🚧 Work in Progress** - This project is currently under active development.
+> [!WARNING]  
+> **WORK IN PROGRESS** - This project is currently under heavy development and is mostly vibe-coded with Claude Sonnet 4. Many features are mocked or incomplete. Use at your own risk and expect frequent changes!
 
 ## Overview
 
