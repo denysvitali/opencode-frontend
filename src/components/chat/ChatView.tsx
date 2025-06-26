@@ -1,209 +1,162 @@
+import { useState } from 'react';
+import { Send, Paperclip, Smile } from 'lucide-react';
 import { useAppStore } from '../../stores/appStore.js';
-import type { Message } from '../../types/index.js';
+import MessageBubble from './MessageBubble.js';
 
 export default function ChatView() {
   const { activeConversationId, conversations } = useAppStore();
+  const [message, setMessage] = useState('');
   
   const activeConversation = conversations.find(conv => conv.id === activeConversationId);
 
+  const handleSendMessage = () => {
+    if (!message.trim() || !activeConversation) return;
+    
+    // TODO: Implement actual message sending
+    console.log('Sending message:', message);
+    setMessage('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   if (!activeConversation) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-900">
-        <div className="text-center max-w-md">
-          <div className="h-20 w-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
             <span className="text-3xl">💬</span>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-3">
+          <h2 className="text-2xl font-bold text-white mb-4">
             Welcome to OpenCode
           </h2>
-          <p className="text-gray-400 text-lg leading-relaxed">
-            Start a new conversation to begin chatting with your agentic AI assistant.
+          <p className="text-gray-400 leading-relaxed">
+            Your intelligent coding companion is ready to help. Start a new conversation to begin chatting with your agentic AI assistant.
           </p>
+          <div className="mt-8 flex justify-center space-x-4">
+            <div className="flex items-center space-x-2 text-gray-500 text-sm">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span>Ready to assist</span>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-900">
-      {/* Chat header */}
-      <div className="border-b border-gray-700 p-6 bg-gray-800">
-        <h2 className="text-xl font-bold text-white mb-1">
-          {activeConversation.title}
-        </h2>
-        <p className="text-sm text-gray-400">
-          {activeConversation.messages.length} messages • Active conversation
-        </p>
+    <div className="h-full flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      {/* Chat Header */}
+      <div className="border-b border-gray-700 bg-gray-800/50 backdrop-blur-xl">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-white">
+                {activeConversation.title}
+              </h2>
+              <p className="text-sm text-gray-400 mt-1">
+                {activeConversation.messages.length} messages • Active now
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
+              <span className="text-sm text-green-400 font-medium">Online</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto px-6 py-6">
         {activeConversation.messages.length === 0 ? (
-          <div className="text-center text-gray-400 mt-12">
-            <div className="h-16 w-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🚀</span>
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
+                <span className="text-2xl">🚀</span>
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Start the conversation!</h3>
+              <p className="text-gray-400 text-sm">Send a message to get started with your AI assistant.</p>
             </div>
-            <p className="text-lg">No messages yet. Start the conversation!</p>
           </div>
         ) : (
-          activeConversation.messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
-          ))
+          <div className="space-y-1">
+            {activeConversation.messages.map((msg) => (
+              <MessageBubble key={msg.id} message={msg} />
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Message input */}
-      <div className="border-t border-gray-700 p-6 bg-gray-800">
-        <div className="flex space-x-4">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            className="flex-1 px-4 py-4 border border-gray-600 rounded-2xl bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-          />
-          <button
-            className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
-          >
-            Send
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface MessageBubbleProps {
-  message: Message;
-}
-
-function MessageBubble({ message }: MessageBubbleProps) {
-  const isUser = message.type === 'user';
-  const timestamp = message.timestamp instanceof Date 
-    ? message.timestamp 
-    : new Date(message.timestamp);
-
-  const getBubbleStyles = () => {
-    if (isUser) {
-      return 'bg-gradient-to-br from-blue-500 to-blue-600 text-white ml-12';
-    }
-    
-    switch (message.type) {
-      case 'command':
-        return 'bg-gradient-to-br from-green-600 to-green-700 text-white mr-12';
-      case 'code':
-        return 'bg-gradient-to-br from-purple-600 to-purple-700 text-white mr-12';
-      case 'system':
-        return 'bg-gradient-to-br from-yellow-600 to-yellow-700 text-white mr-12';
-      default:
-        return 'bg-gradient-to-br from-gray-600 to-gray-700 text-white mr-12';
-    }
-  };
-
-  const getAvatar = () => {
-    if (isUser) {
-      return '🙋';
-    }
-    
-    switch (message.type) {
-      case 'command':
-        return '⚡';
-      case 'code':
-        return '💻';
-      case 'system':
-        return '⚙️';
-      default:
-        return '🤖';
-    }
-  };
-
-  const getTypeLabel = () => {
-    switch (message.type) {
-      case 'command':
-        return 'Command';
-      case 'code':
-        return 'Code';
-      case 'system':
-        return 'System';
-      default:
-        return 'AI';
-    }
-  };
-
-  return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-xs lg:max-w-md ${isUser ? 'order-2' : 'order-1'}`}>
-        {/* Avatar and type */}
-        <div className={`flex items-center mb-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
-          <div className={`flex items-center space-x-2 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
-            <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-lg">
-              {getAvatar()}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold text-gray-300">
-                {isUser ? 'You' : getTypeLabel()}
-              </span>
-              <span className="text-xs text-gray-400">
-                {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
+      {/* Message Input */}
+      <div className="border-t border-gray-700 bg-gray-800/50 backdrop-blur-xl p-6">
+        <div className="flex items-end space-x-4">
+          <div className="flex-1">
+            <div className="relative">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type your message... (Press Enter to send, Shift+Enter for new line)"
+                className="w-full px-4 py-3 pr-12 border border-gray-600 rounded-2xl bg-gray-700/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none min-h-[60px] max-h-32"
+                rows={1}
+                style={{
+                  height: 'auto',
+                  minHeight: '60px',
+                  maxHeight: '128px'
+                }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                }}
+              />
+              
+              {/* Emoji and attachment buttons */}
+              <div className="absolute right-3 bottom-3 flex items-center space-x-2">
+                <button
+                  className="p-1.5 text-gray-400 hover:text-gray-300 transition-colors"
+                  title="Add emoji"
+                >
+                  <Smile className="h-4 w-4" />
+                </button>
+                <button
+                  className="p-1.5 text-gray-400 hover:text-gray-300 transition-colors"
+                  title="Attach file"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Message bubble */}
-        <div className={`relative p-4 rounded-2xl shadow-lg ${getBubbleStyles()}`}>
-          {/* Speech bubble tail */}
-          <div className={`absolute top-4 w-0 h-0 ${
-            isUser 
-              ? 'right-[-8px] border-l-[16px] border-l-blue-500 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent'
-              : 'left-[-8px] border-r-[16px] border-r-gray-600 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent'
-          }`} />
           
-          {/* Message content */}
-          <div className="relative z-10">
-            <p className="whitespace-pre-wrap leading-relaxed">
-              {message.content}
-            </p>
-            
-            {/* Special content for different message types */}
-            {message.metadata?.command && (
-              <div className="mt-3 p-3 bg-black/20 rounded-lg border border-white/10">
-                <div className="text-xs font-mono text-gray-200">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="font-semibold">Command:</span>
-                    <span>{message.metadata.command.name} {message.metadata.command.args?.join(' ')}</span>
-                  </div>
-                  {message.metadata.command.exitCode !== undefined && (
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold">Exit Code:</span>
-                      <span className={message.metadata.command.exitCode === 0 ? 'text-green-300' : 'text-red-300'}>
-                        {message.metadata.command.exitCode}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {message.metadata?.code && (
-              <div className="mt-3 p-3 bg-black/20 rounded-lg border border-white/10">
-                <div className="text-xs text-gray-200">
-                  <span className="font-semibold">Language:</span> {message.metadata.code.language}
-                  {message.metadata.code.filename && (
-                    <>
-                      <br />
-                      <span className="font-semibold">File:</span> {message.metadata.code.filename}
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {/* Sending status */}
-            {message.status === 'sending' && (
-              <div className="mt-3 flex items-center space-x-2 text-xs">
-                <div className="animate-spin h-3 w-3 border border-white/30 border-t-white rounded-full"></div>
-                <span className="text-white/70">Sending...</span>
-              </div>
-            )}
+          <button
+            onClick={handleSendMessage}
+            disabled={!message.trim()}
+            className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
+          >
+            <Send className="h-5 w-5" />
+          </button>
+        </div>
+        
+        {/* Quick actions */}
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center space-x-4">
+            <button className="text-xs text-gray-400 hover:text-gray-300 transition-colors">
+              💻 Run Command
+            </button>
+            <button className="text-xs text-gray-400 hover:text-gray-300 transition-colors">
+              📁 Browse Files
+            </button>
+            <button className="text-xs text-gray-400 hover:text-gray-300 transition-colors">
+              🔧 Code Review
+            </button>
+          </div>
+          <div className="text-xs text-gray-500">
+            AI is typing...
           </div>
         </div>
       </div>
