@@ -18,8 +18,15 @@ export default function Sidebar() {
 
   return (
     <div className="h-full bg-gray-800 border-r border-gray-700 flex flex-col">
-      {/* Header */}
+      {/* Logo */}
       <div className="p-6 border-b border-gray-700">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="h-10 w-10 bg-black rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-black text-xl">⌬</span>
+          </div>
+          <h2 className="text-xl font-bold text-white">OpenCode</h2>
+        </div>
+        
         <button
           onClick={handleNewConversation}
           className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"

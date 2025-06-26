@@ -245,11 +245,6 @@ export default function TerminalView() {
       {/* Header */}
       <div className="p-6 border-b border-gray-700">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Terminal className="h-6 w-6 text-green-400" />
-            <h1 className="text-xl font-bold text-white">Terminal History</h1>
-          </div>
-          
           <button
             onClick={handleClearHistory}
             className="flex items-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"

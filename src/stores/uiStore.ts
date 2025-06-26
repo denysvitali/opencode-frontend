@@ -13,7 +13,7 @@ interface UIStore extends UIState {
 
 export const useUIStore = create<UIStore>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       // Initial state
       isSidebarOpen: false,
       isMobile: false,
@@ -25,11 +25,14 @@ export const useUIStore = create<UIStore>()(
       
       setSidebarOpen: (open) => set({ isSidebarOpen: open }),
       
-      setIsMobile: (isMobile) => set({ 
-        isMobile,
-        // Auto-close sidebar on mobile
-        isSidebarOpen: isMobile ? false : undefined 
-      }),
+      setIsMobile: (isMobile) => {
+        const currentState = get();
+        set({ 
+          isMobile,
+          // Only open sidebar on desktop if it's not explicitly closed
+          isSidebarOpen: isMobile ? false : !currentState.isSidebarOpen ? true : currentState.isSidebarOpen
+        });
+      },
       
       setTheme: (theme) => set({ theme }),
       

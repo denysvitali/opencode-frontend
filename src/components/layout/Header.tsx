@@ -4,7 +4,10 @@ import { useAppStore } from '../../stores/appStore.js';
 
 export default function Header() {
   const { toggleSidebar } = useUIStore();
-  const { connectionStatus } = useAppStore();
+  const { connectionStatus, conversations, activeConversationId } = useAppStore();
+  
+  // Get active conversation directly from the store data
+  const activeConversation = conversations.find(conv => conv.id === activeConversationId);
 
   const getConnectionStatusColor = () => {
     switch (connectionStatus) {
@@ -17,6 +20,17 @@ export default function Header() {
       default:
         return 'bg-gray-500';
     }
+  };
+
+  const getTitle = () => {
+    // Always show the conversation title if we have an active conversation
+    // since all views (chat, files, git, terminal) are part of the same session
+    if (activeConversation) {
+      return activeConversation.title;
+    }
+    
+    // Fallback to generic title if no conversation is active
+    return 'OpenCode';
   };
 
   return (
@@ -32,13 +46,10 @@ export default function Header() {
             <Menu className="h-6 w-6" />
           </button>
 
-          {/* Logo */}
+          {/* Logo and title - now just showing conversation title */}
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">OC</span>
-            </div>
             <h1 className="text-xl font-bold text-white">
-              OpenCode
+              {getTitle()}
             </h1>
           </div>
         </div>

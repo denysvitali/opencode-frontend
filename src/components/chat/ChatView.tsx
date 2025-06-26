@@ -56,10 +56,7 @@ export default function ChatView() {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-white">
-                {activeConversation.title}
-              </h2>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-gray-400">
                 {activeConversation.messages.length} messages • Active now
               </p>
             </div>

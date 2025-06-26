@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useUIStore } from './stores/uiStore.js';
 import { useAppStore } from './stores/appStore.js';
@@ -9,6 +9,7 @@ import { createMockData } from './utils/mockData.js';
 function App() {
   const { setIsMobile } = useUIStore();
   const { conversations, setActiveConversation } = useAppStore();
+  const hasInitializedRef = useRef(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -22,12 +23,13 @@ function App() {
 
   // Initialize with mock data if no conversations exist
   useEffect(() => {
-    if (conversations.length === 0) {
+    // Only initialize if we have no conversations and haven't initialized yet
+    if (conversations.length === 0 && !hasInitializedRef.current) {
+      hasInitializedRef.current = true;
       const mockConversations = createMockData();
-      const store = useAppStore.getState();
       
       mockConversations.forEach(conv => {
-        store.addConversation(conv);
+        useAppStore.getState().addConversation(conv);
       });
       
       // Set the first conversation as active

@@ -11,6 +11,7 @@ import {
   Image,
   Settings
 } from 'lucide-react';
+import FileContentViewer from './FileContentViewer.js';
 
 // Mock filesystem data
 interface FileSystemItem {
@@ -214,15 +215,19 @@ interface FileItemProps {
   item: FileSystemItem;
   depth: number;
   onSelect: (item: FileSystemItem) => void;
+  onOpenFile: (item: FileSystemItem) => void;
   isSelected: boolean;
 }
 
-function FileItem({ item, depth, onSelect, isSelected }: FileItemProps) {
+function FileItem({ item, depth, onSelect, onOpenFile, isSelected }: FileItemProps) {
   const [isExpanded, setIsExpanded] = useState(item.type === 'folder' && depth < 2);
   
   const handleClick = () => {
     if (item.type === 'folder') {
       setIsExpanded(!isExpanded);
+    } else {
+      // For files, open the content viewer
+      onOpenFile(item);
     }
     onSelect(item);
   };
@@ -287,6 +292,7 @@ function FileItem({ item, depth, onSelect, isSelected }: FileItemProps) {
               item={child}
               depth={depth + 1}
               onSelect={onSelect}
+              onOpenFile={onOpenFile}
               isSelected={isSelected}
             />
           ))}
@@ -298,6 +304,7 @@ function FileItem({ item, depth, onSelect, isSelected }: FileItemProps) {
 
 export default function FileExplorer() {
   const [selectedFile, setSelectedFile] = useState<FileSystemItem | null>(null);
+  const [openedFile, setOpenedFile] = useState<FileSystemItem | null>(null);
   const [filter, setFilter] = useState<'all' | 'modified' | 'added'>('all');
 
   const filteredFiles = (items: FileSystemItem[]): FileSystemItem[] => {
@@ -320,17 +327,22 @@ export default function FileExplorer() {
 
   const displayedFiles = filteredFiles(mockFileSystem);
 
+  const handleOpenFile = (file: FileSystemItem) => {
+    if (file.type === 'file') {
+      setOpenedFile(file);
+    }
+  };
+
+  const handleCloseFileViewer = () => {
+    setOpenedFile(null);
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-900">
       {/* Header */}
       <div className="p-6 border-b border-gray-700">
-        <div className="flex items-center gap-3 mb-4">
-          <Folder className="h-6 w-6 text-blue-400" />
-          <h1 className="text-xl font-bold text-white">File Explorer</h1>
-        </div>
-        
         {/* Filter buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-4">
           <button
             onClick={() => setFilter('all')}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -381,6 +393,7 @@ export default function FileExplorer() {
                 item={item}
                 depth={0}
                 onSelect={setSelectedFile}
+                onOpenFile={handleOpenFile}
                 isSelected={selectedFile?.id === item.id}
               />
             ))
@@ -413,6 +426,15 @@ export default function FileExplorer() {
             )}
           </div>
         </div>
+      )}
+
+      {/* File content viewer modal */}
+      {openedFile && (
+        <FileContentViewer
+          filePath={openedFile.path}
+          fileName={openedFile.name}
+          onClose={handleCloseFileViewer}
+        />
       )}
     </div>
   );

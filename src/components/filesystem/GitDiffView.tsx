@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GitBranch, FileText, FilePlus, FileX, Eye, EyeOff } from 'lucide-react';
+import FileContentViewer from './FileContentViewer.js';
 
 interface GitDiffFile {
   id: string;
@@ -177,15 +178,17 @@ interface GitDiffItemProps {
   file: GitDiffFile;
   isExpanded: boolean;
   onToggle: () => void;
+  onOpenFile: (file: GitDiffFile) => void;
 }
 
-function GitDiffItem({ file, isExpanded, onToggle }: GitDiffItemProps) {
+function GitDiffItem({ file, isExpanded, onToggle, onOpenFile }: GitDiffItemProps) {
   return (
     <div className="border border-gray-700 rounded-lg bg-gray-800/50 overflow-hidden">
       {/* File header */}
       <div 
-        onClick={onToggle}
         className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-700/50 transition-colors"
+        onClick={onToggle}
+        onDoubleClick={() => onOpenFile(file)}
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className={`${getStatusColor(file.status)}`}>
@@ -250,6 +253,7 @@ function GitDiffItem({ file, isExpanded, onToggle }: GitDiffItemProps) {
 
 export default function GitDiffView() {
   const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set());
+  const [openedFile, setOpenedFile] = useState<GitDiffFile | null>(null);
   const [filter, setFilter] = useState<'all' | 'added' | 'modified' | 'deleted'>('all');
 
   const toggleExpanded = (fileId: string) => {
@@ -271,15 +275,18 @@ export default function GitDiffView() {
   const totalAdditions = mockGitDiff.reduce((sum, file) => sum + file.additions, 0);
   const totalDeletions = mockGitDiff.reduce((sum, file) => sum + file.deletions, 0);
 
+  const handleOpenFile = (file: GitDiffFile) => {
+    setOpenedFile(file);
+  };
+
+  const handleCloseFileViewer = () => {
+    setOpenedFile(null);
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-900">
       {/* Header */}
       <div className="p-6 border-b border-gray-700">
-        <div className="flex items-center gap-3 mb-4">
-          <GitBranch className="h-6 w-6 text-orange-400" />
-          <h1 className="text-xl font-bold text-white">Git Changes</h1>
-        </div>
-        
         {/* Stats */}
         <div className="flex items-center gap-6 mb-4 text-sm">
           <span className="text-gray-400">
@@ -359,11 +366,21 @@ export default function GitDiffView() {
                 file={file}
                 isExpanded={expandedFiles.has(file.id)}
                 onToggle={() => toggleExpanded(file.id)}
+                onOpenFile={handleOpenFile}
               />
             ))}
           </div>
         )}
       </div>
+
+      {/* File content viewer modal */}
+      {openedFile && (
+        <FileContentViewer
+          filePath={openedFile.path}
+          fileName={openedFile.path.split('/').pop() || openedFile.path}
+          onClose={handleCloseFileViewer}
+        />
+      )}
     </div>
   );
 }

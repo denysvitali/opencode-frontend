@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { useUIStore } from '../../stores/uiStore.js';
 import Header from './Header.js';
 import Sidebar from './Sidebar.js';
@@ -10,6 +11,13 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { isSidebarOpen, isMobile } = useUIStore();
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  useEffect(() => {
+    // Delay initialization to prevent flash
+    const timer = setTimeout(() => setHasInitialized(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-900">
@@ -17,11 +25,15 @@ export default function Layout({ children }: LayoutProps) {
       <div
         className={`
           ${isMobile ? 'fixed inset-y-0 left-0 z-50' : 'relative'}
-          ${isSidebarOpen || !isMobile ? 'translate-x-0' : '-translate-x-full'}
-          w-80 transition-transform duration-300 ease-in-out
+          ${hasInitialized ? 'transition-all duration-300 ease-in-out' : ''}
+          ${isSidebarOpen ? 'w-80' : 'w-0'}
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          overflow-hidden
         `}
       >
-        <Sidebar />
+        <div className="w-80 h-full">
+          <Sidebar />
+        </div>
       </div>
 
       {/* Mobile overlay */}
@@ -32,7 +44,7 @@ export default function Layout({ children }: LayoutProps) {
         />
       )}
 
-      {/* Main content */}
+      {/* Main content - now properly expands when sidebar is hidden */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <Navigation />

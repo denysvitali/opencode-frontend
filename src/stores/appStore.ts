@@ -10,6 +10,9 @@ import type {
 } from '../types/index.js';
 
 interface AppStore extends AppState {
+  // Computed properties
+  activeConversation: Conversation | null;
+  
   // Actions
   setUser: (user: User | null) => void;
   setActiveConversation: (conversationId: string | null) => void;
@@ -27,7 +30,7 @@ interface AppStore extends AppState {
 export const useAppStore = create<AppStore>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         // Initial state
         user: null,
         conversations: [],
@@ -36,16 +39,30 @@ export const useAppStore = create<AppStore>()(
         isLoading: false,
         error: null,
 
+        // Computed properties
+        get activeConversation() {
+          const state = get();
+          return state.conversations.find(conv => conv.id === state.activeConversationId) || null;
+        },
+
         // Actions
         setUser: (user) => set({ user }),
 
         setActiveConversation: (conversationId) => set({ activeConversationId: conversationId }),
 
         addConversation: (conversation) =>
-          set((state) => ({
-            conversations: [conversation, ...state.conversations],
-            activeConversationId: conversation.id,
-          })),
+          set((state) => {
+            // Check if conversation already exists to prevent duplicates
+            const exists = state.conversations.some(conv => conv.id === conversation.id);
+            if (exists) {
+              return state; // Don't add if it already exists
+            }
+            
+            return {
+              conversations: [conversation, ...state.conversations],
+              activeConversationId: conversation.id,
+            };
+          }),
 
         updateConversation: (conversationId, updates) =>
           set((state) => ({
