@@ -4,9 +4,12 @@ import { useUIStore } from './stores/uiStore.js';
 import Layout from './components/layout/Layout.js';
 import MainView from './components/layout/MainView.js';
 import { useAppInitialization } from './hooks/useAppInitialization.js';
+import { NotificationContainer } from './components/ui/NotificationSystem.js';
+import { useNotifications } from './hooks/useNotifications.js';
 
 function App() {
   const { setIsMobile } = useUIStore();
+  const { notifications, removeNotification } = useNotifications();
   
   // Initialize the app (loads conversations, sets up health checks)
   useAppInitialization();
@@ -27,6 +30,12 @@ function App() {
         <Layout>
           <MainView />
         </Layout>
+        
+        {/* Global notification system */}
+        <NotificationContainer 
+          notifications={notifications} 
+          onClose={removeNotification} 
+        />
       </div>
     </Router>
   );

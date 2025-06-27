@@ -1,6 +1,7 @@
-import { X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { X, Download, Upload } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { useSettingsStore } from '../../stores/settingsStore.js';
+import { useAppStore } from '../../stores/appStore.js';
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -9,11 +10,14 @@ interface SettingsDialogProps {
 
 export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
   const { apiEndpoint, theme, autoSave, updateSettings } = useSettingsStore();
+  const { exportConversations, importConversations } = useAppStore();
   
   // Local state for form
   const [localApiEndpoint, setLocalApiEndpoint] = useState(apiEndpoint);
   const [localTheme, setLocalTheme] = useState(theme);
   const [localAutoSave, setLocalAutoSave] = useState(autoSave);
+  const [importStatus, setImportStatus] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Update local state when store changes or dialog opens
   useEffect(() => {
@@ -49,6 +53,54 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
     setLocalTheme(theme);
     setLocalAutoSave(autoSave);
     onClose();
+  };
+
+  const handleExportConversations = () => {
+    try {
+      const exportData = exportConversations();
+      const blob = new Blob([exportData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `opencode-conversations-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setImportStatus('Export successful!');
+      setTimeout(() => setImportStatus(''), 3000);
+    } catch (error) {
+      setImportStatus('Export failed!');
+      setTimeout(() => setImportStatus(''), 3000);
+    }
+  };
+
+  const handleImportConversations = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const success = await importConversations(text);
+      if (success) {
+        setImportStatus('Import successful!');
+      } else {
+        setImportStatus('Import failed!');
+      }
+      setTimeout(() => setImportStatus(''), 3000);
+    } catch (error) {
+      setImportStatus('Import failed!');
+      setTimeout(() => setImportStatus(''), 3000);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -124,6 +176,50 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
                 }`}
               />
             </button>
+          </div>
+
+          {/* Import/Export */}
+          <div className="pt-4 border-t border-gray-700">
+            <h3 className="text-sm font-medium text-gray-300 mb-3">Data Management</h3>
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <button
+                  onClick={handleExportConversations}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+                >
+                  <Download className="h-4 w-4" />
+                  Export Conversations
+                </button>
+                <button
+                  onClick={handleImportConversations}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm"
+                >
+                  <Upload className="h-4 w-4" />
+                  Import Conversations
+                </button>
+              </div>
+              
+              {importStatus && (
+                <p className={`text-xs text-center ${
+                  importStatus.includes('successful') ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {importStatus}
+                </p>
+              )}
+              
+              <p className="text-xs text-gray-400">
+                Export your conversations to backup or share. Import to restore from a backup.
+              </p>
+            </div>
+            
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </div>
 
           {/* Version Info */}

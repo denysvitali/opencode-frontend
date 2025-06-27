@@ -1,0 +1,35 @@
+{
+  "name": "OpenCode Frontend",
+  "short_name": "OpenCode",
+  "description": "A modern React-based frontend for the OpenCode AI assistant platform",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1f2937",
+  "background_color": "#111827",
+  "icons": [
+    {
+      "src": "vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["productivity", "developer"],
+  "lang": "en",
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "New Chat",
+      "short_name": "New Chat",
+      "description": "Start a new conversation",
+      "url": "/",
+      "icons": [
+        {
+          "src": "vite.svg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

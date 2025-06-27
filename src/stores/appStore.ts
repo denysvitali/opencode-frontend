@@ -32,6 +32,11 @@ interface AppStore extends AppState {
   createConversationAPI: (title: string, repositoryUrl?: string) => Promise<void>;
   deleteConversationAPI: (conversationId: string) => Promise<void>;
   checkHealthAPI: () => Promise<void>;
+  
+  // Import/Export functionality
+  exportConversations: () => string;
+  importConversations: (data: string) => Promise<boolean>;
+  exportConversation: (conversationId: string) => string | null;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -192,6 +197,68 @@ export const useAppStore = create<AppStore>()(
           } catch (err) {
             console.error('Health check failed:', err);
             set({ connectionStatus: 'error' });
+          }
+        },
+
+        // Export/Import functionality
+        exportConversations: () => {
+          const state = get();
+          const exportData = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            conversations: state.conversations,
+            user: state.user
+          };
+          return JSON.stringify(exportData, null, 2);
+        },
+
+        exportConversation: (conversationId: string) => {
+          const state = get();
+          const conversation = state.conversations.find(conv => conv.id === conversationId);
+          if (!conversation) return null;
+          
+          const exportData = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            conversation: conversation
+          };
+          return JSON.stringify(exportData, null, 2);
+        },
+
+        importConversations: async (data: string) => {
+          try {
+            const importData = JSON.parse(data);
+            
+            // Validate import data structure
+            if (!importData.version || !importData.conversations) {
+              throw new Error('Invalid import data format');
+            }
+
+            const state = get();
+            const existingIds = new Set(state.conversations.map(conv => conv.id));
+            const newConversations = importData.conversations.filter(
+              (conv: Conversation) => !existingIds.has(conv.id)
+            );
+
+            if (newConversations.length === 0) {
+              throw new Error('No new conversations to import');
+            }
+
+            // Add new conversations
+            set((state) => ({
+              conversations: [...state.conversations, ...newConversations]
+            }));
+
+            return true;
+          } catch (error) {
+            console.error('Import failed:', error);
+            set({ 
+              error: { 
+                message: error instanceof Error ? error.message : 'Failed to import conversations',
+                code: 'IMPORT_ERROR'
+              }
+            });
+            return false;
           }
         },
       }),
