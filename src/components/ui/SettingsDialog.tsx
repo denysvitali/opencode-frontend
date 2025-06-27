@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSettingsStore } from '../../stores/settingsStore.js';
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -7,15 +8,46 @@ interface SettingsDialogProps {
 }
 
 export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
-  const [apiEndpoint, setApiEndpoint] = useState('http://localhost:8000');
-  const [theme, setTheme] = useState('dark');
-  const [autoSave, setAutoSave] = useState(true);
+  const { apiEndpoint, theme, autoSave, updateSettings } = useSettingsStore();
+  
+  // Local state for form
+  const [localApiEndpoint, setLocalApiEndpoint] = useState(apiEndpoint);
+  const [localTheme, setLocalTheme] = useState(theme);
+  const [localAutoSave, setLocalAutoSave] = useState(autoSave);
+
+  // Update local state when store changes or dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      setLocalApiEndpoint(apiEndpoint);
+      setLocalTheme(theme);
+      setLocalAutoSave(autoSave);
+    }
+  }, [isOpen, apiEndpoint, theme, autoSave]);
 
   if (!isOpen) return null;
 
   const handleSave = () => {
-    // TODO: Implement settings save logic
-    console.log('Settings saved:', { apiEndpoint, theme, autoSave });
+    // Save settings to store
+    updateSettings({
+      apiEndpoint: localApiEndpoint,
+      theme: localTheme,
+      autoSave: localAutoSave,
+    });
+    
+    console.log('Settings saved:', { 
+      apiEndpoint: localApiEndpoint, 
+      theme: localTheme, 
+      autoSave: localAutoSave 
+    });
+    
+    onClose();
+  };
+
+  const handleCancel = () => {
+    // Reset local state to store values
+    setLocalApiEndpoint(apiEndpoint);
+    setLocalTheme(theme);
+    setLocalAutoSave(autoSave);
     onClose();
   };
 
@@ -44,10 +76,10 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
             <input
               id="api-endpoint"
               type="text"
-              value={apiEndpoint}
-              onChange={(e) => setApiEndpoint(e.target.value)}
+              value={localApiEndpoint}
+              onChange={(e) => setLocalApiEndpoint(e.target.value)}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="http://localhost:8000"
+              placeholder="http://localhost:9091"
             />
           </div>
 
@@ -58,8 +90,8 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
             </label>
             <select
               id="theme"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
+              value={localTheme}
+              onChange={(e) => setLocalTheme(e.target.value as 'dark' | 'light' | 'auto')}
               className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="dark">Dark</option>
@@ -81,14 +113,14 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
             <button
               id="auto-save"
               type="button"
-              onClick={() => setAutoSave(!autoSave)}
+              onClick={() => setLocalAutoSave(!localAutoSave)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                autoSave ? 'bg-blue-600' : 'bg-gray-600'
+                localAutoSave ? 'bg-blue-600' : 'bg-gray-600'
               }`}
             >
               <span
                 className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  autoSave ? 'translate-x-6' : 'translate-x-1'
+                  localAutoSave ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
             </button>
@@ -117,7 +149,7 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
         {/* Footer */}
         <div className="flex justify-end space-x-3 p-6 border-t border-gray-700">
           <button
-            onClick={onClose}
+            onClick={handleCancel}
             className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
           >
             Cancel

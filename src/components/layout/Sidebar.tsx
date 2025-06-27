@@ -4,16 +4,21 @@ import type { Conversation } from '../../types/index.js';
 import { useState } from 'react';
 
 export default function Sidebar() {
-  const { conversations, activeConversationId, setActiveConversation } = useAppStore();
+  const { conversations, activeConversationId, setActiveConversation, createConversationAPI, isLoading } = useAppStore();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredConversations = conversations.filter(conv =>
     conv.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleNewConversation = () => {
-    // TODO: Implement new conversation logic
-    console.log('New conversation clicked');
+  const handleNewConversation = async () => {
+    try {
+      // For now, create a simple conversation
+      // TODO: Add dialog to specify title and repository
+      await createConversationAPI(`New Chat ${new Date().toLocaleTimeString()}`);
+    } catch (error) {
+      console.error('Failed to create conversation:', error);
+    }
   };
 
   return (
@@ -29,10 +34,11 @@ export default function Sidebar() {
         
         <button
           onClick={handleNewConversation}
-          className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-4 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+          disabled={isLoading}
+          className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white px-4 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
         >
           <Plus className="h-5 w-5" />
-          <span className="font-semibold">New Chat</span>
+          <span className="font-semibold">{isLoading ? 'Creating...' : 'New Chat'}</span>
         </button>
       </div>
 

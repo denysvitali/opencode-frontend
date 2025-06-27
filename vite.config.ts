@@ -37,6 +37,7 @@ export default defineConfig({
     __COMMIT_HASH__: JSON.stringify(getCommitHash()),
     __BUILD_DATE__: JSON.stringify(new Date().toISOString().split('T')[0]),
     __VERSION__: JSON.stringify(getVersion()),
+    __DEMO_MODE__: JSON.stringify(process.env.VITE_DEMO_MODE === 'true'),
   },
   build: {
     outDir: 'dist',
