@@ -15,7 +15,12 @@ export class RealDataService implements DataService {
 
   async checkHealth() {
     try {
-      return await apiService.checkHealth();
+      const health = await apiService.checkHealth();
+      return {
+        status: health.status as 'connected' | 'disconnected',
+        version: health.version,
+        error: health.error,
+      };
     } catch (error) {
       console.error('Health check failed:', error);
       return {
@@ -49,7 +54,7 @@ export class RealDataService implements DataService {
   async sendMessage(conversationId: string, content: string): Promise<Message> {
     try {
       // Send message to sandbox via proxy
-      const response = await apiService.sendMessage(conversationId, content);
+      await apiService.sendMessage(conversationId, content);
       
       // Create message object from response
       return {
@@ -77,7 +82,7 @@ export class RealDataService implements DataService {
   async getMessages(conversationId: string): Promise<Message[]> {
     try {
       // Get messages from sandbox via proxy
-      const response = await apiService.proxySandboxRequest(
+      await apiService.proxySandboxRequest(
         conversationId,
         'GET',
         '/chat/messages'
@@ -94,7 +99,7 @@ export class RealDataService implements DataService {
 
   async getFiles(conversationId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
     try {
-      const response = await apiService.getFiles(conversationId);
+      await apiService.getFiles(conversationId);
       
       // Transform response to our file format
       // This will depend on the actual sandbox API response format
@@ -159,7 +164,7 @@ export class RealDataService implements DataService {
 
   async getTerminalHistory(conversationId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
     try {
-      const response = await apiService.proxySandboxRequest(
+      await apiService.proxySandboxRequest(
         conversationId,
         'GET',
         '/terminal/history'
@@ -179,7 +184,7 @@ export class RealDataService implements DataService {
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
   }> {
     try {
-      const response = await apiService.getGitStatus(conversationId);
+      await apiService.getGitStatus(conversationId);
       
       // Transform response to our git status format
       // This will depend on the actual sandbox API response format

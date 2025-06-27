@@ -147,8 +147,12 @@ class OrchestratorService {
         path: { sessionId: sessionId },
       },
       body: {
-        sessionId,
         ...request,
+        headers: request.headers?.reduce((acc, h) => {
+          acc[h.key] = h.value;
+          return acc;
+        }, {} as Record<string, string>),
+        sessionId,
       },
     });
     
@@ -190,6 +194,6 @@ export type {
   paths as OrchestratorPaths,
 } from '../types/orchestrator.js';
 
-export type OrchestratorSession = paths['/sessions']['get']['responses']['200']['content']['application/json']['sessions'][0];
+export type OrchestratorSession = NonNullable<paths['/sessions']['get']['responses']['200']['content']['application/json']['sessions']>[number];
 export type CreateSessionRequest = paths['/sessions']['post']['requestBody']['content']['application/json'];
 export type HealthResponse = paths['/health']['get']['responses']['200']['content']['application/json'];

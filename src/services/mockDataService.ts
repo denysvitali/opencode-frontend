@@ -37,7 +37,7 @@ export class MockDataService implements DataService {
     return [...this.conversations];
   }
 
-  async createConversation(title: string, repositoryUrl?: string): Promise<Conversation> {
+  async createConversation(title: string, _repositoryUrl?: string): Promise<Conversation> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
     
@@ -142,7 +142,7 @@ export class MockDataService implements DataService {
     return [...(this.messages.get(conversationId) || [])];
   }
 
-  async getFiles(conversationId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
+  async getFiles(_conversationId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 200));
     
@@ -159,7 +159,7 @@ export class MockDataService implements DataService {
     ];
   }
 
-  async getFileContent(conversationId: string, filePath: string): Promise<{ content: string; language?: string }> {
+  async getFileContent(_conversationId: string, filePath: string): Promise<{ content: string; language?: string }> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 150));
     
@@ -182,7 +182,7 @@ export class MockDataService implements DataService {
     };
   }
 
-  async executeCommand(conversationId: string, command: string): Promise<{ output: string; exitCode: number }> {
+  async executeCommand(_conversationId: string, command: string): Promise<{ output: string; exitCode: number }> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
@@ -195,7 +195,7 @@ export class MockDataService implements DataService {
     };
   }
 
-  async getTerminalHistory(conversationId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
+  async getTerminalHistory(_conversationId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 100));
     
@@ -214,7 +214,7 @@ export class MockDataService implements DataService {
     ];
   }
 
-  async getGitStatus(conversationId: string): Promise<{
+  async getGitStatus(_conversationId: string): Promise<{
     status: string;
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
   }> {
@@ -240,7 +240,7 @@ export class MockDataService implements DataService {
     // No-op for mock service
   }
 
-  private generateMockAIResponse(userMessage: string): string {
+  private generateMockAIResponse(_userMessage: string): string {
     const responses = [
       "I'll help you with that! Let me analyze your request and provide a solution.",
       "Great question! Here's what I recommend based on your requirements.",

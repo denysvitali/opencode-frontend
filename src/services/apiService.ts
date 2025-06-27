@@ -153,10 +153,12 @@ export class ApiIntegrationService {
       return {
         statusCode: response.statusCode,
         body: response.body,
-        headers: response.headers?.reduce((acc, h) => {
-          if (h.key && h.value) acc[h.key] = h.value;
-          return acc;
-        }, {} as Record<string, string>),
+        headers: Array.isArray(response.headers) 
+          ? response.headers.reduce((acc: Record<string, string>, h: { key: string; value: string }) => {
+              if (h.key && h.value) acc[h.key] = h.value;
+              return acc;
+            }, {} as Record<string, string>)
+          : undefined,
       };
     } catch (error) {
       console.error('Failed to proxy sandbox request:', error);
