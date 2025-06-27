@@ -38,7 +38,7 @@ export class MockDataService implements DataService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async createConversation(title: string, _repositoryUrl?: string): Promise<Conversation> {
+  async createConversation(title: string, ..._args: unknown[]): Promise<Conversation> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
     
