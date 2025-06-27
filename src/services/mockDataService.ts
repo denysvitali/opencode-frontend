@@ -37,6 +37,7 @@ export class MockDataService implements DataService {
     return [...this.conversations];
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createConversation(title: string, _repositoryUrl?: string): Promise<Conversation> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
@@ -115,7 +116,7 @@ export class MockDataService implements DataService {
         id: `msg_${Date.now() + 1}`,
         conversationId,
         type: 'assistant',
-        content: this.generateMockAIResponse(content),
+        content: this.generateMockAIResponse(),
         status: 'sent',
         timestamp: new Date(),
       };
@@ -142,7 +143,7 @@ export class MockDataService implements DataService {
     return [...(this.messages.get(conversationId) || [])];
   }
 
-  async getFiles(_conversationId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
+  async getFiles(): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 200));
     
@@ -195,7 +196,7 @@ export class MockDataService implements DataService {
     };
   }
 
-  async getTerminalHistory(_conversationId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
+  async getTerminalHistory(): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 100));
     
@@ -214,7 +215,7 @@ export class MockDataService implements DataService {
     ];
   }
 
-  async getGitStatus(_conversationId: string): Promise<{
+  async getGitStatus(): Promise<{
     status: string;
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
   }> {
@@ -240,7 +241,7 @@ export class MockDataService implements DataService {
     // No-op for mock service
   }
 
-  private generateMockAIResponse(_userMessage: string): string {
+  private generateMockAIResponse(): string {
     const responses = [
       "I'll help you with that! Let me analyze your request and provide a solution.",
       "Great question! Here's what I recommend based on your requirements.",

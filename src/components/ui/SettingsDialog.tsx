@@ -69,7 +69,7 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
       URL.revokeObjectURL(url);
       setImportStatus('Export successful!');
       setTimeout(() => setImportStatus(''), 3000);
-    } catch (error) {
+    } catch {
       setImportStatus('Export failed!');
       setTimeout(() => setImportStatus(''), 3000);
     }
@@ -92,7 +92,7 @@ export default function SettingsDialog({ isOpen, onClose }: SettingsDialogProps)
         setImportStatus('Import failed!');
       }
       setTimeout(() => setImportStatus(''), 3000);
-    } catch (error) {
+    } catch {
       setImportStatus('Import failed!');
       setTimeout(() => setImportStatus(''), 3000);
     }
