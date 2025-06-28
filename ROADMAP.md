@@ -139,3 +139,33 @@ Building a modern, mobile-responsive frontend for controlling multiple conversat
 ---
 
 *Last updated: June 28, 2025*
+
+
+
+## OpenCode Project Roadmap (Backend Integration)
+
+This roadmap outlines the key steps to achieve the basic functionality of the OpenCode project, focusing on single-tenancy and integration with the backend.
+
+### Frontend (opencode-frontend)
+
+- [ ] Explore the existing frontend codebase.
+- [ ] Understand how the frontend interacts with the orchestrator.
+- [ ] Implement basic session management (start/stop session).
+- [ ] Display server logs in a new tab/section.
+
+### Backend (opencode-backend)
+
+- [ ] Explore the existing backend codebase (orchestrator and server).
+- [ ] Understand session creation and management.
+- [ ] Verify proxy exposure of the server.
+- [ ] Ensure basic functionality for AI agent interaction.
+
+### General
+
+- [ ] Create a new branch for development.
+- [ ] Commit and push changes frequently.
+- [ ] Implement tests where needed.
+- [ ] Install necessary tools and dependencies.
+
+
+
