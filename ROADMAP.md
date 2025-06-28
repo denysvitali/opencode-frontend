@@ -165,5 +165,5 @@ This roadmap outlines the key steps to achieve the basic functionality of the Op
 - [ ] Create a new branch for development.
 - [ ] Commit and push changes frequently.
 - [ ] Implement tests where needed.
-- [x] Test session creation and proxying. **BLOCKED: Kubernetes RBAC error (PersistentVolumeClaim creation forbidden)**
+- [x] Test session creation and proxying.
 
