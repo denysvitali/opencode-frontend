@@ -39,6 +39,12 @@ export default defineConfig({
     __VERSION__: JSON.stringify(getVersion()),
     __DEMO_MODE__: JSON.stringify(process.env.VITE_DEMO_MODE === 'true'),
   },
+  server: {
+    host: '0.0.0.0',
+    port: 30082,
+    strictPort: true,
+    cors: true,
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

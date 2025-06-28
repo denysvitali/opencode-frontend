@@ -1,23 +1,40 @@
 import { Search, Plus, MoreHorizontal } from 'lucide-react';
 import { useAppStore } from '../../stores/appStore.js';
 import type { Conversation } from '../../types/index.js';
-import { useState } from 'react';
+import type { Session } from '../../types/orchestrator.js';
+import { useState, useEffect } from 'react';
 
 export default function Sidebar() {
-  const { conversations, activeConversationId, setActiveConversation, createConversationAPI, isLoading } = useAppStore();
+  const { conversations, activeConversationId, setActiveConversation, createConversationAPI } = useAppStore();
+  const { sessions, isLoading, fetchSessions, createSession, setActiveSession, activeSessionId } = useSessionStore();
+
+  // Fetch sessions on component mount
+  useEffect(() => {
+    fetchSessions();
+  }, [fetchSessions]);
+
   const [searchQuery, setSearchQuery] = useState('');
+
 
   const filteredConversations = conversations.filter(conv =>
     conv.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleNewConversation = async () => {
+  const handleNewSession = async () => {
     try {
-      // For now, create a simple conversation
-      // TODO: Add dialog to specify title and repository
-      await createConversationAPI(`New Chat ${new Date().toLocaleTimeString()}`);
+      const sessionName = prompt('Enter session name:', `My Session ${new Date().toLocaleTimeString()}`);
+      if (!sessionName) return;
+
+      const repoUrl = prompt('Enter repository URL:', 'https://github.com/denysvitali/opencode-runtime');
+      if (!repoUrl) return;
+
+      const repoRef = prompt('Enter repository ref (e.g., main):', 'main');
+      if (!repoRef) return;
+
+      await createSession(sessionName, repoUrl, repoRef);
     } catch (error) {
-      console.error('Failed to create conversation:', error);
+      console.error('Failed to create session:', error);
+      alert(`Failed to create session: ${(error as Error).message}`);
     }
   };
 
