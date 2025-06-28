@@ -45,6 +45,8 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "prismjs": "^1.30.0",
+    "protoc-gen-grpc-web": "^1.5.0",
+    "ts-protoc-gen": "^0.15.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
     "uuid": "^11.1.0",

@@ -1,0 +1,1626 @@
+components:
+    schemas:
+        BadRequest:
+            example:
+                code: 3
+                details:
+                    - '@type': type.googleapis.com/google.rpc.ErrorInfo
+                      domain: ""
+                      metadata:
+                        field: phoneNumber
+                      reason: INVALID_PARAMETERS
+                message: must be at least 11 characters long
+            properties:
+                code:
+                    type: integer
+                details:
+                    items:
+                        properties:
+                            '@type':
+                                type: string
+                            domain:
+                                type: string
+                            metadata:
+                                type: object
+                            reason:
+                                type: string
+                        type: object
+                    type: array
+                message:
+                    type: string
+            type: object
+        InternalServerError:
+            example:
+                code: 3
+                details:
+                    - '@type': type.googleapis.com/google.rpc.ErrorInfo
+                      domain: ""
+                      metadata:
+                        field: phoneNumber
+                      reason: INVALID_PARAMETERS
+                message: must be at least 11 characters long
+            properties:
+                code:
+                    type: integer
+                details:
+                    items:
+                        properties:
+                            '@type':
+                                type: string
+                            domain:
+                                type: string
+                            metadata:
+                                type: object
+                            reason:
+                                type: string
+                        type: object
+                    type: array
+                message:
+                    type: string
+            type: object
+        Unauthorized:
+            example:
+                code: 3
+                details:
+                    - '@type': type.googleapis.com/google.rpc.ErrorInfo
+                      domain: ""
+                      metadata:
+                        field: phoneNumber
+                      reason: INVALID_PARAMETERS
+                message: must be at least 11 characters long
+            properties:
+                code:
+                    type: integer
+                details:
+                    items:
+                        properties:
+                            '@type':
+                                type: string
+                            domain:
+                                type: string
+                            metadata:
+                                type: object
+                            reason:
+                                type: string
+                        type: object
+                    type: array
+                message:
+                    type: string
+            type: object
+        google.protobuf.Empty:
+            properties: {}
+            type: object
+        opencode.v1.Attachment:
+            example:
+                content: ""
+                mimeType: ""
+                path: ""
+                size: 0
+            properties:
+                content:
+                    type: string
+                mimeType:
+                    type: string
+                path:
+                    type: string
+                size:
+                    format: int64
+                    type: integer
+            type: object
+        opencode.v1.BinaryContent:
+            example:
+                base64Data: ""
+                data: ""
+                mimeType: ""
+                path: ""
+            properties:
+                base64Data:
+                    type: string
+                data:
+                    format: byte
+                    type: string
+                mimeType:
+                    type: string
+                path:
+                    type: string
+            type: object
+        opencode.v1.CancelAgentRequest:
+            properties: {}
+            type: object
+        opencode.v1.ContentDelta:
+            example:
+                text: ""
+            properties:
+                text:
+                    type: string
+            type: object
+        opencode.v1.ContentPart:
+            example:
+                binary:
+                    base64Data: ""
+                    data: ""
+                    mimeType: ""
+                    path: ""
+                finish:
+                    reason: FINISH_REASON_UNSPECIFIED
+                    time: 1741589979
+                reasoning:
+                    thinking: ""
+                text:
+                    text: ""
+                toolCall:
+                    id: ""
+                    input: ""
+                    name: ""
+                toolResult:
+                    content: ""
+                    isError: true
+                    metadata: ""
+                    toolCallId: ""
+            properties:
+                binary:
+                    $ref: '#/components/schemas/opencode.v1.BinaryContent'
+                finish:
+                    $ref: '#/components/schemas/opencode.v1.FinishContent'
+                reasoning:
+                    $ref: '#/components/schemas/opencode.v1.ReasoningContent'
+                text:
+                    $ref: '#/components/schemas/opencode.v1.TextContent'
+                toolCall:
+                    $ref: '#/components/schemas/opencode.v1.ToolCallContent'
+                toolResult:
+                    $ref: '#/components/schemas/opencode.v1.ToolResultContent'
+            type: object
+        opencode.v1.ErrorResponse:
+            example:
+                code: ""
+                details: ""
+                message: ""
+            properties:
+                code:
+                    type: string
+                details:
+                    type: string
+                message:
+                    type: string
+            type: object
+        opencode.v1.FileChange:
+            example:
+                newContent: ""
+                oldContent: ""
+                path: ""
+                timestamp: 1741589979
+                type: FILE_CHANGE_TYPE_UNSPECIFIED
+            properties:
+                newContent:
+                    type: string
+                oldContent:
+                    type: string
+                path:
+                    type: string
+                timestamp:
+                    format: int32
+                    type: integer
+                type:
+                    enum:
+                        - FILE_CHANGE_TYPE_UNSPECIFIED
+                        - FILE_CHANGE_TYPE_CREATED
+                        - FILE_CHANGE_TYPE_MODIFIED
+                        - FILE_CHANGE_TYPE_DELETED
+                    format: enum
+                    type: string
+            type: object
+        opencode.v1.FileInfo:
+            example:
+                isDirectory: true
+                mimeType: ""
+                modifiedAt: 1741589979
+                path: ""
+                size: 0
+            properties:
+                isDirectory:
+                    type: boolean
+                mimeType:
+                    type: string
+                modifiedAt:
+                    format: int32
+                    type: integer
+                path:
+                    type: string
+                size:
+                    format: int64
+                    type: integer
+            type: object
+        opencode.v1.FinishContent:
+            example:
+                reason: FINISH_REASON_UNSPECIFIED
+                time: 1741589979
+            properties:
+                reason:
+                    enum:
+                        - FINISH_REASON_UNSPECIFIED
+                        - FINISH_REASON_END_TURN
+                        - FINISH_REASON_STOP
+                        - FINISH_REASON_CANCELED
+                        - FINISH_REASON_ERROR
+                        - FINISH_REASON_PERMISSION_DENIED
+                    format: enum
+                    type: string
+                time:
+                    format: int32
+                    type: integer
+            type: object
+        opencode.v1.GetAgentStatusResponse:
+            example:
+                currentOperation: ""
+                model: ""
+                startedAt: 1741589979
+                status: AGENT_STATUS_UNSPECIFIED
+            properties:
+                currentOperation:
+                    type: string
+                model:
+                    type: string
+                startedAt:
+                    format: int32
+                    type: integer
+                status:
+                    enum:
+                        - AGENT_STATUS_UNSPECIFIED
+                        - AGENT_STATUS_IDLE
+                        - AGENT_STATUS_PROCESSING
+                        - AGENT_STATUS_WAITING_PERMISSION
+                        - AGENT_STATUS_ERROR
+                    format: enum
+                    type: string
+            type: object
+        opencode.v1.GetFileChangesResponse:
+            example:
+                changes:
+                    newContent: ""
+                    oldContent: ""
+                    path: ""
+                    timestamp: 1741589979
+                    type: FILE_CHANGE_TYPE_UNSPECIFIED
+                currentVersion: ""
+            properties:
+                changes:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.FileChange'
+                    type: array
+                currentVersion:
+                    type: string
+            type: object
+        opencode.v1.GetSessionResponse:
+            example:
+                session:
+                    completionTokens: 0
+                    cost: 0
+                    createdAt: 1741589979
+                    id: ""
+                    messageCount: 0
+                    parentSessionId: ""
+                    promptTokens: 0
+                    summaryMessageId: ""
+                    title: ""
+                    updatedAt: 1741589979
+            properties:
+                session:
+                    $ref: '#/components/schemas/opencode.v1.Session'
+            type: object
+        opencode.v1.GetSessionStatsResponse:
+            example:
+                assistantMessages: 0
+                completionTokens: 0
+                currentModel: ""
+                lastActivity: 1741589979
+                modelsUsed: ""
+                promptTokens: 0
+                toolMessages: 0
+                totalCost: 0
+                totalMessages: 0
+                userMessages: 0
+            properties:
+                assistantMessages:
+                    format: int64
+                    type: integer
+                completionTokens:
+                    format: int64
+                    type: integer
+                currentModel:
+                    type: string
+                lastActivity:
+                    format: int32
+                    type: integer
+                modelsUsed:
+                    items:
+                        type: string
+                    type: array
+                promptTokens:
+                    format: int64
+                    type: integer
+                toolMessages:
+                    format: int64
+                    type: integer
+                totalCost:
+                    format: double
+                    type: number
+                totalMessages:
+                    format: int64
+                    type: integer
+                userMessages:
+                    format: int64
+                    type: integer
+            type: object
+        opencode.v1.HealthResponse:
+            example:
+                details:
+                    key1: ""
+                    key2: ""
+                status: HEALTH_STATUS_UNSPECIFIED
+                timestamp: 1741589979
+            properties:
+                details:
+                    additionalProperties:
+                        type: string
+                    type: object
+                status:
+                    enum:
+                        - HEALTH_STATUS_UNSPECIFIED
+                        - HEALTH_STATUS_SERVING
+                        - HEALTH_STATUS_NOT_SERVING
+                        - HEALTH_STATUS_UNKNOWN
+                    format: enum
+                    type: string
+                timestamp:
+                    format: int32
+                    type: integer
+            type: object
+        opencode.v1.HealthResponse_DetailsEntry:
+            example:
+                key: ""
+                value: ""
+            properties:
+                key:
+                    type: string
+                value:
+                    type: string
+            type: object
+        opencode.v1.ListFilesResponse:
+            example:
+                files:
+                    isDirectory: true
+                    mimeType: ""
+                    modifiedAt: 1741589979
+                    path: ""
+                    size: 0
+            properties:
+                files:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.FileInfo'
+                    type: array
+            type: object
+        opencode.v1.ListMessagesResponse:
+            example:
+                messages:
+                    createdAt: 1741589979
+                    finishedAt: 1741589979
+                    id: ""
+                    model: ""
+                    parts:
+                        - binary:
+                            base64Data: ""
+                            data: ""
+                            mimeType: ""
+                            path: ""
+                          finish:
+                            reason: FINISH_REASON_UNSPECIFIED
+                            time: 1741589979
+                          reasoning:
+                            thinking: ""
+                          text:
+                            text: ""
+                          toolCall:
+                            id: ""
+                            input: ""
+                            name: ""
+                          toolResult:
+                            content: ""
+                            isError: true
+                            metadata: ""
+                            toolCallId: ""
+                    role: MESSAGE_ROLE_UNSPECIFIED
+                    sessionId: ""
+                    updatedAt: 1741589979
+                pagination:
+                    hasMore: true
+                    limit: 0
+                    nextCursor: ""
+                    offset: 0
+                    total: 0
+            properties:
+                messages:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.Message'
+                    type: array
+                pagination:
+                    $ref: '#/components/schemas/opencode.v1.PaginationResponse'
+            type: object
+        opencode.v1.ListModelsResponse:
+            example:
+                models:
+                    capabilities:
+                        - ""
+                    contextWindow: 0
+                    costPer1mInput: 0
+                    costPer1mOutput: 0
+                    id: ""
+                    name: ""
+                    provider: ""
+                    supportsAttachments: true
+                    supportsTools: true
+            properties:
+                models:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.ModelInfo'
+                    type: array
+            type: object
+        opencode.v1.Message:
+            example:
+                createdAt: 1741589979
+                finishedAt: 1741589979
+                id: ""
+                model: ""
+                parts:
+                    binary:
+                        base64Data: ""
+                        data: ""
+                        mimeType: ""
+                        path: ""
+                    finish:
+                        reason: FINISH_REASON_UNSPECIFIED
+                        time: 1741589979
+                    reasoning:
+                        thinking: ""
+                    text:
+                        text: ""
+                    toolCall:
+                        id: ""
+                        input: ""
+                        name: ""
+                    toolResult:
+                        content: ""
+                        isError: true
+                        metadata: ""
+                        toolCallId: ""
+                role: MESSAGE_ROLE_UNSPECIFIED
+                sessionId: ""
+                updatedAt: 1741589979
+            properties:
+                createdAt:
+                    format: int32
+                    type: integer
+                finishedAt:
+                    format: int32
+                    type: integer
+                id:
+                    type: string
+                model:
+                    type: string
+                parts:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.ContentPart'
+                    type: array
+                role:
+                    enum:
+                        - MESSAGE_ROLE_UNSPECIFIED
+                        - MESSAGE_ROLE_USER
+                        - MESSAGE_ROLE_ASSISTANT
+                        - MESSAGE_ROLE_TOOL
+                    format: enum
+                    type: string
+                sessionId:
+                    type: string
+                updatedAt:
+                    format: int32
+                    type: integer
+            type: object
+        opencode.v1.MessageCompleted:
+            example:
+                finishReason: FINISH_REASON_UNSPECIFIED
+                messageId: ""
+                timestamp: 1741589979
+                usage:
+                    completionTokens: 0
+                    cost: 0
+                    promptTokens: 0
+            properties:
+                finishReason:
+                    enum:
+                        - FINISH_REASON_UNSPECIFIED
+                        - FINISH_REASON_END_TURN
+                        - FINISH_REASON_STOP
+                        - FINISH_REASON_CANCELED
+                        - FINISH_REASON_ERROR
+                        - FINISH_REASON_PERMISSION_DENIED
+                    format: enum
+                    type: string
+                messageId:
+                    type: string
+                timestamp:
+                    format: int32
+                    type: integer
+                usage:
+                    $ref: '#/components/schemas/opencode.v1.TokenUsage'
+            type: object
+        opencode.v1.MessageCreated:
+            example:
+                message:
+                    createdAt: 1741589979
+                    finishedAt: 1741589979
+                    id: ""
+                    model: ""
+                    parts:
+                        - binary:
+                            base64Data: ""
+                            data: ""
+                            mimeType: ""
+                            path: ""
+                          finish:
+                            reason: FINISH_REASON_UNSPECIFIED
+                            time: 1741589979
+                          reasoning:
+                            thinking: ""
+                          text:
+                            text: ""
+                          toolCall:
+                            id: ""
+                            input: ""
+                            name: ""
+                          toolResult:
+                            content: ""
+                            isError: true
+                            metadata: ""
+                            toolCallId: ""
+                    role: MESSAGE_ROLE_UNSPECIFIED
+                    sessionId: ""
+                    updatedAt: 1741589979
+            properties:
+                message:
+                    $ref: '#/components/schemas/opencode.v1.Message'
+            type: object
+        opencode.v1.MessageDeleted:
+            example:
+                messageId: ""
+            properties:
+                messageId:
+                    type: string
+            type: object
+        opencode.v1.MessageStarted:
+            example:
+                messageId: ""
+                timestamp: 1741589979
+            properties:
+                messageId:
+                    type: string
+                timestamp:
+                    format: int32
+                    type: integer
+            type: object
+        opencode.v1.MessageUpdated:
+            example:
+                message:
+                    createdAt: 1741589979
+                    finishedAt: 1741589979
+                    id: ""
+                    model: ""
+                    parts:
+                        - binary:
+                            base64Data: ""
+                            data: ""
+                            mimeType: ""
+                            path: ""
+                          finish:
+                            reason: FINISH_REASON_UNSPECIFIED
+                            time: 1741589979
+                          reasoning:
+                            thinking: ""
+                          text:
+                            text: ""
+                          toolCall:
+                            id: ""
+                            input: ""
+                            name: ""
+                          toolResult:
+                            content: ""
+                            isError: true
+                            metadata: ""
+                            toolCallId: ""
+                    role: MESSAGE_ROLE_UNSPECIFIED
+                    sessionId: ""
+                    updatedAt: 1741589979
+            properties:
+                message:
+                    $ref: '#/components/schemas/opencode.v1.Message'
+            type: object
+        opencode.v1.ModelInfo:
+            example:
+                capabilities: ""
+                contextWindow: 0
+                costPer1mInput: 0
+                costPer1mOutput: 0
+                id: ""
+                name: ""
+                provider: ""
+                supportsAttachments: true
+                supportsTools: true
+            properties:
+                capabilities:
+                    items:
+                        type: string
+                    type: array
+                contextWindow:
+                    format: int32
+                    type: integer
+                costPer1mInput:
+                    format: double
+                    type: number
+                costPer1mOutput:
+                    format: double
+                    type: number
+                id:
+                    type: string
+                name:
+                    type: string
+                provider:
+                    type: string
+                supportsAttachments:
+                    type: boolean
+                supportsTools:
+                    type: boolean
+            type: object
+        opencode.v1.PaginationResponse:
+            example:
+                hasMore: true
+                limit: 0
+                nextCursor: ""
+                offset: 0
+                total: 0
+            properties:
+                hasMore:
+                    type: boolean
+                limit:
+                    format: int32
+                    type: integer
+                nextCursor:
+                    type: string
+                offset:
+                    format: int32
+                    type: integer
+                total:
+                    format: int32
+                    type: integer
+            type: object
+        opencode.v1.ReadFileResponse:
+            example:
+                content: ""
+                fileInfo:
+                    isDirectory: true
+                    mimeType: ""
+                    modifiedAt: 1741589979
+                    path: ""
+                    size: 0
+            properties:
+                content:
+                    type: string
+                fileInfo:
+                    $ref: '#/components/schemas/opencode.v1.FileInfo'
+            type: object
+        opencode.v1.ReasoningContent:
+            example:
+                thinking: ""
+            properties:
+                thinking:
+                    type: string
+            type: object
+        opencode.v1.ResetSessionRequest:
+            example:
+                title: ""
+            properties:
+                title:
+                    type: string
+            type: object
+        opencode.v1.ResetSessionResponse:
+            example:
+                session:
+                    completionTokens: 0
+                    cost: 0
+                    createdAt: 1741589979
+                    id: ""
+                    messageCount: 0
+                    parentSessionId: ""
+                    promptTokens: 0
+                    summaryMessageId: ""
+                    title: ""
+                    updatedAt: 1741589979
+            properties:
+                session:
+                    $ref: '#/components/schemas/opencode.v1.Session'
+            type: object
+        opencode.v1.SendMessageRequest:
+            example:
+                attachments:
+                    content: ""
+                    mimeType: ""
+                    path: ""
+                    size: 0
+                model: ""
+                parts:
+                    binary:
+                        base64Data: ""
+                        data: ""
+                        mimeType: ""
+                        path: ""
+                    finish:
+                        reason: FINISH_REASON_UNSPECIFIED
+                        time: 1741589979
+                    reasoning:
+                        thinking: ""
+                    text:
+                        text: ""
+                    toolCall:
+                        id: ""
+                        input: ""
+                        name: ""
+                    toolResult:
+                        content: ""
+                        isError: true
+                        metadata: ""
+                        toolCallId: ""
+            properties:
+                attachments:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.Attachment'
+                    type: array
+                model:
+                    type: string
+                parts:
+                    items:
+                        $ref: '#/components/schemas/opencode.v1.ContentPart'
+                    type: array
+            type: object
+        opencode.v1.SendMessageResponse:
+            example:
+                contentDelta:
+                    text: ""
+                error:
+                    code: ""
+                    details: ""
+                    message: ""
+                messageCompleted:
+                    finishReason: FINISH_REASON_UNSPECIFIED
+                    messageId: ""
+                    timestamp: 1741589979
+                    usage:
+                        completionTokens: 0
+                        cost: 0
+                        promptTokens: 0
+                messageStarted:
+                    messageId: ""
+                    timestamp: 1741589979
+                toolCallCompleted:
+                    isError: true
+                    output: ""
+                    toolCallId: ""
+                toolCallStarted:
+                    input: ""
+                    toolCallId: ""
+                    toolName: ""
+            properties:
+                contentDelta:
+                    $ref: '#/components/schemas/opencode.v1.ContentDelta'
+                error:
+                    $ref: '#/components/schemas/opencode.v1.ErrorResponse'
+                messageCompleted:
+                    $ref: '#/components/schemas/opencode.v1.MessageCompleted'
+                messageStarted:
+                    $ref: '#/components/schemas/opencode.v1.MessageStarted'
+                toolCallCompleted:
+                    $ref: '#/components/schemas/opencode.v1.ToolCallCompleted'
+                toolCallStarted:
+                    $ref: '#/components/schemas/opencode.v1.ToolCallStarted'
+            type: object
+        opencode.v1.Session:
+            example:
+                completionTokens: 0
+                cost: 0
+                createdAt: 1741589979
+                id: ""
+                messageCount: 0
+                parentSessionId: ""
+                promptTokens: 0
+                summaryMessageId: ""
+                title: ""
+                updatedAt: 1741589979
+            properties:
+                completionTokens:
+                    format: int64
+                    type: integer
+                cost:
+                    format: double
+                    type: number
+                createdAt:
+                    format: int32
+                    type: integer
+                id:
+                    type: string
+                messageCount:
+                    format: int64
+                    type: integer
+                parentSessionId:
+                    type: string
+                promptTokens:
+                    format: int64
+                    type: integer
+                summaryMessageId:
+                    type: string
+                title:
+                    type: string
+                updatedAt:
+                    format: int32
+                    type: integer
+            type: object
+        opencode.v1.SetModelRequest:
+            example:
+                modelId: ""
+            properties:
+                modelId:
+                    type: string
+            type: object
+        opencode.v1.SetModelResponse:
+            example:
+                model:
+                    capabilities:
+                        - ""
+                    contextWindow: 0
+                    costPer1mInput: 0
+                    costPer1mOutput: 0
+                    id: ""
+                    name: ""
+                    provider: ""
+                    supportsAttachments: true
+                    supportsTools: true
+            properties:
+                model:
+                    $ref: '#/components/schemas/opencode.v1.ModelInfo'
+            type: object
+        opencode.v1.StreamMessagesResponse:
+            example:
+                messageCreated:
+                    message:
+                        createdAt: 1741589979
+                        finishedAt: 1741589979
+                        id: ""
+                        model: ""
+                        parts:
+                            - binary:
+                                base64Data: ""
+                                data: ""
+                                mimeType: ""
+                                path: ""
+                              finish:
+                                reason: FINISH_REASON_UNSPECIFIED
+                                time: 1741589979
+                              reasoning:
+                                thinking: ""
+                              text:
+                                text: ""
+                              toolCall:
+                                id: ""
+                                input: ""
+                                name: ""
+                              toolResult:
+                                content: ""
+                                isError: true
+                                metadata: ""
+                                toolCallId: ""
+                        role: MESSAGE_ROLE_UNSPECIFIED
+                        sessionId: ""
+                        updatedAt: 1741589979
+                messageDeleted:
+                    messageId: ""
+                messageUpdated:
+                    message:
+                        createdAt: 1741589979
+                        finishedAt: 1741589979
+                        id: ""
+                        model: ""
+                        parts:
+                            - binary:
+                                base64Data: ""
+                                data: ""
+                                mimeType: ""
+                                path: ""
+                              finish:
+                                reason: FINISH_REASON_UNSPECIFIED
+                                time: 1741589979
+                              reasoning:
+                                thinking: ""
+                              text:
+                                text: ""
+                              toolCall:
+                                id: ""
+                                input: ""
+                                name: ""
+                              toolResult:
+                                content: ""
+                                isError: true
+                                metadata: ""
+                                toolCallId: ""
+                        role: MESSAGE_ROLE_UNSPECIFIED
+                        sessionId: ""
+                        updatedAt: 1741589979
+            properties:
+                messageCreated:
+                    $ref: '#/components/schemas/opencode.v1.MessageCreated'
+                messageDeleted:
+                    $ref: '#/components/schemas/opencode.v1.MessageDeleted'
+                messageUpdated:
+                    $ref: '#/components/schemas/opencode.v1.MessageUpdated'
+            type: object
+        opencode.v1.TextContent:
+            example:
+                text: ""
+            properties:
+                text:
+                    type: string
+            type: object
+        opencode.v1.TokenUsage:
+            example:
+                completionTokens: 0
+                cost: 0
+                promptTokens: 0
+            properties:
+                completionTokens:
+                    format: int64
+                    type: integer
+                cost:
+                    format: double
+                    type: number
+                promptTokens:
+                    format: int64
+                    type: integer
+            type: object
+        opencode.v1.ToolCallCompleted:
+            example:
+                isError: true
+                output: ""
+                toolCallId: ""
+            properties:
+                isError:
+                    type: boolean
+                output:
+                    type: string
+                toolCallId:
+                    type: string
+            type: object
+        opencode.v1.ToolCallContent:
+            example:
+                id: ""
+                input: ""
+                name: ""
+            properties:
+                id:
+                    type: string
+                input:
+                    type: string
+                name:
+                    type: string
+            type: object
+        opencode.v1.ToolCallStarted:
+            example:
+                input: ""
+                toolCallId: ""
+                toolName: ""
+            properties:
+                input:
+                    type: string
+                toolCallId:
+                    type: string
+                toolName:
+                    type: string
+            type: object
+        opencode.v1.ToolResultContent:
+            example:
+                content: ""
+                isError: true
+                metadata: ""
+                toolCallId: ""
+            properties:
+                content:
+                    type: string
+                isError:
+                    type: boolean
+                metadata:
+                    type: string
+                toolCallId:
+                    type: string
+            type: object
+        opencode.v1.WriteFileRequest:
+            example:
+                content: ""
+                createDirs: true
+                path: ""
+            properties:
+                content:
+                    type: string
+                createDirs:
+                    type: boolean
+                path:
+                    type: string
+            type: object
+        opencode.v1.WriteFileResponse:
+            example:
+                fileInfo:
+                    isDirectory: true
+                    mimeType: ""
+                    modifiedAt: 1741589979
+                    path: ""
+                    size: 0
+            properties:
+                fileInfo:
+                    $ref: '#/components/schemas/opencode.v1.FileInfo'
+            type: object
+    securitySchemes:
+        BearerAuth:
+            bearerFormat: JWT
+            scheme: bearer
+            type: http
+info:
+    description: API generated from protobufs
+    title: Generated API
+    version: 1.0.0
+openapi: 3.0.0
+paths:
+    /agent/cancel:
+        post:
+            operationId: OpenCodeService_CancelAgent
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/opencode.v1.CancelAgentRequest'
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/google.protobuf.Empty'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /agent/model:
+        put:
+            operationId: OpenCodeService_SetModel
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/opencode.v1.SetModelRequest'
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.SetModelResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /agent/status:
+        get:
+            operationId: OpenCodeService_GetAgentStatus
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.GetAgentStatusResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /files:
+        get:
+            operationId: OpenCodeService_ListFiles
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.ListFilesResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /files/{path=**}:
+        delete:
+            operationId: OpenCodeService_DeleteFile
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/google.protobuf.Empty'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+        get:
+            operationId: OpenCodeService_ReadFile
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.ReadFileResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+        put:
+            operationId: OpenCodeService_WriteFile
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/opencode.v1.WriteFileRequest'
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.WriteFileResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /files/changes:
+        get:
+            operationId: OpenCodeService_GetFileChanges
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.GetFileChangesResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /health:
+        get:
+            operationId: OpenCodeService_Health
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.HealthResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /messages:
+        delete:
+            operationId: OpenCodeService_ClearMessages
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/google.protobuf.Empty'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+        get:
+            operationId: OpenCodeService_ListMessages
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.ListMessagesResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+        post:
+            operationId: OpenCodeService_SendMessage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/opencode.v1.SendMessageRequest'
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.SendMessageResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /messages/stream:
+        get:
+            operationId: OpenCodeService_StreamMessages
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.StreamMessagesResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /models:
+        get:
+            operationId: OpenCodeService_ListModels
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.ListModelsResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /session:
+        get:
+            operationId: OpenCodeService_GetSession
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.GetSessionResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /session/reset:
+        post:
+            operationId: OpenCodeService_ResetSession
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/opencode.v1.ResetSessionRequest'
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.ResetSessionResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+    /session/stats:
+        get:
+            operationId: OpenCodeService_GetSessionStats
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/opencode.v1.GetSessionStatsResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequest'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Unauthorized'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/InternalServerError'
+                    description: Internal Server Error
+            tags:
+                - OpenCodeService
+security:
+    - BearerAuth: []
+tags:
+    - description: ""
+      name: OpenCodeService
+
