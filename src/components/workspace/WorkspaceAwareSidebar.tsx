@@ -355,7 +355,7 @@ function SessionCard({ session, isActive, onClick }: SessionCardProps) {
           isActive ? 'text-gray-300' : 'text-gray-500'
         }`}>
           <Clock className="h-3 w-3" />
-          <span>{session.lastActivity.toLocaleDateString()}</span>
+          <span>{session.lastActivity?.toLocaleDateString() || 'Unknown'}</span>
         </div>
       </div>
     </button>
