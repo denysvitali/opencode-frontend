@@ -1,4 +1,4 @@
-// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { DataService } from './dataService.js';
 import type { Conversation, Message, Workspace, Session } from '../types/index.js';
 
@@ -25,64 +25,64 @@ export class RealDataService implements DataService {
     return [];
   }
 
-  async createWorkspace(name: string, repositoryUrl?: string): Promise<Workspace> {
+  async createWorkspace(_name: string, _repositoryUrl?: string): Promise<Workspace> {
     throw new Error('Not implemented');
   }
 
-  async deleteWorkspace(workspaceId: string): Promise<void> {
+  async deleteWorkspace(_workspaceId: string): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  async getWorkspace(workspaceId: string): Promise<Workspace> {
+  async getWorkspace(_workspaceId: string): Promise<Workspace> {
     throw new Error('Not implemented');
   }
 
   // Session methods
-  async loadSessions(workspaceId: string): Promise<Session[]> {
+  async loadSessions(_workspaceId: string): Promise<Session[]> {
     return [];
   }
 
-  async createSession(workspaceId: string, name: string): Promise<Session> {
+  async createSession(_workspaceId: string, _name: string): Promise<Session> {
     throw new Error('Not implemented');
   }
 
-  async deleteSession(workspaceId: string, sessionId: string): Promise<void> {
+  async deleteSession(_workspaceId: string, _sessionId: string): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  async getSession(workspaceId: string, sessionId: string): Promise<Session> {
+  async getSession(_workspaceId: string, _sessionId: string): Promise<Session> {
     throw new Error('Not implemented');
   }
 
   // Message methods
-  async sendMessage(workspaceId: string, sessionId: string, content: string): Promise<Message> {
+  async sendMessage(_workspaceId: string, _sessionId: string, _content: string): Promise<Message> {
     throw new Error('Not implemented');
   }
 
-  async getMessages(workspaceId: string, sessionId: string): Promise<Message[]> {
+  async getMessages(_workspaceId: string, _sessionId: string): Promise<Message[]> {
     return [];
   }
 
   // File methods
-  async getFiles(workspaceId: string, sessionId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
+  async getFiles(_workspaceId: string, _sessionId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
     return [];
   }
 
-  async getFileContent(workspaceId: string, sessionId: string, filePath: string): Promise<{ content: string; language?: string }> {
+  async getFileContent(_workspaceId: string, _sessionId: string, _filePath: string): Promise<{ content: string; language?: string }> {
     return { content: '' };
   }
 
   // Terminal methods
-  async executeCommand(workspaceId: string, sessionId: string, command: string): Promise<{ output: string; exitCode: number }> {
+  async executeCommand(_workspaceId: string, _sessionId: string, _command: string): Promise<{ output: string; exitCode: number }> {
     return { output: '', exitCode: 1 };
   }
 
-  async getTerminalHistory(workspaceId: string, sessionId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
+  async getTerminalHistory(_workspaceId: string, _sessionId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
     return [];
   }
 
   // Git methods
-  async getGitStatus(workspaceId: string, sessionId: string): Promise<{
+  async getGitStatus(_workspaceId: string, _sessionId: string): Promise<{
     status: string;
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
   }> {
@@ -94,15 +94,15 @@ export class RealDataService implements DataService {
     return [];
   }
 
-  async createConversation(title: string, repositoryUrl?: string): Promise<Conversation> {
+  async createConversation(_title: string, _repositoryUrl?: string): Promise<Conversation> {
     throw new Error('Not implemented');
   }
 
-  async deleteConversation(conversationId: string): Promise<void> {
+  async deleteConversation(_conversationId: string): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  async getConversation(conversationId: string): Promise<Conversation> {
+  async getConversation(_conversationId: string): Promise<Conversation> {
     throw new Error('Not implemented');
   }
 }
