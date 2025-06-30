@@ -281,8 +281,20 @@ export default function WorkspaceAwareSidebar({
   );
 }
 
+interface Session {
+  id: string;
+  name: string;
+  workspaceId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status: 'active' | 'completed' | 'paused';
+  messageCount: number;
+  lastMessage: string;
+  tags: string[];
+}
+
 interface SessionCardProps {
-  session: any;
+  session: Session;
   isActive: boolean;
   onClick: () => void;
 }
