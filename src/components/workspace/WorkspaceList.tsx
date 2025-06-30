@@ -10,7 +10,6 @@ interface WorkspaceListProps {
 export function WorkspaceList({ onSelectWorkspace }: WorkspaceListProps) {
   const { 
     workspaces, 
-    activeWorkspaceId, 
     isLoading, 
     error,
     loadWorkspacesFromAPI, 

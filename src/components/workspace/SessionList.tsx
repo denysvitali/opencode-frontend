@@ -12,7 +12,6 @@ interface SessionListProps {
 export function SessionList({ workspace, onSelectSession, onBackToWorkspaces }: SessionListProps) {
   const { 
     sessions, 
-    activeSessionId, 
     isLoading, 
     error,
     loadSessionsFromAPI, 

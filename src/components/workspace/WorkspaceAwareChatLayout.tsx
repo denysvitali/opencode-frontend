@@ -12,8 +12,6 @@ import {
   Folder, 
   GitBranch, 
   Terminal, 
-  Settings,
-  Activity,
   Maximize2,
   Minimize2
 } from 'lucide-react';
@@ -111,7 +109,7 @@ export default function WorkspaceAwareChatLayout({
                   return (
                     <button
                       key={item.id}
-                      onClick={() => setActiveView(item.id as any)}
+                      onClick={() => setActiveView(item.id as 'chat' | 'filesystem' | 'git-diff' | 'terminal')}
                       className={`
                         flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
                         ${isActive 

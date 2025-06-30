@@ -5,14 +5,11 @@ import {
   Search, 
   Clock, 
   MoreHorizontal, 
-  Filter,
   Activity,
   Users,
-  Zap,
   CheckCircle,
   Pause,
   Circle,
-  Star,
   Pin
 } from 'lucide-react';
 
@@ -143,23 +140,6 @@ export default function WorkspaceAwareSidebar({
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'completed' | 'paused'>('all');
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active': return <Circle className="h-2 w-2 fill-green-400 text-green-400" />;
-      case 'completed': return <CheckCircle className="h-2 w-2 fill-blue-400 text-blue-400" />;
-      case 'paused': return <Pause className="h-2 w-2 fill-yellow-400 text-yellow-400" />;
-      default: return <Circle className="h-2 w-2 text-gray-400" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'border-l-green-400';
-      case 'completed': return 'border-l-blue-400';
-      case 'paused': return 'border-l-yellow-400';
-      default: return 'border-l-gray-400';
-    }
-  };
 
   const filteredSessions = mockSessions.filter(session => {
     const matchesSearch = session.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -208,7 +188,7 @@ export default function WorkspaceAwareSidebar({
           ].map(filter => (
             <button
               key={filter.key}
-              onClick={() => setFilterStatus(filter.key as any)}
+              onClick={() => setFilterStatus(filter.key as 'all' | 'active' | 'completed' | 'paused')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                 filterStatus === filter.key
                   ? 'bg-blue-600 text-white shadow-lg'

@@ -1,4 +1,4 @@
-import { MessageCircle, Folder, Terminal, GitBranch, Server, Users } from 'lucide-react';
+import { MessageCircle, Folder, Terminal, GitBranch } from 'lucide-react';
 import { useUIStore } from '../../stores/uiStore.js';
 import type { ViewType } from '../../types/index.js';
 

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
-import { useUIStore } from '../../stores/uiStore.js';
 import WorkspaceManagement from '../workspace/WorkspaceManagement.js';
 import WorkspaceContext from '../workspace/WorkspaceContext.js';
 import WorkspaceAwareChatLayout from '../workspace/WorkspaceAwareChatLayout.js';

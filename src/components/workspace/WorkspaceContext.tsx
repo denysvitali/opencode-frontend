@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Plus, MessageCircle, Clock, Trash2, Settings, Server, GitBranch, Play, Square, Users, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Plus, MessageCircle, Clock, Trash2, Settings, GitBranch, Play, Square, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import TopBar from '../layout/TopBar.js';
 
 // TODO: Replace with real data from workspace API
@@ -194,7 +194,6 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
   };
 
   const workspaceStatus = getStatusConfig(mockWorkspace.status);
-  const WorkspaceStatusIcon = workspaceStatus.icon;
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -259,7 +258,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as 'sessions' | 'settings' | 'activity')}
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     activeTab === tab.id
                       ? 'bg-gray-700 text-white'

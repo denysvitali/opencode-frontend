@@ -1,5 +1,4 @@
-import { ArrowLeft, Server, GitBranch, Cpu, MemoryStick, HardDrive, Activity, Settings, MoreHorizontal, MessageCircle } from 'lucide-react';
-import UserProfile from '../ui/UserProfile.js';
+import { ArrowLeft, Cpu, MemoryStick, Settings, MoreHorizontal, MessageCircle } from 'lucide-react';
 
 // TODO: Replace with real workspace data from API
 const mockWorkspaces = {
@@ -85,7 +84,6 @@ interface WorkspaceAwareHeaderProps {
 
 export default function WorkspaceAwareHeader({ 
   workspaceId,
-  onBackToWorkspaces, 
   onBackToSessions, 
   onOpenWorkspaceSettings 
 }: WorkspaceAwareHeaderProps) {
@@ -102,7 +100,6 @@ export default function WorkspaceAwareHeader({
 
   const cpuUsage = mockWorkspace.resources.cpu.current;
   const memUsage = (mockWorkspace.resources.memory.current / mockWorkspace.resources.memory.limit) * 100;
-  const storageUsage = (mockWorkspace.resources.storage.current / mockWorkspace.resources.storage.limit) * 100;
 
   return (
     <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 relative z-50">

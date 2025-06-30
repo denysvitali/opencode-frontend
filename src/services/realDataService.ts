@@ -172,7 +172,7 @@ export class RealDataService implements DataService {
   async getFileContent(workspaceIdOrConversationId: string, sessionIdOrFilePath: string, filePath?: string): Promise<{ content: string; language?: string }> {
     try {
       let actualFilePath: string;
-      let response: any;
+      let response: Response;
       
       if (filePath === undefined) {
         // Old signature: (conversationId, filePath)
@@ -225,7 +225,7 @@ export class RealDataService implements DataService {
   async executeCommand(conversationId: string, command: string): Promise<{ output: string; exitCode: number }>;
   async executeCommand(workspaceIdOrConversationId: string, sessionIdOrCommand: string, command?: string): Promise<{ output: string; exitCode: number }> {
     try {
-      let response: any;
+      let response: Response;
       
       if (command === undefined) {
         // Old signature: (conversationId, command)
