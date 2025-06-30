@@ -36,7 +36,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions": {
+    "/workspaces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["OrchestratorService_ListWorkspaces"];
+        put?: never;
+        post: operations["OrchestratorService_CreateWorkspace"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["OrchestratorService_GetWorkspace"];
+        put?: never;
+        post?: never;
+        delete: operations["OrchestratorService_DeleteWorkspace"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/sessions": {
         parameters: {
             query?: never;
             header?: never;
@@ -52,7 +84,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions/{session_id}": {
+    "/workspaces/{workspace_id}/sessions/{session_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -68,7 +100,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions/{session_id}/proxy": {
+    "/workspaces/{workspace_id}/sessions/{session_id}/proxy": {
         parameters: {
             query?: never;
             header?: never;
@@ -163,13 +195,10 @@ export interface components {
         "google.protobuf.Empty": Record<string, never>;
         /** @example {
          *       "config": {
+         *         "context": "",
          *         "environment": {
          *           "key1": "",
          *           "key2": ""
-         *         },
-         *         "repository": {
-         *           "ref": "",
-         *           "url": ""
          *         }
          *       },
          *       "labels": {
@@ -177,7 +206,8 @@ export interface components {
          *         "key2": ""
          *       },
          *       "name": "",
-         *       "userId": ""
+         *       "userId": "",
+         *       "workspaceId": ""
          *     } */
         "opencode.orchestrator.v1.CreateSessionRequest": {
             config?: components["schemas"]["opencode.orchestrator.v1.SessionConfig"];
@@ -186,6 +216,7 @@ export interface components {
             };
             name?: string;
             userId?: string;
+            workspaceId?: string;
         };
         /** @example {
          *       "key": "",
@@ -198,13 +229,10 @@ export interface components {
         /** @example {
          *       "session": {
          *         "config": {
+         *           "context": "",
          *           "environment": {
          *             "key1": "",
          *             "key2": ""
-         *           },
-         *           "repository": {
-         *             "ref": "",
-         *             "url": ""
          *           }
          *         },
          *         "createdAt": 1741589979,
@@ -217,23 +245,66 @@ export interface components {
          *         "name": "",
          *         "state": "SESSION_STATE_UNKNOWN",
          *         "status": {
-         *           "internalEndpoint": "",
          *           "message": "",
-         *           "podName": "",
-         *           "podNamespace": "",
-         *           "pvcName": "",
          *           "ready": true,
-         *           "readyAt": 1741589979
+         *           "readyAt": 1741589979,
+         *           "sessionEndpoint": "",
+         *           "workspaceId": ""
          *         },
          *         "updatedAt": 1741589979,
-         *         "userId": ""
+         *         "userId": "",
+         *         "workspaceId": ""
          *       }
          *     } */
         "opencode.orchestrator.v1.CreateSessionResponse": {
             session?: components["schemas"]["opencode.orchestrator.v1.Session"];
         };
         /** @example {
-         *       "session": {
+         *       "config": {
+         *         "environment": {
+         *           "key1": "",
+         *           "key2": ""
+         *         },
+         *         "repository": {
+         *           "ref": "",
+         *           "url": ""
+         *         },
+         *         "resources": {
+         *           "limits": {
+         *             "key1": "",
+         *             "key2": ""
+         *           },
+         *           "requests": {
+         *             "key1": "",
+         *             "key2": ""
+         *           }
+         *         }
+         *       },
+         *       "labels": {
+         *         "key1": "",
+         *         "key2": ""
+         *       },
+         *       "name": "",
+         *       "userId": ""
+         *     } */
+        "opencode.orchestrator.v1.CreateWorkspaceRequest": {
+            config?: components["schemas"]["opencode.orchestrator.v1.WorkspaceConfig"];
+            labels?: {
+                [key: string]: string;
+            };
+            name?: string;
+            userId?: string;
+        };
+        /** @example {
+         *       "key": "",
+         *       "value": ""
+         *     } */
+        "opencode.orchestrator.v1.CreateWorkspaceRequest_LabelsEntry": {
+            key?: string;
+            value?: string;
+        };
+        /** @example {
+         *       "workspace": {
          *         "config": {
          *           "environment": {
          *             "key1": "",
@@ -242,6 +313,16 @@ export interface components {
          *           "repository": {
          *             "ref": "",
          *             "url": ""
+         *           },
+         *           "resources": {
+         *             "limits": {
+         *               "key1": "",
+         *               "key2": ""
+         *             },
+         *             "requests": {
+         *               "key1": "",
+         *               "key2": ""
+         *             }
          *           }
          *         },
          *         "createdAt": 1741589979,
@@ -252,8 +333,12 @@ export interface components {
          *         },
          *         "lastAccessed": 1741589979,
          *         "name": "",
-         *         "state": "SESSION_STATE_UNKNOWN",
+         *         "sessionIds": [
+         *           ""
+         *         ],
+         *         "state": "WORKSPACE_STATE_UNKNOWN",
          *         "status": {
+         *           "activeSessions": 0,
          *           "internalEndpoint": "",
          *           "message": "",
          *           "podName": "",
@@ -266,8 +351,92 @@ export interface components {
          *         "userId": ""
          *       }
          *     } */
+        "opencode.orchestrator.v1.CreateWorkspaceResponse": {
+            workspace?: components["schemas"]["opencode.orchestrator.v1.Workspace"];
+        };
+        /** @example {
+         *       "session": {
+         *         "config": {
+         *           "context": "",
+         *           "environment": {
+         *             "key1": "",
+         *             "key2": ""
+         *           }
+         *         },
+         *         "createdAt": 1741589979,
+         *         "id": "",
+         *         "labels": {
+         *           "key1": "",
+         *           "key2": ""
+         *         },
+         *         "lastAccessed": 1741589979,
+         *         "name": "",
+         *         "state": "SESSION_STATE_UNKNOWN",
+         *         "status": {
+         *           "message": "",
+         *           "ready": true,
+         *           "readyAt": 1741589979,
+         *           "sessionEndpoint": "",
+         *           "workspaceId": ""
+         *         },
+         *         "updatedAt": 1741589979,
+         *         "userId": "",
+         *         "workspaceId": ""
+         *       }
+         *     } */
         "opencode.orchestrator.v1.GetSessionResponse": {
             session?: components["schemas"]["opencode.orchestrator.v1.Session"];
+        };
+        /** @example {
+         *       "workspace": {
+         *         "config": {
+         *           "environment": {
+         *             "key1": "",
+         *             "key2": ""
+         *           },
+         *           "repository": {
+         *             "ref": "",
+         *             "url": ""
+         *           },
+         *           "resources": {
+         *             "limits": {
+         *               "key1": "",
+         *               "key2": ""
+         *             },
+         *             "requests": {
+         *               "key1": "",
+         *               "key2": ""
+         *             }
+         *           }
+         *         },
+         *         "createdAt": 1741589979,
+         *         "id": "",
+         *         "labels": {
+         *           "key1": "",
+         *           "key2": ""
+         *         },
+         *         "lastAccessed": 1741589979,
+         *         "name": "",
+         *         "sessionIds": [
+         *           ""
+         *         ],
+         *         "state": "WORKSPACE_STATE_UNKNOWN",
+         *         "status": {
+         *           "activeSessions": 0,
+         *           "internalEndpoint": "",
+         *           "message": "",
+         *           "podName": "",
+         *           "podNamespace": "",
+         *           "pvcName": "",
+         *           "ready": true,
+         *           "readyAt": 1741589979
+         *         },
+         *         "updatedAt": 1741589979,
+         *         "userId": ""
+         *       }
+         *     } */
+        "opencode.orchestrator.v1.GetWorkspaceResponse": {
+            workspace?: components["schemas"]["opencode.orchestrator.v1.Workspace"];
         };
         /** @example {
          *       "details": {
@@ -303,13 +472,10 @@ export interface components {
          *       "nextPageToken": "",
          *       "sessions": {
          *         "config": {
+         *           "context": "",
          *           "environment": {
          *             "key1": "",
          *             "key2": ""
-         *           },
-         *           "repository": {
-         *             "ref": "",
-         *             "url": ""
          *           }
          *         },
          *         "createdAt": 1741589979,
@@ -322,16 +488,15 @@ export interface components {
          *         "name": "",
          *         "state": "SESSION_STATE_UNKNOWN",
          *         "status": {
-         *           "internalEndpoint": "",
          *           "message": "",
-         *           "podName": "",
-         *           "podNamespace": "",
-         *           "pvcName": "",
          *           "ready": true,
-         *           "readyAt": 1741589979
+         *           "readyAt": 1741589979,
+         *           "sessionEndpoint": "",
+         *           "workspaceId": ""
          *         },
          *         "updatedAt": 1741589979,
-         *         "userId": ""
+         *         "userId": "",
+         *         "workspaceId": ""
          *       },
          *       "totalSize": 0
          *     } */
@@ -342,6 +507,62 @@ export interface components {
             totalSize?: number;
         };
         /** @example {
+         *       "nextPageToken": "",
+         *       "totalSize": 0,
+         *       "workspaces": {
+         *         "config": {
+         *           "environment": {
+         *             "key1": "",
+         *             "key2": ""
+         *           },
+         *           "repository": {
+         *             "ref": "",
+         *             "url": ""
+         *           },
+         *           "resources": {
+         *             "limits": {
+         *               "key1": "",
+         *               "key2": ""
+         *             },
+         *             "requests": {
+         *               "key1": "",
+         *               "key2": ""
+         *             }
+         *           }
+         *         },
+         *         "createdAt": 1741589979,
+         *         "id": "",
+         *         "labels": {
+         *           "key1": "",
+         *           "key2": ""
+         *         },
+         *         "lastAccessed": 1741589979,
+         *         "name": "",
+         *         "sessionIds": [
+         *           ""
+         *         ],
+         *         "state": "WORKSPACE_STATE_UNKNOWN",
+         *         "status": {
+         *           "activeSessions": 0,
+         *           "internalEndpoint": "",
+         *           "message": "",
+         *           "podName": "",
+         *           "podNamespace": "",
+         *           "pvcName": "",
+         *           "ready": true,
+         *           "readyAt": 1741589979
+         *         },
+         *         "updatedAt": 1741589979,
+         *         "userId": ""
+         *       }
+         *     } */
+        "opencode.orchestrator.v1.ListWorkspacesResponse": {
+            nextPageToken?: string;
+            /** Format: int32 */
+            totalSize?: number;
+            workspaces?: components["schemas"]["opencode.orchestrator.v1.Workspace"][];
+        };
+        /** @example {
          *       "body": "",
          *       "headers": {
          *         "key1": "",
@@ -350,7 +571,8 @@ export interface components {
          *       "method": "",
          *       "path": "",
          *       "sessionId": "",
-         *       "userId": ""
+         *       "userId": "",
+         *       "workspaceId": ""
          *     } */
         "opencode.orchestrator.v1.ProxyHTTPRequest": {
             /** Format: byte */
@@ -362,6 +584,7 @@ export interface components {
             path?: string;
             sessionId?: string;
             userId?: string;
+            workspaceId?: string;
         };
         /** @example {
          *       "key": "",
@@ -414,14 +637,45 @@ export interface components {
             url?: string;
         };
         /** @example {
+         *       "limits": {
+         *         "key1": "",
+         *         "key2": ""
+         *       },
+         *       "requests": {
+         *         "key1": "",
+         *         "key2": ""
+         *       }
+         *     } */
+        "opencode.orchestrator.v1.ResourceRequirements": {
+            limits?: {
+                [key: string]: string;
+            };
+            requests?: {
+                [key: string]: string;
+            };
+        };
+        /** @example {
+         *       "key": "",
+         *       "value": ""
+         *     } */
+        "opencode.orchestrator.v1.ResourceRequirements_LimitsEntry": {
+            key?: string;
+            value?: string;
+        };
+        /** @example {
+         *       "key": "",
+         *       "value": ""
+         *     } */
+        "opencode.orchestrator.v1.ResourceRequirements_RequestsEntry": {
+            key?: string;
+            value?: string;
+        };
+        /** @example {
          *       "config": {
+         *         "context": "",
          *         "environment": {
          *           "key1": "",
          *           "key2": ""
-         *         },
-         *         "repository": {
-         *           "ref": "",
-         *           "url": ""
          *         }
          *       },
          *       "createdAt": 1741589979,
@@ -434,16 +688,15 @@ export interface components {
          *       "name": "",
          *       "state": "SESSION_STATE_UNKNOWN",
          *       "status": {
-         *         "internalEndpoint": "",
          *         "message": "",
-         *         "podName": "",
-         *         "podNamespace": "",
-         *         "pvcName": "",
          *         "ready": true,
-         *         "readyAt": 1741589979
+         *         "readyAt": 1741589979,
+         *         "sessionEndpoint": "",
+         *         "workspaceId": ""
          *       },
          *       "updatedAt": 1741589979,
-         *       "userId": ""
+         *       "userId": "",
+         *       "workspaceId": ""
          *     } */
         "opencode.orchestrator.v1.Session": {
             config?: components["schemas"]["opencode.orchestrator.v1.SessionConfig"];
@@ -465,12 +718,123 @@ export interface components {
             /** Format: int32 */
             updatedAt?: number;
             userId?: string;
+            workspaceId?: string;
         };
         /** @example {
          *       "key": "",
          *       "value": ""
          *     } */
         "opencode.orchestrator.v1.Session_LabelsEntry": {
+            key?: string;
+            value?: string;
+        };
+        /** @example {
+         *       "context": "",
+         *       "environment": {
+         *         "key1": "",
+         *         "key2": ""
+         *       }
+         *     } */
+        "opencode.orchestrator.v1.SessionConfig": {
+            context?: string;
+            environment?: {
+                [key: string]: string;
+            };
+        };
+        /** @example {
+         *       "key": "",
+         *       "value": ""
+         *     } */
+        "opencode.orchestrator.v1.SessionConfig_EnvironmentEntry": {
+            key?: string;
+            value?: string;
+        };
+        /** @example {
+         *       "message": "",
+         *       "ready": true,
+         *       "readyAt": 1741589979,
+         *       "sessionEndpoint": "",
+         *       "workspaceId": ""
+         *     } */
+        "opencode.orchestrator.v1.SessionStatus": {
+            message?: string;
+            ready?: boolean;
+            /** Format: int32 */
+            readyAt?: number;
+            sessionEndpoint?: string;
+            workspaceId?: string;
+        };
+        /** @example {
+         *       "config": {
+         *         "environment": {
+         *           "key1": "",
+         *           "key2": ""
+         *         },
+         *         "repository": {
+         *           "ref": "",
+         *           "url": ""
+         *         },
+         *         "resources": {
+         *           "limits": {
+         *             "key1": "",
+         *             "key2": ""
+         *           },
+         *           "requests": {
+         *             "key1": "",
+         *             "key2": ""
+         *           }
+         *         }
+         *       },
+         *       "createdAt": 1741589979,
+         *       "id": "",
+         *       "labels": {
+         *         "key1": "",
+         *         "key2": ""
+         *       },
+         *       "lastAccessed": 1741589979,
+         *       "name": "",
+         *       "sessionIds": "",
+         *       "state": "WORKSPACE_STATE_UNKNOWN",
+         *       "status": {
+         *         "activeSessions": 0,
+         *         "internalEndpoint": "",
+         *         "message": "",
+         *         "podName": "",
+         *         "podNamespace": "",
+         *         "pvcName": "",
+         *         "ready": true,
+         *         "readyAt": 1741589979
+         *       },
+         *       "updatedAt": 1741589979,
+         *       "userId": ""
+         *     } */
+        "opencode.orchestrator.v1.Workspace": {
+            config?: components["schemas"]["opencode.orchestrator.v1.WorkspaceConfig"];
+            /** Format: int32 */
+            createdAt?: number;
+            id?: string;
+            labels?: {
+                [key: string]: string;
+            };
+            /** Format: int32 */
+            lastAccessed?: number;
+            name?: string;
+            sessionIds?: string[];
+            /**
+             * Format: enum
+             * @enum {string}
+             */
+            state?: "WORKSPACE_STATE_UNKNOWN" | "WORKSPACE_STATE_CREATING" | "WORKSPACE_STATE_RUNNING" | "WORKSPACE_STATE_STOPPING" | "WORKSPACE_STATE_STOPPED" | "WORKSPACE_STATE_ERROR";
+            status?: components["schemas"]["opencode.orchestrator.v1.WorkspaceStatus"];
+            /** Format: int32 */
+            updatedAt?: number;
+            userId?: string;
+        };
+        /** @example {
+         *       "key": "",
+         *       "value": ""
+         *     } */
+        "opencode.orchestrator.v1.Workspace_LabelsEntry": {
             key?: string;
             value?: string;
         };
@@ -482,23 +846,35 @@ export interface components {
          *       "repository": {
          *         "ref": "",
          *         "url": ""
+         *       },
+         *       "resources": {
+         *         "limits": {
+         *           "key1": "",
+         *           "key2": ""
+         *         },
+         *         "requests": {
+         *           "key1": "",
+         *           "key2": ""
+         *         }
          *       }
          *     } */
-        "opencode.orchestrator.v1.SessionConfig": {
+        "opencode.orchestrator.v1.WorkspaceConfig": {
             environment?: {
                 [key: string]: string;
             };
             repository?: components["schemas"]["opencode.orchestrator.v1.RepositoryConfig"];
+            resources?: components["schemas"]["opencode.orchestrator.v1.ResourceRequirements"];
         };
         /** @example {
          *       "key": "",
          *       "value": ""
          *     } */
-        "opencode.orchestrator.v1.SessionConfig_EnvironmentEntry": {
+        "opencode.orchestrator.v1.WorkspaceConfig_EnvironmentEntry": {
             key?: string;
             value?: string;
         };
         /** @example {
+         *       "activeSessions": 0,
          *       "internalEndpoint": "",
          *       "message": "",
          *       "podName": "",
@@ -507,7 +883,9 @@ export interface components {
          *       "ready": true,
          *       "readyAt": 1741589979
          *     } */
-        "opencode.orchestrator.v1.SessionStatus": {
+        "opencode.orchestrator.v1.WorkspaceStatus": {
+            /** Format: int32 */
+            activeSessions?: number;
             internalEndpoint?: string;
             message?: string;
             podName?: string;
@@ -573,11 +951,212 @@ export interface operations {
             };
         };
     };
-    OrchestratorService_ListSessions: {
+    OrchestratorService_ListWorkspaces: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["opencode.orchestrator.v1.ListWorkspacesResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequest"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerError"];
+                };
+            };
+        };
+    };
+    OrchestratorService_CreateWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["opencode.orchestrator.v1.CreateWorkspaceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["opencode.orchestrator.v1.CreateWorkspaceResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequest"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerError"];
+                };
+            };
+        };
+    };
+    OrchestratorService_GetWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @example  */
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["opencode.orchestrator.v1.GetWorkspaceResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequest"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerError"];
+                };
+            };
+        };
+    };
+    OrchestratorService_DeleteWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @example  */
+                workspaceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["google.protobuf.Empty"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequest"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Unauthorized"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerError"];
+                };
+            };
+        };
+    };
+    OrchestratorService_ListSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @example  */
+                workspaceId: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -624,7 +1203,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @example  */
+                workspaceId: string;
+            };
             cookie?: never;
         };
         requestBody: {
@@ -677,6 +1259,8 @@ export interface operations {
             header?: never;
             path: {
                 /** @example  */
+                workspaceId: string;
+                /** @example  */
                 sessionId: string;
             };
             cookie?: never;
@@ -727,6 +1311,8 @@ export interface operations {
             header?: never;
             path: {
                 /** @example  */
+                workspaceId: string;
+                /** @example  */
                 sessionId: string;
             };
             cookie?: never;
@@ -775,10 +1361,14 @@ export interface operations {
         parameters: {
             query?: {
                 /** @example  */
+                workspaceId?: string;
+                /** @example  */
                 sessionId?: string;
             };
             header?: never;
             path: {
+                /** @example  */
+                workspaceId: string;
                 /** @example  */
                 sessionId: string;
             };

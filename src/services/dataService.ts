@@ -1,4 +1,4 @@
-import type { Conversation, Message } from '../types/index.js';
+import type { Conversation, Message, Workspace, Session } from '../types/index.js';
 
 /**
  * Abstract interface for data services
@@ -8,29 +8,41 @@ export interface DataService {
   // Health and connection
   checkHealth(): Promise<{ status: 'connected' | 'disconnected'; version?: string; error?: string }>;
   
-  // Conversations/Sessions
+  // Workspaces
+  loadWorkspaces(): Promise<Workspace[]>;
+  createWorkspace(name: string, repositoryUrl?: string): Promise<Workspace>;
+  deleteWorkspace(workspaceId: string): Promise<void>;
+  getWorkspace(workspaceId: string): Promise<Workspace>;
+  
+  // Sessions
+  loadSessions(workspaceId: string): Promise<Session[]>;
+  createSession(workspaceId: string, name: string): Promise<Session>;
+  deleteSession(workspaceId: string, sessionId: string): Promise<void>;
+  getSession(workspaceId: string, sessionId: string): Promise<Session>;
+  
+  // Messages
+  sendMessage(workspaceId: string, sessionId: string, content: string): Promise<Message>;
+  getMessages(workspaceId: string, sessionId: string): Promise<Message[]>;
+  
+  // Files
+  getFiles(workspaceId: string, sessionId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>>;
+  getFileContent(workspaceId: string, sessionId: string, filePath: string): Promise<{ content: string; language?: string }>;
+  
+  // Terminal
+  executeCommand(workspaceId: string, sessionId: string, command: string): Promise<{ output: string; exitCode: number }>;
+  getTerminalHistory(workspaceId: string, sessionId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>>;
+  
+  // Git
+  getGitStatus(workspaceId: string, sessionId: string): Promise<{
+    status: string;
+    files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
+  }>;
+
+  // Legacy methods (for backwards compatibility - will be removed)
   loadConversations(): Promise<Conversation[]>;
   createConversation(title: string, repositoryUrl?: string): Promise<Conversation>;
   deleteConversation(conversationId: string): Promise<void>;
   getConversation(conversationId: string): Promise<Conversation>;
-  
-  // Messages
-  sendMessage(conversationId: string, content: string): Promise<Message>;
-  getMessages(conversationId: string): Promise<Message[]>;
-  
-  // Files
-  getFiles(conversationId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>>;
-  getFileContent(conversationId: string, filePath: string): Promise<{ content: string; language?: string }>;
-  
-  // Terminal
-  executeCommand(conversationId: string, command: string): Promise<{ output: string; exitCode: number }>;
-  getTerminalHistory(conversationId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>>;
-  
-  // Git
-  getGitStatus(conversationId: string): Promise<{
-    status: string;
-    files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
-  }>;
   
   // Configuration
   getCurrentEndpoint(): string;

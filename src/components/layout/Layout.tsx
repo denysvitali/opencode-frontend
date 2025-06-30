@@ -7,9 +7,10 @@ import Navigation from './Navigation.js';
 
 interface LayoutProps {
   children: ReactNode;
+  showWorkspaceUI?: boolean; // Controls whether to show navigation and sidebar
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children, showWorkspaceUI = false }: LayoutProps) {
   const { isSidebarOpen, isMobile } = useUIStore();
   const [hasInitialized, setHasInitialized] = useState(false);
 
@@ -20,34 +21,41 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-900">
-      {/* Sidebar */}
-      <div
-        className={`
-          ${isMobile ? 'fixed inset-y-0 left-0 z-50' : 'relative'}
-          ${hasInitialized ? 'transition-all duration-300 ease-in-out' : ''}
-          ${isSidebarOpen ? 'w-80' : 'w-0'}
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          overflow-hidden
-        `}
-      >
-        <div className="w-80 h-full">
-          <Sidebar />
+    <div className={`${showWorkspaceUI ? 'flex' : ''} h-screen bg-gray-900`}>
+      {/* Sidebar - only show when showWorkspaceUI is true */}
+      {showWorkspaceUI && (
+        <div
+          className={`
+            ${isMobile ? 'fixed inset-y-0 left-0 z-50' : 'relative'}
+            ${hasInitialized ? 'transition-all duration-300 ease-in-out' : ''}
+            ${isSidebarOpen ? 'w-80' : 'w-0'}
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            overflow-hidden
+          `}
+        >
+          <div className="w-80 h-full">
+            <Sidebar />
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Mobile overlay */}
-      {isMobile && isSidebarOpen && (
+      {/* Mobile overlay - only show when showWorkspaceUI is true */}
+      {showWorkspaceUI && isMobile && isSidebarOpen && (
         <div 
           className="fixed inset-0 z-40 bg-black bg-opacity-50 backdrop-blur-sm"
           onClick={() => useUIStore.getState().setSidebarOpen(false)}
         />
       )}
 
-      {/* Main content - now properly expands when sidebar is hidden */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <Navigation />
+      {/* Main content */}
+      <div className={`${showWorkspaceUI ? 'flex-1' : 'w-full'} flex flex-col overflow-hidden`}>
+        {/* Header and Navigation - only show when showWorkspaceUI is true */}
+        {showWorkspaceUI && (
+          <>
+            <Header />
+            <Navigation />
+          </>
+        )}
         <main className="flex-1 overflow-hidden">
           {children}
         </main>

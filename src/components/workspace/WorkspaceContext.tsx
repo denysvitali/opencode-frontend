@@ -1,0 +1,451 @@
+import { useState } from 'react';
+import { ArrowLeft, Plus, MessageCircle, Clock, Trash2, Settings, Server, GitBranch, Play, Square, Users, CheckCircle, AlertCircle } from 'lucide-react';
+import TopBar from '../layout/TopBar.js';
+
+// TODO: Replace with real data from workspace API
+const mockWorkspaces = {
+  'ws-1': {
+    id: 'ws-1',
+    name: 'E-commerce Platform',
+    description: 'Full-stack e-commerce application with React frontend and Node.js backend',
+    status: 'running' as const,
+    repository: {
+      url: 'https://github.com/company/ecommerce-platform',
+      ref: 'main',
+      lastCommit: '3f2a1b5'
+    },
+    resources: {
+      cpu: '2 cores',
+      memory: '4GB',
+      storage: '20GB'
+    },
+    createdAt: new Date('2024-01-15'),
+    lastActivity: new Date('2024-01-20T14:30:00')
+  },
+  'ws-2': {
+    id: 'ws-2',
+    name: 'Mobile App Backend',
+    description: 'REST API backend for mobile application with authentication and data management',
+    status: 'creating' as const,
+    repository: {
+      url: 'https://github.com/company/mobile-backend',
+      ref: 'develop',
+      lastCommit: '8c9d2e1'
+    },
+    resources: {
+      cpu: '1 core',
+      memory: '2GB',
+      storage: '10GB'
+    },
+    createdAt: new Date('2024-01-10'),
+    lastActivity: new Date('2024-01-18T16:45:00')
+  },
+  'ws-3': {
+    id: 'ws-3',
+    name: 'Data Pipeline',
+    description: 'ETL pipeline for processing analytics data with Apache Spark',
+    status: 'stopped' as const,
+    repository: null,
+    resources: {
+      cpu: '4 cores',
+      memory: '8GB',
+      storage: '50GB'
+    },
+    createdAt: new Date('2024-01-05'),
+    lastActivity: new Date('2024-01-12T09:30:00')
+  }
+};
+
+// TODO: Replace with real session data from workspace API
+const mockSessionsByWorkspace = {
+  'ws-1': [
+    {
+      id: 'sess-1',
+      name: 'Implement Stripe payment integration',
+      workspaceId: 'ws-1',
+      createdAt: new Date('2024-01-20T10:00:00'),
+      updatedAt: new Date('2024-01-20T14:30:00'),
+      status: 'active' as const,
+      messageCount: 23,
+      lastMessage: 'Great! The payment integration is working. Let me run the tests to make sure everything is solid.',
+      tags: ['payment', 'stripe', 'backend']
+    },
+    {
+      id: 'sess-2',
+      name: 'Debug user authentication issues',
+      workspaceId: 'ws-1',
+      createdAt: new Date('2024-01-19T15:00:00'),
+      updatedAt: new Date('2024-01-19T16:45:00'),
+      status: 'completed' as const,
+      messageCount: 15,
+      lastMessage: 'Perfect! The JWT token validation is now working correctly. The issue was in the middleware order.',
+      tags: ['auth', 'jwt', 'bug-fix']
+    },
+    {
+      id: 'sess-3',
+      name: 'Add product search with Elasticsearch',
+      workspaceId: 'ws-1',
+      createdAt: new Date('2024-01-18T09:00:00'),
+      updatedAt: new Date('2024-01-18T17:30:00'),
+      status: 'paused' as const,
+      messageCount: 31,
+      lastMessage: 'I need to check the Elasticsearch configuration. Let me examine the docker-compose file.',
+      tags: ['search', 'elasticsearch', 'feature']
+    }
+  ],
+  'ws-2': [
+    {
+      id: 'sess-5',
+      name: 'Setup JWT authentication',
+      workspaceId: 'ws-2',
+      createdAt: new Date('2024-01-18T09:00:00'),
+      updatedAt: new Date('2024-01-18T14:30:00'),
+      status: 'active' as const,
+      messageCount: 12,
+      lastMessage: 'The JWT middleware is configured. Now working on the refresh token logic.',
+      tags: ['auth', 'jwt', 'security']
+    },
+    {
+      id: 'sess-6',
+      name: 'Design user registration API',
+      workspaceId: 'ws-2',
+      createdAt: new Date('2024-01-17T14:00:00'),
+      updatedAt: new Date('2024-01-17T18:45:00'),
+      status: 'completed' as const,
+      messageCount: 8,
+      lastMessage: 'User registration endpoint is complete with email validation and password hashing.',
+      tags: ['api', 'registration', 'validation']
+    }
+  ],
+  'ws-3': [
+    {
+      id: 'sess-7',
+      name: 'Configure Apache Spark cluster',
+      workspaceId: 'ws-3',
+      createdAt: new Date('2024-01-12T10:00:00'),
+      updatedAt: new Date('2024-01-12T16:30:00'),
+      status: 'paused' as const,
+      messageCount: 18,
+      lastMessage: 'Spark cluster is configured but having memory allocation issues with large datasets.',
+      tags: ['spark', 'configuration', 'performance']
+    }
+  ]
+};
+
+interface WorkspaceContextProps {
+  workspaceId: string;
+  onBack: () => void;
+  onSelectSession: (sessionId: string) => void;
+}
+
+export default function WorkspaceContext({ workspaceId, onBack, onSelectSession }: WorkspaceContextProps) {
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newSessionName, setNewSessionName] = useState('');
+  const [newSessionDescription, setNewSessionDescription] = useState('');
+  const [activeTab, setActiveTab] = useState<'sessions' | 'settings' | 'activity'>('sessions');
+
+  // Get the correct workspace and sessions based on workspaceId
+  const mockWorkspace = mockWorkspaces[workspaceId as keyof typeof mockWorkspaces] || mockWorkspaces['ws-1'];
+  const mockSessions = mockSessionsByWorkspace[workspaceId as keyof typeof mockSessionsByWorkspace] || [];
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'running':
+        return { icon: CheckCircle, color: 'text-green-400', bgColor: 'bg-green-400/20', label: 'Running' };
+      case 'creating':
+        return { icon: Play, color: 'text-yellow-400', bgColor: 'bg-yellow-400/20', label: 'Starting' };
+      case 'stopped':
+        return { icon: Square, color: 'text-gray-400', bgColor: 'bg-gray-400/20', label: 'Stopped' };
+      case 'error':
+        return { icon: AlertCircle, color: 'text-red-400', bgColor: 'bg-red-400/20', label: 'Error' };
+      default:
+        return { icon: Square, color: 'text-gray-400', bgColor: 'bg-gray-400/20', label: 'Unknown' };
+    }
+  };
+
+  const getSessionStatusConfig = (status: string) => {
+    switch (status) {
+      case 'active':
+        return { color: 'text-green-400', bgColor: 'bg-green-400/20', label: 'Active' };
+      case 'completed':
+        return { color: 'text-blue-400', bgColor: 'bg-blue-400/20', label: 'Completed' };
+      case 'paused':
+        return { color: 'text-yellow-400', bgColor: 'bg-yellow-400/20', label: 'Paused' };
+      default:
+        return { color: 'text-gray-400', bgColor: 'bg-gray-400/20', label: 'Unknown' };
+    }
+  };
+
+  const handleCreateSession = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSessionName.trim()) return;
+
+    // TODO: Implement real session creation
+    console.log('Creating session:', { name: newSessionName, description: newSessionDescription });
+    setShowCreateForm(false);
+    setNewSessionName('');
+    setNewSessionDescription('');
+  };
+
+  const handleSessionAction = (action: string, sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    // TODO: Implement session actions
+    console.log(`${action} session:`, sessionId);
+  };
+
+  const workspaceStatus = getStatusConfig(mockWorkspace.status);
+  const WorkspaceStatusIcon = workspaceStatus.icon;
+
+  return (
+    <div className="min-h-screen bg-gray-900">
+      {/* Top Bar */}
+      <TopBar />
+      
+      {/* Header */}
+      <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 h-[280px]" style={{
+        background: `
+          radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+          linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%)
+        `
+      }}>
+        <div className="max-w-7xl mx-auto px-6 py-4 h-full flex flex-col justify-center">
+          {/* Navigation */}
+          <div className="flex items-center gap-2 mb-4">
+            <button 
+              onClick={onBack}
+              className="p-1.5 hover:bg-white/10 rounded-lg transition-all duration-200 group"
+              title="Back to Workspaces"
+            >
+              <ArrowLeft className="h-4 w-4 text-gray-400 group-hover:text-white" />
+            </button>
+            <span className="text-gray-500 text-sm">Back to Workspaces</span>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">{mockWorkspace.name}</h1>
+              <p className="text-gray-400">{mockWorkspace.description}</p>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="text-right text-sm text-gray-400">
+                <div className="flex items-center gap-2 justify-end mb-1">
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${workspaceStatus.color} ${workspaceStatus.bgColor}`}>
+                    {workspaceStatus.label}
+                  </span>
+                </div>
+                {mockWorkspace.repository && (
+                  <div className="flex items-center gap-1 justify-end">
+                    <GitBranch className="h-3 w-3" />
+                    <span>{mockWorkspace.repository.url.replace('https://github.com/', '')}</span>
+                  </div>
+                )}
+              </div>
+              <button className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200">
+                <Settings className="h-5 w-5 text-gray-400" />
+              </button>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-1 mt-6">
+            {[
+              { id: 'sessions', label: 'Chat Sessions', icon: MessageCircle },
+              { id: 'settings', label: 'Settings', icon: Settings },
+              { id: 'activity', label: 'Activity', icon: Clock }
+            ].map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-gray-700 text-white'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  }`}
+                >
+                  <TabIcon className="h-4 w-4" />
+                  {tab.label}
+                  {tab.id === 'sessions' && (
+                    <span className="bg-gray-600 text-xs px-2 py-1 rounded-full">
+                      {mockSessions.length}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {activeTab === 'sessions' && (
+          <div>
+            {/* Sessions Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-white">Chat Sessions</h2>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+              >
+                <Plus className="h-4 w-4" />
+                New Chat Session
+              </button>
+            </div>
+
+            {/* Create Session Form */}
+            {showCreateForm && (
+              <div className="bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700">
+                <h3 className="text-lg font-semibold text-white mb-4">Start New Chat Session</h3>
+                <form onSubmit={handleCreateSession} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      What are you working on?
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Add user authentication, Fix database performance"
+                      value={newSessionName}
+                      onChange={(e) => setNewSessionName(e.target.value)}
+                      className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-blue-500 focus:outline-none"
+                      autoFocus
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Additional Context (Optional)
+                    </label>
+                    <textarea
+                      placeholder="Provide any additional context or requirements..."
+                      value={newSessionDescription}
+                      onChange={(e) => setNewSessionDescription(e.target.value)}
+                      rows={3}
+                      className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-blue-500 focus:outline-none resize-none"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      disabled={!newSessionName.trim()}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium disabled:opacity-50"
+                    >
+                      Start Chat
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateForm(false)}
+                      className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Sessions List */}
+            <div className="space-y-4">
+              {mockSessions.map((session) => {
+                const sessionStatus = getSessionStatusConfig(session.status);
+
+                return (
+                  <div
+                    key={session.id}
+                    className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
+                    onClick={() => onSelectSession(session.id)}
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-3">
+                            <MessageCircle className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                            <h3 className="text-lg font-medium text-white group-hover:text-blue-400 transition-colors truncate">
+                              {session.name}
+                            </h3>
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${sessionStatus.color} ${sessionStatus.bgColor} flex-shrink-0`}>
+                              {sessionStatus.label}
+                            </span>
+                          </div>
+                          
+                          <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                            {session.lastMessage}
+                          </p>
+                          
+                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              <span>{session.messageCount} messages</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              <span>Updated {session.updatedAt.toLocaleDateString()}</span>
+                            </div>
+                            <div className="flex gap-1">
+                              {session.tags.map(tag => (
+                                <span key={tag} className="bg-gray-700 px-2 py-1 rounded text-xs">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-4 flex-shrink-0">
+                          <button 
+                            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                            onClick={(e) => handleSessionAction('settings', session.id, e)}
+                            title="Session settings"
+                          >
+                            <Settings className="h-4 w-4 text-gray-400" />
+                          </button>
+                          <button 
+                            className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-red-400"
+                            onClick={(e) => handleSessionAction('delete', session.id, e)}
+                            title="Delete session"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {mockSessions.length === 0 && (
+              <div className="text-center py-16">
+                <MessageCircle className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-400 mb-2">No chat sessions yet</h3>
+                <p className="text-gray-500 mb-8">Start your first chat session to begin working with AI in this workspace</p>
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors font-medium"
+                >
+                  Start First Chat
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'settings' && (
+          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <h3 className="text-lg font-semibold text-white mb-4">Workspace Settings</h3>
+            <p className="text-gray-400">Workspace settings panel coming soon...</p>
+          </div>
+        )}
+
+        {activeTab === 'activity' && (
+          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <h3 className="text-lg font-semibold text-white mb-4">Activity Log</h3>
+            <p className="text-gray-400">Activity monitoring coming soon...</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

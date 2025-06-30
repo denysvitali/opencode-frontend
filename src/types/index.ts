@@ -6,6 +6,45 @@ export interface User {
   avatar?: string;
 }
 
+export interface Workspace {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status: 'running' | 'creating' | 'stopped' | 'error';
+  config?: {
+    repository?: {
+      url: string;
+      ref?: string;
+    };
+    environment?: Record<string, string>;
+    resources?: {
+      limits?: Record<string, string>;
+      requests?: Record<string, string>;
+    };
+  };
+  labels?: Record<string, string>;
+  userId: string;
+}
+
+export interface Session {
+  id: string;
+  name: string;
+  workspaceId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  state: 'running' | 'creating' | 'stopped' | 'error';
+  messages: Message[];
+  isActive?: boolean;
+  config?: {
+    context?: string;
+    environment?: Record<string, string>;
+  };
+  labels?: Record<string, string>;
+  userId: string;
+}
+
+// Legacy type for backwards compatibility during transition
 export interface Conversation {
   id: string;
   title: string;
@@ -14,6 +53,8 @@ export interface Conversation {
   messages: Message[];
   isActive?: boolean;
   sandboxStatus?: 'connected' | 'connecting' | 'disconnected' | 'error';
+  workspaceId: string;
+  sessionId?: string;
 }
 
 export type MessageType = 'user' | 'assistant' | 'system' | 'command' | 'code' | 'file';
@@ -22,7 +63,7 @@ export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'error';
 
 export interface Message {
   id: string;
-  conversationId: string;
+  sessionId: string; // Messages belong to sessions, not conversations
   type: MessageType;
   content: string;
   status: MessageStatus;
@@ -87,15 +128,17 @@ export interface APIError {
 // Application state types
 export interface AppState {
   user: User | null;
-  conversations: Conversation[];
-  activeConversationId: string | null;
+  workspaces: Workspace[];
+  sessions: Session[]; // Sessions for the active workspace
+  activeWorkspaceId: string | null;
+  activeSessionId: string | null;
   connectionStatus: ConnectionStatus;
   isLoading: boolean;
   error: APIError | null;
 }
 
 // UI state types
-export type ViewType = 'chat' | 'filesystem' | 'terminal' | 'git-diff';
+export type ViewType = 'workspaces' | 'sessions' | 'chat' | 'filesystem' | 'terminal' | 'git-diff';
 
 export interface UIState {
   isSidebarOpen: boolean;
