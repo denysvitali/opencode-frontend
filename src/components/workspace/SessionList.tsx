@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Plus, MessageCircle, Clock, Trash2, Settings, Server, GitBranch } from 'lucide-react';
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
+import { useAppStore } from '../../stores/appStore.js';
 import type { Session, Workspace } from '../../types/index.js';
 
 interface SessionListProps {
@@ -18,6 +19,8 @@ export function SessionList({ workspace, onSelectSession, onBackToWorkspaces }: 
     createSessionAPI,
     deleteSessionAPI 
   } = useWorkspaceAppStore();
+
+  const { messages } = useAppStore();
 
   const [newSessionName, setNewSessionName] = React.useState('');
   const [showCreateForm, setShowCreateForm] = React.useState(false);
@@ -198,7 +201,7 @@ export function SessionList({ workspace, onSelectSession, onBackToWorkspaces }: 
                       <span>•</span>
                       <span>Created {session.createdAt.toLocaleDateString()}</span>
                       <span>•</span>
-                      <span>{session.messages.length} messages</span>
+                      <span>{messages.filter(m => m.sessionId === session.id).length} messages</span>
                     </div>
                   </div>
                   

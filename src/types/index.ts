@@ -34,7 +34,6 @@ export interface Session {
   createdAt: Date;
   updatedAt: Date;
   state: 'running' | 'creating' | 'stopped' | 'error';
-  messages: Message[];
   isActive?: boolean;
   config?: {
     context?: string;
@@ -129,7 +128,8 @@ export interface APIError {
 export interface AppState {
   user: User | null;
   workspaces: Workspace[];
-  sessions: Session[]; // Sessions for the active workspace
+  sessions: Session[];
+  messages: Message[]; // All messages across all sessions
   activeWorkspaceId: string | null;
   activeSessionId: string | null;
   connectionStatus: ConnectionStatus;
