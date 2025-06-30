@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 // TODO: Replace with real session data from API
-const mockSessionsByWorkspace = {
+const mockSessionsByWorkspace: Record<string, SidebarSession[]> = {
   'ws-1': [
   {
     id: 'sess-1',
@@ -281,20 +281,20 @@ export default function WorkspaceAwareSidebar({
   );
 }
 
-interface Session {
+// Local session interface for sidebar display (different from global Session)
+interface SidebarSession {
   id: string;
   name: string;
-  workspaceId: string;
-  createdAt: Date;
-  updatedAt: Date;
   status: 'active' | 'completed' | 'paused';
   messageCount: number;
   lastMessage: string;
-  tags: string[];
+  lastActivity?: Date;
+  isPinned?: boolean;
+  hasUnread?: boolean;
 }
 
 interface SessionCardProps {
-  session: Session;
+  session: SidebarSession;
   isActive: boolean;
   onClick: () => void;
 }
