@@ -90,26 +90,37 @@ export default function WorkspaceAwareChatLayout({
 
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Session Sidebar */}
+        {/* Session Sidebar - Mobile: full screen overlay, Desktop: fixed width */}
         <div 
           className={`transition-all duration-300 ease-out ${
-            isSidebarCollapsed ? 'w-0' : 'w-80'
-          } overflow-hidden`}
+            isSidebarCollapsed 
+              ? 'w-0 md:w-0' 
+              : 'fixed inset-0 z-50 md:relative md:w-80 md:z-auto'
+          } overflow-hidden md:border-r md:border-white/10`}
         >
           <WorkspaceAwareSidebar
             workspaceId={workspaceId}
             activeSessionId={sessionId}
             onSelectSession={onSelectSession}
             onCreateSession={handleCreateSession}
+            onClose={() => setIsSidebarCollapsed(true)}
           />
         </div>
+        
+        {/* Mobile Overlay */}
+        {!isSidebarCollapsed && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setIsSidebarCollapsed(true)}
+          />
+        )}
 
         {/* Main Chat/Tool Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Tool Navigation */}
-          <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 relative z-40">
-            <div className="flex items-center justify-between px-6 py-3">
-              <div className="flex items-center gap-1">
+          {/* Tool Navigation - Mobile: Bottom tabs, Desktop: Top tabs */}
+          <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 relative z-40 hidden md:block">
+            <div className="flex items-center justify-between px-4 md:px-6 py-3">
+              <div className="flex items-center gap-1 overflow-x-auto">
                 {navigationItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeView === item.id;
@@ -119,7 +130,7 @@ export default function WorkspaceAwareChatLayout({
                       key={item.id}
                       onClick={() => setActiveView(item.id as 'chat' | 'filesystem' | 'git-diff' | 'terminal')}
                       className={`
-                        flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                        flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap
                         ${isActive 
                           ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25' 
                           : 'text-gray-400 hover:text-white hover:bg-white/10'
@@ -127,7 +138,7 @@ export default function WorkspaceAwareChatLayout({
                       `}
                     >
                       <Icon className="h-4 w-4" />
-                      <span>{item.label}</span>
+                      <span className="hidden sm:inline">{item.label}</span>
                     </button>
                   );
                 })}
@@ -144,6 +155,22 @@ export default function WorkspaceAwareChatLayout({
               </div>
             </div>
           </div>
+          
+          {/* Mobile Header */}
+          <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 relative z-40 md:hidden">
+            <div className="flex items-center justify-between px-4 py-3">
+              <button
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                className="p-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-gray-400 hover:text-white"
+              >
+                <MessageCircle className="h-5 w-5" />
+              </button>
+              <h1 className="text-lg font-semibold text-white truncate">
+                {navigationItems.find(item => item.id === activeView)?.label || 'Chat'}
+              </h1>
+              <div className="w-9" />
+            </div>
+          </div>
 
           {/* Content Area */}
           <div className="flex-1 overflow-hidden relative">
@@ -152,14 +179,31 @@ export default function WorkspaceAwareChatLayout({
               {renderMainContent()}
             </div>
 
-            {/* Floating Action Button for Mobile */}
-            <div className="absolute bottom-6 right-6 md:hidden">
-              <button
-                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-2xl flex items-center justify-center transition-all duration-200 transform hover:scale-105"
-              >
-                <MessageCircle className="h-6 w-6 text-white" />
-              </button>
+            {/* Mobile Bottom Navigation */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-white/10 md:hidden safe-area-bottom">
+              <div className="flex items-center justify-around px-2 py-3">
+                {navigationItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeView === item.id;
+                  
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveView(item.id as 'chat' | 'filesystem' | 'git-diff' | 'terminal')}
+                      className={`
+                        flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 min-w-0 flex-1
+                        ${isActive 
+                          ? 'text-blue-400' 
+                          : 'text-gray-400 hover:text-white'
+                        }
+                      `}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span className="text-xs font-medium truncate">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

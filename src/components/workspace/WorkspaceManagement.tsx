@@ -155,72 +155,72 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       <TopBar />
       
       {/* Header */}
-      <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 h-[280px]" style={{
+      <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 h-[200px] md:h-[280px]" style={{
         background: `
           radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
           linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%)
         `
       }}>
-        <div className="max-w-7xl mx-auto px-6 py-4 h-full flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 h-full flex flex-col justify-center">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Workspace Management</h1>
-              <p className="text-gray-400">Manage your AI development environments</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Workspace Management</h1>
+              <p className="text-gray-400 text-sm md:text-base">Manage your AI development environments</p>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
-            <div className="bg-gray-700/50 rounded-lg p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-400/20 p-2 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8">
+            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-green-400/20 p-1.5 md:p-2 rounded-lg">
+                  <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Running</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-xs md:text-sm text-gray-400">Running</p>
+                  <p className="text-lg md:text-xl font-semibold text-white">
                     {mockWorkspaces.filter(w => w.status === 'running').length}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-gray-700/50 rounded-lg p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-yellow-400/20 p-2 rounded-lg">
-                  <Play className="h-5 w-5 text-yellow-400" />
+            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-yellow-400/20 p-1.5 md:p-2 rounded-lg">
+                  <Play className="h-4 w-4 md:h-5 md:w-5 text-yellow-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Starting</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-xs md:text-sm text-gray-400">Starting</p>
+                  <p className="text-lg md:text-xl font-semibold text-white">
                     {mockWorkspaces.filter(w => w.status === 'creating').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-700/50 rounded-lg p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-gray-400/20 p-2 rounded-lg">
-                  <Square className="h-5 w-5 text-gray-400" />
+            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-gray-400/20 p-1.5 md:p-2 rounded-lg">
+                  <Square className="h-4 w-4 md:h-5 md:w-5 text-gray-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Stopped</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-xs md:text-sm text-gray-400">Stopped</p>
+                  <p className="text-lg md:text-xl font-semibold text-white">
                     {mockWorkspaces.filter(w => w.status === 'stopped').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-700/50 rounded-lg p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-400/20 p-2 rounded-lg">
-                  <Server className="h-5 w-5 text-blue-400" />
+            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-blue-400/20 p-1.5 md:p-2 rounded-lg">
+                  <Server className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Total</p>
-                  <p className="text-xl font-semibold text-white">{mockWorkspaces.length}</p>
+                  <p className="text-xs md:text-sm text-gray-400">Total</p>
+                  <p className="text-lg md:text-xl font-semibold text-white">{mockWorkspaces.length}</p>
                 </div>
               </div>
             </div>
@@ -230,8 +230,8 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
       {/* Create Workspace Modal */}
       {showCreateForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 border border-gray-700">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-6">Create New Workspace</h3>
             <form onSubmit={handleCreateWorkspace} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -314,20 +314,21 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       )}
 
       {/* Workspace List */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Workspaces Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">Workspaces</h2>
+          <h2 className="text-lg md:text-xl font-semibold text-white">Workspaces</h2>
           <button
             onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 md:px-4 py-2 rounded-lg transition-colors font-medium text-sm md:text-base"
           >
             <Plus className="h-4 w-4" />
-            Create Workspace
+            <span className="hidden sm:inline">Create Workspace</span>
+            <span className="sm:hidden">Create</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2">
           {mockWorkspaces.map((workspace) => {
             const statusConfig = getStatusConfig(workspace.status);
             const StatusIcon = statusConfig.icon;
@@ -338,7 +339,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                 className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
                 onClick={() => onSelectWorkspace(workspace.id)}
               >
-                <div className="p-6">
+                <div className="p-4 md:p-6">
                   {/* Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">

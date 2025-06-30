@@ -127,13 +127,15 @@ interface WorkspaceAwareSidebarProps {
   activeSessionId: string | null;
   onSelectSession: (sessionId: string) => void;
   onCreateSession: () => void;
+  onClose?: () => void;
 }
 
 export default function WorkspaceAwareSidebar({ 
   workspaceId,
   activeSessionId, 
   onSelectSession, 
-  onCreateSession 
+  onCreateSession,
+  onClose
 }: WorkspaceAwareSidebarProps) {
   
   const mockSessions = mockSessionsByWorkspace[workspaceId as keyof typeof mockSessionsByWorkspace] || [];
@@ -152,18 +154,29 @@ export default function WorkspaceAwareSidebar({
   const unpinnedSessions = filteredSessions.filter(s => !s.isPinned);
 
   return (
-    <div className="w-80 h-full bg-gray-900/50 backdrop-blur-xl border-r border-white/10 flex flex-col">
+    <div className="w-full md:w-80 h-full bg-gray-900/95 md:bg-gray-900/50 backdrop-blur-xl flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-white/10">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Chat Sessions</h2>
-          <button
-            onClick={onCreateSession}
-            className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-lg"
-            title="New Chat Session"
-          >
-            <Plus className="h-4 w-4 text-white" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onCreateSession}
+              className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-lg"
+              title="New Chat Session"
+            >
+              <Plus className="h-4 w-4 text-white" />
+            </button>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="p-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-gray-400 hover:text-white md:hidden"
+                title="Close Sidebar"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Search */}
@@ -174,12 +187,12 @@ export default function WorkspaceAwareSidebar({
             placeholder="Search sessions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200"
+            className="w-full pl-10 pr-4 py-3 md:py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 text-base md:text-sm"
           />
         </div>
 
         {/* Filters */}
-        <div className="flex gap-1">
+        <div className="flex gap-1 overflow-x-auto pb-1">
           {[
             { key: 'all', label: 'All', count: mockSessions.length },
             { key: 'active', label: 'Active', count: mockSessions.filter(s => s.status === 'active').length },
@@ -189,7 +202,7 @@ export default function WorkspaceAwareSidebar({
             <button
               key={filter.key}
               onClick={() => setFilterStatus(filter.key as 'all' | 'active' | 'completed' | 'paused')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+              className={`px-3 py-2 md:py-1.5 rounded-lg text-sm md:text-xs font-medium transition-all duration-200 whitespace-nowrap ${
                 filterStatus === filter.key
                   ? 'bg-blue-600 text-white shadow-lg'
                   : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
@@ -321,7 +334,7 @@ function SessionCard({ session, isActive, onClick }: SessionCardProps) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left p-3 rounded-xl border-l-2 transition-all duration-200 group ${
+      className={`w-full text-left p-4 md:p-3 rounded-xl border-l-2 transition-all duration-200 group ${
         isActive
           ? 'bg-blue-600/20 border-l-blue-400 ring-1 ring-blue-500/30'
           : `bg-white/5 hover:bg-white/10 ${getStatusColor(session.status)}`

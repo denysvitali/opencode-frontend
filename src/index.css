@@ -15,5 +15,31 @@
   body {
     margin: 0;
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+  }
+  
+  /* Mobile-first utilities */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Touch-friendly minimum tap targets */
+  @media (max-width: 768px) {
+    button, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 }
