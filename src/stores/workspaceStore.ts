@@ -170,7 +170,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         async loadWorkspacesFromAPI() {
           try {
             set({ isLoading: true, error: null });
-            const dataService = getDataService();
+            const dataService = await getDataService();
             const workspaces = await dataService.loadWorkspaces();
             set({ workspaces, isLoading: false });
           } catch (error) {
@@ -188,7 +188,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         async createWorkspaceAPI(name, repositoryUrl) {
           try {
             set({ isLoading: true, error: null });
-            const dataService = getDataService();
+            const dataService = await getDataService();
             const workspace = await dataService.createWorkspace(name, repositoryUrl);
             const state = get();
             state.addWorkspace(workspace);
@@ -208,7 +208,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         async deleteWorkspaceAPI(workspaceId) {
           try {
             set({ isLoading: true, error: null });
-            const dataService = getDataService();
+            const dataService = await getDataService();
             await dataService.deleteWorkspace(workspaceId);
             const state = get();
             state.deleteWorkspace(workspaceId);
@@ -228,7 +228,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         async loadSessionsFromAPI(workspaceId) {
           try {
             set({ isLoading: true, error: null });
-            const dataService = getDataService();
+            const dataService = await getDataService();
             const sessions = await dataService.loadSessions(workspaceId);
             set({ sessions, isLoading: false });
           } catch (error) {
@@ -246,7 +246,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         async createSessionAPI(workspaceId, name) {
           try {
             set({ isLoading: true, error: null });
-            const dataService = getDataService();
+            const dataService = await getDataService();
             const session = await dataService.createSession(workspaceId, name);
             const state = get();
             state.addSession(session);
@@ -266,7 +266,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         async deleteSessionAPI(workspaceId, sessionId) {
           try {
             set({ isLoading: true, error: null });
-            const dataService = getDataService();
+            const dataService = await getDataService();
             await dataService.deleteSession(workspaceId, sessionId);
             const state = get();
             state.deleteSession(sessionId);
@@ -285,7 +285,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
 
         async checkHealthAPI() {
           try {
-            const dataService = getDataService();
+            const dataService = await getDataService();
             const health = await dataService.checkHealth();
             set({ connectionStatus: health.status });
           } catch (error) {

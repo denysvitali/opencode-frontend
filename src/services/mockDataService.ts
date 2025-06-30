@@ -255,6 +255,7 @@ export class MockDataService implements DataService {
   }
 
   // File methods (updated for sessions)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getFiles(_workspaceId: string, _sessionId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
     await new Promise(resolve => setTimeout(resolve, 200));
     
@@ -303,6 +304,7 @@ export class MockDataService implements DataService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getTerminalHistory(_workspaceId: string, _sessionId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
     await new Promise(resolve => setTimeout(resolve, 100));
     
@@ -321,6 +323,7 @@ export class MockDataService implements DataService {
   }
 
   // Git methods (updated for sessions)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getGitStatus(_workspaceId: string, _sessionId: string): Promise<{
     status: string;
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
