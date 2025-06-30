@@ -51,6 +51,7 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         user: null,
         workspaces: [],
         sessions: [],
+        messages: [],
         activeWorkspaceId: null,
         activeSessionId: null,
         connectionStatus: 'disconnected',
@@ -145,21 +146,19 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
 
         addMessage: (message) =>
           set((state) => ({
+            messages: [...state.messages, message],
             sessions: state.sessions.map((session) =>
               session.id === message.sessionId
-                ? { ...session, messages: [...session.messages, message] }
+                ? { ...session, updatedAt: new Date() }
                 : session
             ),
           })),
 
         updateMessage: (messageId, updates) =>
           set((state) => ({
-            sessions: state.sessions.map((session) => ({
-              ...session,
-              messages: session.messages.map((msg) =>
-                msg.id === messageId ? { ...msg, ...updates } : msg
-              ),
-            }))
+            messages: state.messages.map((msg) =>
+              msg.id === messageId ? { ...msg, ...updates } : msg
+            ),
           })),
 
         setConnectionStatus: (status) => set({ connectionStatus: status }),

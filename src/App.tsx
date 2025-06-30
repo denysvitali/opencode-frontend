@@ -3,7 +3,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { useUIStore } from './stores/uiStore.js';
 import Layout from './components/layout/Layout.js';
 import MainView from './components/layout/MainView.js';
-import { useAppInitialization } from './hooks/useAppInitialization.js';
 import { NotificationContainer } from './components/ui/NotificationSystem.js';
 import { useNotifications } from './hooks/useNotifications.js';
 
@@ -13,7 +12,6 @@ function App() {
   const [showWorkspaceUI, setShowWorkspaceUI] = useState(false);
   
   // Initialize the app (loads conversations, sets up health checks)
-  useAppInitialization();
 
   useEffect(() => {
     const checkMobile = () => {

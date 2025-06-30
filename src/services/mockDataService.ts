@@ -1,5 +1,5 @@
 import type { DataService } from './dataService.js';
-import type { Conversation, Message } from '../types/index.js';
+import type { Conversation, Message, Workspace, Session } from '../types/index.js';
 import { createMockData } from '../utils/mockData.js';
 
 /**
@@ -9,6 +9,9 @@ import { createMockData } from '../utils/mockData.js';
 export class MockDataService implements DataService {
   private conversations: Conversation[] = [];
   private messages: Map<string, Message[]> = new Map();
+  private workspaces: Workspace[] = [];
+  private sessions: Session[] = [];
+  private globalMessages: Message[] = [];
 
   constructor() {
     // Initialize with mock data
@@ -18,6 +21,9 @@ export class MockDataService implements DataService {
     this.conversations.forEach(conv => {
       this.messages.set(conv.id, [...conv.messages]);
     });
+
+    // Initialize mock workspaces and sessions
+    this.initializeMockWorkspaces();
   }
 
   async checkHealth() {
@@ -49,6 +55,7 @@ export class MockDataService implements DataService {
       updatedAt: new Date(),
       messages: [],
       sandboxStatus: 'connecting',
+      workspaceId: 'ws-default',
     };
 
     this.conversations.unshift(newConversation);
@@ -85,69 +92,172 @@ export class MockDataService implements DataService {
     return { ...conversation };
   }
 
-  async sendMessage(conversationId: string, content: string): Promise<Message> {
-    // Simulate API delay
+
+  // Workspace methods
+  async loadWorkspaces(): Promise<Workspace[]> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return [...this.workspaces];
+  }
+
+  async createWorkspace(name: string, repositoryUrl?: string): Promise<Workspace> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const newWorkspace: Workspace = {
+      id: `ws_${Date.now()}`,
+      name,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: 'creating',
+      config: repositoryUrl ? { repository: { url: repositoryUrl, ref: 'main' } } : undefined,
+      labels: { 'created-by': 'mock-service' },
+      userId: 'default-user',
+    };
+
+    this.workspaces.push(newWorkspace);
+    
+    // Simulate workspace becoming ready
+    setTimeout(() => {
+      newWorkspace.status = 'running';
+      newWorkspace.updatedAt = new Date();
+    }, 1000);
+
+    return newWorkspace;
+  }
+
+  async deleteWorkspace(workspaceId: string): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const index = this.workspaces.findIndex(ws => ws.id === workspaceId);
+    if (index >= 0) {
+      this.workspaces.splice(index, 1);
+    }
+    
+    // Also remove sessions for this workspace
+    this.sessions = this.sessions.filter(s => s.workspaceId !== workspaceId);
+    this.globalMessages = this.globalMessages.filter(m => {
+      const session = this.sessions.find(s => s.id === m.sessionId);
+      return session?.workspaceId !== workspaceId;
+    });
+  }
+
+  async getWorkspace(workspaceId: string): Promise<Workspace> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const workspace = this.workspaces.find(ws => ws.id === workspaceId);
+    if (!workspace) {
+      throw new Error(`Workspace ${workspaceId} not found`);
+    }
+    
+    return workspace;
+  }
+
+  // Session methods
+  async loadSessions(workspaceId: string): Promise<Session[]> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return this.sessions.filter(s => s.workspaceId === workspaceId);
+  }
+
+  async createSession(workspaceId: string, name: string): Promise<Session> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const newSession: Session = {
+      id: `sess_${Date.now()}`,
+      name,
+      workspaceId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      state: 'creating',
+      config: { context: 'Interactive coding session' },
+      labels: { 'created-by': 'mock-service' },
+      userId: 'default-user',
+    };
+
+    this.sessions.push(newSession);
+    
+    // Simulate session becoming ready
+    setTimeout(() => {
+      newSession.state = 'running';
+      newSession.updatedAt = new Date();
+    }, 1000);
+
+    return newSession;
+  }
+
+  async deleteSession(workspaceId: string, sessionId: string): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const index = this.sessions.findIndex(s => s.id === sessionId && s.workspaceId === workspaceId);
+    if (index >= 0) {
+      this.sessions.splice(index, 1);
+    }
+    
+    // Also remove messages for this session
+    this.globalMessages = this.globalMessages.filter(m => m.sessionId !== sessionId);
+  }
+
+  async getSession(workspaceId: string, sessionId: string): Promise<Session> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const session = this.sessions.find(s => s.id === sessionId && s.workspaceId === workspaceId);
+    if (!session) {
+      throw new Error(`Session ${sessionId} not found in workspace ${workspaceId}`);
+    }
+    
+    return session;
+  }
+
+  // Message methods (updated for sessions)
+  async sendMessage(_workspaceId: string, sessionId: string, content: string): Promise<Message> {
     await new Promise(resolve => setTimeout(resolve, 300));
     
     const userMessage: Message = {
       id: `msg_${Date.now()}`,
-      conversationId,
+      sessionId,
       type: 'user',
       content,
       status: 'sent',
       timestamp: new Date(),
     };
 
-    // Add user message
-    const messages = this.messages.get(conversationId) || [];
-    messages.push(userMessage);
-    this.messages.set(conversationId, messages);
+    this.globalMessages.push(userMessage);
 
-    // Update conversation
-    const conversation = this.conversations.find(c => c.id === conversationId);
-    if (conversation) {
-      conversation.messages = [...messages];
-      conversation.updatedAt = new Date();
+    // Update session
+    const session = this.sessions.find(s => s.id === sessionId);
+    if (session) {
+      session.updatedAt = new Date();
     }
 
     // Simulate AI response after a delay
     setTimeout(async () => {
       const aiMessage: Message = {
         id: `msg_${Date.now() + 1}`,
-        conversationId,
+        sessionId,
         type: 'assistant',
         content: this.generateMockAIResponse(),
         status: 'sent',
         timestamp: new Date(),
       };
 
-      const currentMessages = this.messages.get(conversationId) || [];
-      currentMessages.push(aiMessage);
-      this.messages.set(conversationId, currentMessages);
+      this.globalMessages.push(aiMessage);
 
-      // Update conversation
-      const conv = this.conversations.find(c => c.id === conversationId);
-      if (conv) {
-        conv.messages = [...currentMessages];
-        conv.updatedAt = new Date();
+      // Update session again
+      if (session) {
+        session.updatedAt = new Date();
       }
-    }, 1000 + Math.random() * 2000); // Random delay 1-3 seconds
+    }, 1000 + Math.random() * 2000);
 
     return userMessage;
   }
 
-  async getMessages(conversationId: string): Promise<Message[]> {
-    // Simulate API delay
+  async getMessages(_workspaceId: string, sessionId: string): Promise<Message[]> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    
-    return [...(this.messages.get(conversationId) || [])];
+    return this.globalMessages.filter(m => m.sessionId === sessionId);
   }
 
-  async getFiles(): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
-    // Simulate API delay
+  // File methods (updated for sessions)
+  async getFiles(_workspaceId: string, _sessionId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
     await new Promise(resolve => setTimeout(resolve, 200));
     
-    // Return mock file structure
     return [
       { path: '/src', type: 'directory' },
       { path: '/src/App.tsx', type: 'file' },
@@ -160,11 +270,9 @@ export class MockDataService implements DataService {
     ];
   }
 
-  async getFileContent(_conversationId: string, filePath: string): Promise<{ content: string; language?: string }> {
-    // Simulate API delay
+  async getFileContent(_workspaceId: string, _sessionId: string, filePath: string): Promise<{ content: string; language?: string }> {
     await new Promise(resolve => setTimeout(resolve, 150));
     
-    // Return mock file content based on file type
     const mockContent = this.getMockFileContent(filePath);
     const extension = filePath.split('.').pop()?.toLowerCase();
     
@@ -183,11 +291,10 @@ export class MockDataService implements DataService {
     };
   }
 
-  async executeCommand(_conversationId: string, command: string): Promise<{ output: string; exitCode: number }> {
-    // Simulate API delay
+  // Terminal methods (updated for sessions)
+  async executeCommand(_workspaceId: string, _sessionId: string, command: string): Promise<{ output: string; exitCode: number }> {
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Return mock command output
     const mockOutput = this.getMockCommandOutput(command);
     
     return {
@@ -196,11 +303,9 @@ export class MockDataService implements DataService {
     };
   }
 
-  async getTerminalHistory(): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
-    // Simulate API delay
+  async getTerminalHistory(_workspaceId: string, _sessionId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
     await new Promise(resolve => setTimeout(resolve, 100));
     
-    // Return mock terminal history
     return [
       {
         command: 'npm install',
@@ -215,14 +320,13 @@ export class MockDataService implements DataService {
     ];
   }
 
-  async getGitStatus(): Promise<{
+  // Git methods (updated for sessions)
+  async getGitStatus(_workspaceId: string, _sessionId: string): Promise<{
     status: string;
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
   }> {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 150));
     
-    // Return mock git status
     return {
       status: 'dirty',
       files: [
@@ -283,5 +387,123 @@ export class MockDataService implements DataService {
     }
     
     return `Command "${command}" executed successfully`;
+  }
+
+  private initializeMockWorkspaces(): void {
+    // Create some mock workspaces
+    this.workspaces = [
+      {
+        id: 'ws-1',
+        name: 'E-commerce Platform',
+        createdAt: new Date(Date.now() - 86400000 * 7), // 7 days ago
+        updatedAt: new Date(Date.now() - 3600000), // 1 hour ago
+        status: 'running',
+        config: {
+          repository: {
+            url: 'https://github.com/user/ecommerce-platform',
+            ref: 'main'
+          }
+        },
+        labels: { 'created-by': 'mock-service', 'project-type': 'web-app' },
+        userId: 'default-user',
+      },
+      {
+        id: 'ws-2',
+        name: 'Mobile App Backend',
+        createdAt: new Date(Date.now() - 86400000 * 3), // 3 days ago
+        updatedAt: new Date(Date.now() - 7200000), // 2 hours ago
+        status: 'running',
+        config: {
+          repository: {
+            url: 'https://github.com/user/mobile-backend',
+            ref: 'develop'
+          }
+        },
+        labels: { 'created-by': 'mock-service', 'project-type': 'api' },
+        userId: 'default-user',
+      },
+      {
+        id: 'ws-3',
+        name: 'Data Pipeline',
+        createdAt: new Date(Date.now() - 86400000), // 1 day ago
+        updatedAt: new Date(Date.now() - 1800000), // 30 minutes ago
+        status: 'stopped',
+        labels: { 'created-by': 'mock-service', 'project-type': 'data' },
+        userId: 'default-user',
+      }
+    ];
+
+    // Create some mock sessions
+    this.sessions = [
+      {
+        id: 'sess-1',
+        name: 'Frontend Development',
+        workspaceId: 'ws-1',
+        createdAt: new Date(Date.now() - 86400000 * 2),
+        updatedAt: new Date(Date.now() - 3600000),
+        state: 'running',
+        config: { context: 'Working on React components' },
+        labels: { 'session-type': 'development', 'created-by': 'mock-service' },
+        userId: 'default-user',
+      },
+      {
+        id: 'sess-2',
+        name: 'API Testing',
+        workspaceId: 'ws-1',
+        createdAt: new Date(Date.now() - 86400000),
+        updatedAt: new Date(Date.now() - 7200000),
+        state: 'stopped',
+        config: { context: 'Testing payment endpoints' },
+        labels: { 'session-type': 'testing', 'created-by': 'mock-service' },
+        userId: 'default-user',
+      },
+      {
+        id: 'sess-3',
+        name: 'Database Setup',
+        workspaceId: 'ws-2',
+        createdAt: new Date(Date.now() - 86400000 * 2),
+        updatedAt: new Date(Date.now() - 1800000),
+        state: 'running',
+        config: { context: 'Setting up PostgreSQL schemas' },
+        labels: { 'session-type': 'infrastructure', 'created-by': 'mock-service' },
+        userId: 'default-user',
+      }
+    ];
+
+    // Create some mock messages
+    this.globalMessages = [
+      {
+        id: 'msg-1',
+        sessionId: 'sess-1',
+        type: 'user',
+        content: 'Can you help me create a new React component for the product listing?',
+        status: 'sent',
+        timestamp: new Date(Date.now() - 3600000),
+      },
+      {
+        id: 'msg-2',
+        sessionId: 'sess-1',
+        type: 'assistant',
+        content: 'I\'d be happy to help you create a product listing component! Let me create a new React component with proper TypeScript interfaces.',
+        status: 'sent',
+        timestamp: new Date(Date.now() - 3590000),
+      },
+      {
+        id: 'msg-3',
+        sessionId: 'sess-3',
+        type: 'user',
+        content: 'What\'s the best way to set up database migrations?',
+        status: 'sent',
+        timestamp: new Date(Date.now() - 1800000),
+      },
+      {
+        id: 'msg-4',
+        sessionId: 'sess-3',
+        type: 'assistant',
+        content: 'For database migrations, I recommend using a migration tool like Prisma or TypeORM. Let me show you how to set that up.',
+        status: 'sent',
+        timestamp: new Date(Date.now() - 1790000),
+      }
+    ];
   }
 }

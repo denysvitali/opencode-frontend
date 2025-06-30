@@ -12,10 +12,11 @@ export function createMockData(): Conversation[] {
       createdAt: twoDaysAgo,
       updatedAt: oneHourAgo,
       sandboxStatus: 'connected',
+      workspaceId: 'ws-1',
       messages: [
         {
           id: 'm1',
-          conversationId: '1',
+          sessionId: '1',
           type: 'user',
           content: 'Help me create a React app with TypeScript',
           status: 'sent',
@@ -23,7 +24,7 @@ export function createMockData(): Conversation[] {
         },
         {
           id: 'm2',
-          conversationId: '1',
+          sessionId: '1',
           type: 'assistant',
           content: 'I\'ll help you create a React app with TypeScript. Let me start by setting up the project structure.',
           status: 'sent',
@@ -31,7 +32,7 @@ export function createMockData(): Conversation[] {
         },
         {
           id: 'm3',
-          conversationId: '1',
+          sessionId: '1',
           type: 'command',
           content: 'npx create-react-app my-app --template typescript',
           status: 'sent',
@@ -53,10 +54,11 @@ export function createMockData(): Conversation[] {
       createdAt: oneHourAgo,
       updatedAt: now,
       sandboxStatus: 'connecting',
+      workspaceId: 'ws-2',
       messages: [
         {
           id: 'm4',
-          conversationId: '2',
+          sessionId: '2',
           type: 'user',
           content: 'How do I integrate with a REST API?',
           status: 'sent',
@@ -64,7 +66,7 @@ export function createMockData(): Conversation[] {
         },
         {
           id: 'm5',
-          conversationId: '2',
+          sessionId: '2',
           type: 'assistant',
           content: 'I\'ll show you how to integrate with a REST API using fetch and async/await.',
           status: 'sent',
@@ -78,6 +80,7 @@ export function createMockData(): Conversation[] {
       createdAt: now,
       updatedAt: now,
       sandboxStatus: 'disconnected',
+      workspaceId: 'ws-3',
       messages: []
     }
   ];

@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { useUIStore } from '../../stores/uiStore.js';
-import Header from './Header.js';
-import Sidebar from './Sidebar.js';
 import Navigation from './Navigation.js';
 
 interface LayoutProps {
@@ -34,7 +32,7 @@ export default function Layout({ children, showWorkspaceUI = false }: LayoutProp
           `}
         >
           <div className="w-80 h-full">
-            <Sidebar />
+            {/* Legacy sidebar removed */}
           </div>
         </div>
       )}
@@ -52,7 +50,7 @@ export default function Layout({ children, showWorkspaceUI = false }: LayoutProp
         {/* Header and Navigation - only show when showWorkspaceUI is true */}
         {showWorkspaceUI && (
           <>
-            <Header />
+            {/* Legacy header removed */}
             <Navigation />
           </>
         )}

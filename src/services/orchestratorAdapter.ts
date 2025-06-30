@@ -49,7 +49,6 @@ export function orchestratorSessionToSession(orchestratorSession: OrchestratorSe
     createdAt: orchestratorSession.createdAt ? new Date(orchestratorSession.createdAt * 1000) : new Date(),
     updatedAt: orchestratorSession.updatedAt ? new Date(orchestratorSession.updatedAt * 1000) : new Date(),
     state: mapSessionStateToStatus(orchestratorSession.state),
-    messages: [], // Messages will be loaded separately
     config: orchestratorSession.config,
     labels: orchestratorSession.labels,
     userId: orchestratorSession.userId || '',

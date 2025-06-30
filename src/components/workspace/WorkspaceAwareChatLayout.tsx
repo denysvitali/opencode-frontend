@@ -2,7 +2,6 @@ import { useState } from 'react';
 import TopBar from '../layout/TopBar.js';
 import WorkspaceAwareHeader from './WorkspaceAwareHeader.js';
 import WorkspaceAwareSidebar from './WorkspaceAwareSidebar.js';
-import ChatView from '../chat/ChatView.js';
 import FileExplorer from '../filesystem/FileExplorer.js';
 import GitDiffView from '../filesystem/GitDiffView.js';
 import TerminalView from '../terminal/TerminalView.js';
@@ -51,7 +50,16 @@ export default function WorkspaceAwareChatLayout({
       case 'terminal':
         return <TerminalView />;
       default:
-        return <ChatView />;
+        return (
+          <div className="flex flex-col h-full">
+            <div className="flex-1 p-4 overflow-y-auto">
+              <div className="text-center text-gray-400 mt-8">
+                <h3 className="text-xl font-semibold mb-2">Chat Interface</h3>
+                <p>Chat functionality will be implemented here.</p>
+              </div>
+            </div>
+          </div>
+        );
     }
   };
 
