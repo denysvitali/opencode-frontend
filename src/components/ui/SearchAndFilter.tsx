@@ -51,7 +51,6 @@ export default function SearchAndFilter({
   sessions = [],
   onFilteredResults,
   placeholder = "Search workspaces and sessions...",
-  showSessionFilters: _showSessionFilters = false,
   className = ""
 }: SearchAndFilterProps) {
   const [filters, setFilters] = useState<SearchFilters>(DEFAULT_FILTERS);

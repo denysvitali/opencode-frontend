@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, MessageCircle, Clock, Trash2, Settings, GitBranch, Play, Square, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import TopBar from '../layout/TopBar.js';
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
-import type { Workspace } from '../../types/index.js';
 
 // TODO: Replace with real data from workspace API
+/*
 const mockWorkspaces = {
   'ws-1': {
     id: 'ws-1',
@@ -57,8 +57,10 @@ const mockWorkspaces = {
     lastActivity: new Date('2024-01-12T09:30:00')
   }
 };
+*/
 
 // TODO: Replace with real session data from workspace API
+/*
 const mockSessionsByWorkspace = {
   'ws-1': [
     {
@@ -133,6 +135,7 @@ const mockSessionsByWorkspace = {
     }
   ]
 };
+*/
 
 interface WorkspaceContextProps {
   workspaceId: string;
@@ -152,8 +155,8 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     sessions, 
     loadWorkspacesFromAPI, 
     loadSessionsFromAPI,
-    createSessionAPI,
-    deleteSessionAPI 
+    // createSessionAPI,
+    // deleteSessionAPI 
   } = useWorkspaceAppStore();
 
   // Find the current workspace
@@ -168,7 +171,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     if (workspaceId) {
       loadSessionsFromAPI(workspaceId);
     }
-  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI]);
+  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces]);
 
   // Debug logging
   useEffect(() => {
@@ -399,7 +402,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
             {/* Sessions List */}
             <div className="space-y-4">
               {workspaceSessions.map((session) => {
-                const sessionStatus = getSessionStatusConfig(session.status);
+                const sessionStatus = getSessionStatusConfig(session.state);
 
                 return (
                   <div
@@ -421,25 +424,27 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                           </div>
                           
                           <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-                            {session.lastMessage}
+                            {session.config?.context || 'No description available'}
                           </p>
                           
                           <div className="flex items-center gap-4 text-xs text-gray-500">
                             <div className="flex items-center gap-1">
                               <Users className="h-3 w-3" />
-                              <span>{session.messageCount} messages</span>
+                              <span>Session</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               <span>Updated {session.updatedAt.toLocaleDateString()}</span>
                             </div>
-                            <div className="flex gap-1">
-                              {session.tags.map(tag => (
-                                <span key={tag} className="bg-gray-700 px-2 py-1 rounded text-xs">
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
+                            {session.labels && Object.keys(session.labels).length > 0 && (
+                              <div className="flex gap-1">
+                                {Object.entries(session.labels).map(([key, value]) => (
+                                  <span key={key} className="bg-gray-700 px-2 py-1 rounded text-xs">
+                                    {key}: {value}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                         
