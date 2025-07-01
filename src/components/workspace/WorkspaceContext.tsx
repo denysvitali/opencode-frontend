@@ -261,7 +261,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
           linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%)
         `
       }}>
-        <div className="max-w-7xl mx-auto px-6 py-4 h-full flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 h-full flex flex-col justify-center">
           {/* Navigation */}
           <div className="flex items-center gap-2 mb-4">
             <button 
@@ -334,18 +334,19 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {activeTab === 'sessions' && (
           <div>
             {/* Sessions Header */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white">Chat Sessions</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-white">Chat Sessions</h2>
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors font-medium text-sm sm:text-base"
               >
                 <Plus className="h-4 w-4" />
-                New Chat Session
+                <span className="hidden sm:inline">New Chat Session</span>
+                <span className="sm:hidden">New Chat</span>
               </button>
             </div>
 
@@ -410,12 +411,12 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                     className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
                     onClick={() => onSelectSession(session.id)}
                   >
-                    <div className="p-6">
+                    <div className="p-4 sm:p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-3">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-3">
                             <MessageCircle className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                            <h3 className="text-lg font-medium text-white group-hover:text-blue-400 transition-colors truncate">
+                            <h3 className="text-base sm:text-lg font-medium text-white group-hover:text-blue-400 transition-colors truncate">
                               {session.name}
                             </h3>
                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${sessionStatus.color} ${sessionStatus.bgColor} flex-shrink-0`}>
@@ -427,7 +428,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                             {session.config?.context || 'No description available'}
                           </p>
                           
-                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-gray-500">
                             <div className="flex items-center gap-1">
                               <Users className="h-3 w-3" />
                               <span>Session</span>
@@ -448,7 +449,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                           </div>
                         </div>
                         
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-4 flex-shrink-0">
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2 sm:ml-4 flex-shrink-0">
                           <button 
                             className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
                             onClick={(e) => handleSessionAction('settings', session.id, e)}

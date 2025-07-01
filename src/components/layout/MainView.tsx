@@ -85,7 +85,10 @@ function WorkspaceManagementPage({ onWorkspaceUIChange }: MainViewProps) {
   }, [onWorkspaceUIChange]);
 
   const handleSelectWorkspace = (workspaceId: string) => {
+    console.log('MainView: handleSelectWorkspace called with:', workspaceId);
+    console.log('MainView: About to navigate to:', `/workspace/${workspaceId}`);
     navigate(`/workspace/${workspaceId}`);
+    console.log('MainView: Navigation command executed');
   };
 
   return <WorkspaceManagement onSelectWorkspace={handleSelectWorkspace} />;
