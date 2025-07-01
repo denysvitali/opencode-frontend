@@ -40,7 +40,7 @@ function App() {
 
   return (
     <Router basename={import.meta.env.BASE_URL}>
-      <div className="min-h-screen bg-gray-900 text-white">
+      <div className="h-screen bg-gray-900 text-white overflow-hidden">
         <Layout showWorkspaceUI={showWorkspaceUI}>
           <MainView onWorkspaceUIChange={handleWorkspaceUIChange} />
         </Layout>
