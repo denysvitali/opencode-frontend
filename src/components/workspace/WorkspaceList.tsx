@@ -1,6 +1,8 @@
 import React from 'react';
 import { Plus, Server, GitBranch, Clock, Settings, Trash2 } from 'lucide-react';
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
+import { ErrorDisplay } from '../ui/ErrorDisplay.js';
+import { ConnectionStatus } from '../ui/ConnectionStatus.js';
 import type { Workspace } from '../../types/index.js';
 
 interface WorkspaceListProps {
@@ -81,13 +83,16 @@ export function WorkspaceList({ onSelectWorkspace }: WorkspaceListProps) {
             <h1 className="text-3xl font-bold text-white mb-2">Your Workspaces</h1>
             <p className="text-gray-400">Select a workspace to start coding with AI</p>
           </div>
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-          >
-            <Plus className="h-5 w-5" />
-            New Workspace
-          </button>
+          <div className="flex items-center gap-4">
+            <ConnectionStatus />
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              <Plus className="h-5 w-5" />
+              New Workspace
+            </button>
+          </div>
         </div>
 
         {showCreateForm && (
@@ -140,9 +145,11 @@ export function WorkspaceList({ onSelectWorkspace }: WorkspaceListProps) {
         )}
 
         {error && (
-          <div className="bg-red-900/20 border border-red-800 rounded-lg p-4 mb-6">
-            <div className="text-red-400">{error.message}</div>
-          </div>
+          <ErrorDisplay 
+            error={error} 
+            onRetry={() => loadWorkspacesFromAPI()} 
+            onDismiss={() => useWorkspaceAppStore.getState().clearError()}
+          />
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

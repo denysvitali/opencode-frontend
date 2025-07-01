@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, MessageCircle, Clock, Trash2, Settings, GitBranch, Play, Square, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import TopBar from '../layout/TopBar.js';
+import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
+import type { Workspace } from '../../types/index.js';
 
 // TODO: Replace with real data from workspace API
 const mockWorkspaces = {
@@ -144,9 +146,58 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
   const [newSessionDescription, setNewSessionDescription] = useState('');
   const [activeTab, setActiveTab] = useState<'sessions' | 'settings' | 'activity'>('sessions');
 
-  // Get the correct workspace and sessions based on workspaceId
-  const mockWorkspace = mockWorkspaces[workspaceId as keyof typeof mockWorkspaces] || mockWorkspaces['ws-1'];
-  const mockSessions = mockSessionsByWorkspace[workspaceId as keyof typeof mockSessionsByWorkspace] || [];
+  // Get workspace and sessions from store
+  const { 
+    workspaces, 
+    sessions, 
+    loadWorkspacesFromAPI, 
+    loadSessionsFromAPI,
+    createSessionAPI,
+    deleteSessionAPI 
+  } = useWorkspaceAppStore();
+
+  // Find the current workspace
+  const currentWorkspace = workspaces.find(w => w.id === workspaceId);
+  const workspaceSessions = sessions.filter(s => s.workspaceId === workspaceId);
+
+  // Load data on mount
+  useEffect(() => {
+    console.log('WorkspaceContext mounted with workspaceId:', workspaceId);
+    console.log('Current workspaces:', workspaces);
+    loadWorkspacesFromAPI();
+    if (workspaceId) {
+      loadSessionsFromAPI(workspaceId);
+    }
+  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI]);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('WorkspaceContext - workspaces updated:', workspaces);
+    console.log('WorkspaceContext - looking for workspaceId:', workspaceId);
+    const found = workspaces.find(w => w.id === workspaceId);
+    console.log('WorkspaceContext - found workspace:', found);
+  }, [workspaces, workspaceId]);
+
+  // If workspace not found, show error or redirect
+  if (!currentWorkspace) {
+    console.log('WorkspaceContext - No workspace found, showing error page');
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-white mb-2">Workspace not found</h2>
+          <p className="text-gray-400 mb-4">The workspace you're looking for doesn't exist or couldn't be loaded.</p>
+          <p className="text-gray-500 mb-4">Looking for workspace ID: {workspaceId}</p>
+          <p className="text-gray-500 mb-4">Available workspaces: {workspaces.map(w => w.id).join(', ')}</p>
+          <button
+            onClick={onBack}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            Back to Workspaces
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -193,7 +244,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     console.log(`${action} session:`, sessionId);
   };
 
-  const workspaceStatus = getStatusConfig(mockWorkspace.status);
+  const workspaceStatus = getStatusConfig(currentWorkspace.status);
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -223,8 +274,8 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
           {/* Main Content */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">{mockWorkspace.name}</h1>
-              <p className="text-gray-400">{mockWorkspace.description}</p>
+              <h1 className="text-3xl font-bold text-white mb-2">{currentWorkspace.name}</h1>
+              <p className="text-gray-400">{currentWorkspace.labels?.description || 'AI Development Workspace'}</p>
             </div>
             
             <div className="flex items-center gap-3">
@@ -234,10 +285,10 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                     {workspaceStatus.label}
                   </span>
                 </div>
-                {mockWorkspace.repository && (
+                {currentWorkspace.config?.repository && (
                   <div className="flex items-center gap-1 justify-end">
                     <GitBranch className="h-3 w-3" />
-                    <span>{mockWorkspace.repository.url.replace('https://github.com/', '')}</span>
+                    <span>{currentWorkspace.config.repository.url.replace('https://github.com/', '')}</span>
                   </div>
                 )}
               </div>
@@ -269,7 +320,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                   {tab.label}
                   {tab.id === 'sessions' && (
                     <span className="bg-gray-600 text-xs px-2 py-1 rounded-full">
-                      {mockSessions.length}
+                      {workspaceSessions.length}
                     </span>
                   )}
                 </button>
@@ -347,7 +398,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
 
             {/* Sessions List */}
             <div className="space-y-4">
-              {mockSessions.map((session) => {
+              {workspaceSessions.map((session) => {
                 const sessionStatus = getSessionStatusConfig(session.status);
 
                 return (
@@ -415,7 +466,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
               })}
             </div>
 
-            {mockSessions.length === 0 && (
+            {workspaceSessions.length === 0 && (
               <div className="text-center py-16">
                 <MessageCircle className="h-16 w-16 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-400 mb-2">No chat sessions yet</h3>
