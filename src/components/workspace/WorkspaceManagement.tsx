@@ -114,16 +114,15 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
     setFilteredWorkspaces(workspaces);
   }, [workspaces, addDebugLog]);
 
-  // Load workspaces on component mount
+  // Load workspaces on component mount only if needed
   useEffect(() => {
-    addDebugLog('Component mounted, loading workspaces...');
-    loadWorkspacesFromAPI();
-  }, [loadWorkspacesFromAPI, addDebugLog]);
+    if (workspaces.length === 0 && !isLoading) {
+      addDebugLog('Component mounted, loading workspaces...');
+      loadWorkspacesFromAPI();
+    }
+  }, [workspaces.length, isLoading, loadWorkspacesFromAPI, addDebugLog]);
 
-  // Debug effect to track all state changes
-  useEffect(() => {
-    addDebugLog(`State: ${workspaces.length} workspaces, ${filteredWorkspaces.length} filtered, loading: ${isLoading}`);
-  }, [workspaces, filteredWorkspaces, isLoading, addDebugLog]);
+  // Removed debug effect that was causing performance issues
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -181,7 +180,6 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   const handleWorkspaceSelect = useCallback((workspace: Workspace) => {
     addDebugLog(`Selecting workspace: ${workspace.id} (${workspace.name})`);
     saveContext(workspace.id, null, workspace.name);
-    addDebugLog(`Calling onSelectWorkspace with: ${workspace.id}`);
     onSelectWorkspace(workspace.id);
   }, [addDebugLog, saveContext, onSelectWorkspace]);
 

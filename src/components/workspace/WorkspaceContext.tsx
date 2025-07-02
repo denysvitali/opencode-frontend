@@ -154,7 +154,6 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     workspaces, 
     sessions, 
     isLoading,
-    loadWorkspacesFromAPI, 
     loadSessionsFromAPI,
     // createSessionAPI,
     // deleteSessionAPI 
@@ -166,12 +165,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
 
   // Load data on mount
   useEffect(() => {
-    // Only load workspaces if we don't have any yet
-    if (workspaces.length === 0 && !isLoading) {
-      loadWorkspacesFromAPI();
-    }
-    
-    // Always load sessions for the specific workspace
+    // Only load sessions for the specific workspace (workspaces should already be loaded by WorkspaceManagement)
     if (workspaceId) {
       loadSessionsFromAPI(workspaceId);
     }
