@@ -166,67 +166,26 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
 
   // Load data on mount
   useEffect(() => {
-    console.log('WorkspaceContext mounted with workspaceId:', workspaceId);
-    console.log('WorkspaceContext - Current state:', { workspacesCount: workspaces.length, isLoading });
-    
     // Only load workspaces if we don't have any yet
     if (workspaces.length === 0 && !isLoading) {
-      console.log('WorkspaceContext - Loading workspaces because none exist');
       loadWorkspacesFromAPI();
-    } else {
-      console.log('WorkspaceContext - NOT loading workspaces:', { workspacesCount: workspaces.length, isLoading });
     }
     
     // Always load sessions for the specific workspace
     if (workspaceId) {
-      console.log('WorkspaceContext - Loading sessions for workspace:', workspaceId);
       loadSessionsFromAPI(workspaceId);
     }
-    
-    // Force a re-check for the current workspace after a short delay
-    // This helps with timing issues where navigation happens before store updates
-    const timeoutId = setTimeout(() => {
-      const foundWorkspace = workspaces.find(w => w.id === workspaceId);
-      console.log('WorkspaceContext - Delayed workspace check:', {
-        workspaceId,
-        foundWorkspace: !!foundWorkspace,
-        workspacesAvailable: workspaces.map(w => w.id)
-      });
-    }, 100);
-    
-    return () => clearTimeout(timeoutId);
-  }, [workspaceId, isLoading, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces]); // Include all dependencies
+  }, [workspaceId]); // eslint-disable-line react-hooks/exhaustive-deps -- Intentionally limited to avoid infinite loops
 
-  // Debug logging
+  // Minimal debug logging - only log significant events
   useEffect(() => {
-    console.log('WorkspaceContext - workspaces updated:', workspaces);
-    console.log('WorkspaceContext - looking for workspaceId:', workspaceId);
-    const found = workspaces.find(w => w.id === workspaceId);
-    console.log('WorkspaceContext - found workspace:', found);
-  }, [workspaces, workspaceId]);
-  
-  // Track all state changes
-  useEffect(() => {
-    console.log('WorkspaceContext - STATE CHANGE:', {
-      workspaceId,
-      currentWorkspace: currentWorkspace?.id,
-      isLoading,
-      workspacesCount: workspaces.length,
-      sessionsCount: workspaceSessions.length
-    });
-  }, [workspaceId, currentWorkspace, isLoading, workspaces.length, workspaceSessions.length]);
-  
-  // Track component lifecycle
-  useEffect(() => {
-    console.log('WorkspaceContext - COMPONENT MOUNT/UPDATE');
-    return () => {
-      console.log('WorkspaceContext - COMPONENT UNMOUNT/CLEANUP');
-    };
-  }, []);
+    if (workspaceId && !currentWorkspace && workspaces.length > 0) {
+      console.warn('WorkspaceContext - Workspace not found:', workspaceId, 'Available:', workspaces.map(w => w.id));
+    }
+  }, [workspaceId, currentWorkspace, workspaces]);
 
   // Show loading state while workspaces are being loaded OR if we don't have the specific workspace yet
   if ((isLoading && workspaces.length === 0) || (workspaces.length > 0 && !currentWorkspace)) {
-    console.log('WorkspaceContext - RENDERING LOADING STATE - isLoading:', isLoading, 'workspaces.length:', workspaces.length, 'currentWorkspace:', !!currentWorkspace);
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -241,8 +200,6 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
 
   // If workspace not found after loading, show error or redirect
   if (!currentWorkspace && !isLoading) {
-    console.log('WorkspaceContext - RENDERING ERROR STATE - No workspace found');
-    console.log('WorkspaceContext - Debug info:', { workspaceId, currentWorkspace, isLoading, workspacesCount: workspaces.length });
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -294,33 +251,20 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     if (!newSessionName.trim()) return;
 
     // TODO: Implement real session creation
-    console.log('Creating session:', { name: newSessionName, description: newSessionDescription });
     setShowCreateForm(false);
     setNewSessionName('');
     setNewSessionDescription('');
   };
 
-  const handleSessionAction = (action: string, sessionId: string, e: React.MouseEvent) => {
+  const handleSessionAction = (_action: string, _sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     // TODO: Implement session actions
-    console.log(`${action} session:`, sessionId);
   };
 
   // Additional safety check
   if (!currentWorkspace) {
-    console.log('WorkspaceContext - RETURNING NULL - currentWorkspace is null but no loading/error state triggered');
-    console.log('WorkspaceContext - Debug info:', { workspaceId, currentWorkspace, isLoading, workspacesCount: workspaces.length });
     return null;
   }
-  
-  console.log('WorkspaceContext - RENDERING MAIN CONTENT for workspace:', currentWorkspace.name);
-  console.log('WorkspaceContext - Render details:', {
-    workspaceId,
-    currentWorkspaceId: currentWorkspace?.id,
-    workspacesCount: workspaces.length,
-    isLoading,
-    timestamp: new Date().toISOString()
-  });
 
   const workspaceStatus = getStatusConfig(currentWorkspace.status);
 
