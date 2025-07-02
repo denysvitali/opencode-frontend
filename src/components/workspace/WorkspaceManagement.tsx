@@ -7,11 +7,16 @@ import LiveStatusIndicator, { ConnectionStatusDot } from '../ui/LiveStatusIndica
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
 import { useSessionContext } from '../../utils/sessionContext.js';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts.js';
-import { useRealTime } from '../../hooks/useRealTime.js';
 import type { Workspace } from '../../types/index.js';
 
 // Mobile debug console
-const MobileDebugPanel = ({ isOpen, onToggle, logs }: { isOpen: boolean; onToggle: () => void; logs: string[] }) => {
+const MobileDebugPanel = ({ isOpen, onToggle, logs, isPaused, onTogglePause }: { 
+  isOpen: boolean; 
+  onToggle: () => void; 
+  logs: string[]; 
+  isPaused: boolean; 
+  onTogglePause: () => void;
+}) => {
   if (!isOpen) {
     return (
       <button
@@ -29,11 +34,19 @@ const MobileDebugPanel = ({ isOpen, onToggle, logs }: { isOpen: boolean; onToggl
       <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 max-h-96 overflow-y-auto">
         <div className="flex justify-between items-center mb-2">
           <h3 className="font-bold">Debug Logs</h3>
-          <button onClick={onToggle} className="text-red-400 text-xl">×</button>
+          <div className="flex gap-2">
+            <button 
+              onClick={onTogglePause} 
+              className={`px-2 py-1 text-xs rounded ${isPaused ? 'bg-green-600' : 'bg-yellow-600'}`}
+            >
+              {isPaused ? 'Resume' : 'Pause'}
+            </button>
+            <button onClick={onToggle} className="text-red-400 text-xl">×</button>
+          </div>
         </div>
         <div className="text-xs space-y-1">
-          {logs.map((log, i) => (
-            <div key={i} className="border-b border-gray-700 pb-1">{log}</div>
+          {logs.slice(-20).map((log, i) => (
+            <div key={i} className="border-b border-gray-700 pb-1 break-words">{log}</div>
           ))}
         </div>
       </div>
@@ -60,22 +73,21 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   const [filteredWorkspaces, setFilteredWorkspaces] = useState<Workspace[]>([]);
   const [showMobileDebug, setShowMobileDebug] = useState(false);
   const [debugLogs, setDebugLogs] = useState<string[]>([]);
+  const [debugPaused, setDebugPaused] = useState(false);
   const { saveContext } = useSessionContext();
   
   // Mobile debug logging
   const addDebugLog = useCallback((message: string) => {
     const timestamp = new Date().toLocaleTimeString();
     const logEntry = `${timestamp}: ${message}`;
-    setDebugLogs(prev => [...prev.slice(-50), logEntry]); // Keep last 50 logs
+    if (!debugPaused) {
+      setDebugLogs(prev => [...prev.slice(-50), logEntry]); // Keep last 50 logs
+    }
     console.log(logEntry);
-  }, []);
+  }, [debugPaused]);
 
-  // Set up real-time updates for all workspaces (for side effects)
-  useRealTime({
-    enableWorkspaceUpdates: true,
-    enableActivityNotifications: true,
-    autoConnect: true
-  });
+  // Real-time updates removed to fix infinite connection loop
+  // Will be re-implemented with proper dependency management
 
   // Set up keyboard shortcuts
   useKeyboardShortcuts({
@@ -446,6 +458,8 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         isOpen={showMobileDebug} 
         onToggle={() => setShowMobileDebug(!showMobileDebug)}
         logs={debugLogs}
+        isPaused={debugPaused}
+        onTogglePause={() => setDebugPaused(!debugPaused)}
       />
     </div>
   );
