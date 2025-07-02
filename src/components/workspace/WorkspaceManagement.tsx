@@ -243,15 +243,29 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Workspaces Header with Search */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg md:text-xl font-semibold text-white">Workspaces</h2>
-          <button
-            onClick={() => setShowCreationWizard(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Create Workspace</span>
-            <span className="sm:hidden">Create</span>
-          </button>
+          <h2 className="text-lg md:text-xl font-semibold text-white">Workspaces ({workspaces.length})</h2>
+          <div className="flex gap-2">
+            {/* Debug navigation buttons */}
+            <button
+              onClick={() => {
+                console.log('DEBUG: Direct navigation test to ws-1');
+                console.log('DEBUG: Available workspaces:', workspaces.map(w => w.id));
+                console.log('DEBUG: Calling onSelectWorkspace with ws-1');
+                onSelectWorkspace('ws-1');
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+            >
+              Test ws-1
+            </button>
+            <button
+              onClick={() => setShowCreationWizard(true)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Create Workspace</span>
+              <span className="sm:hidden">Create</span>
+            </button>
+          </div>
         </div>
 
         {/* Search and Filter */}

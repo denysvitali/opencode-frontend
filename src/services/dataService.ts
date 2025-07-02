@@ -54,16 +54,21 @@ export interface DataService {
  */
 export async function createDataService(): Promise<DataService> {
   console.log('DataService: Creating data service, DEMO_MODE:', __DEMO_MODE__);
-  if (__DEMO_MODE__) {
-    // Dynamic import to keep mock code out of production builds
-    console.log('DataService: Using MockDataService');
-    const module = await import('./mockDataService.js');
-    return new module.MockDataService();
-  } else {
-    console.log('DataService: Using RealDataService');
-    const module = await import('./realDataService.js');
-    return new module.RealDataService();
-  }
+  // Temporarily force mock data service for debugging
+  console.log('DataService: FORCED to use MockDataService for debugging');
+  const module = await import('./mockDataService.js');
+  return new module.MockDataService();
+  
+  // Original logic (commented out for debugging)
+  // if (__DEMO_MODE__) {
+  //   console.log('DataService: Using MockDataService');
+  //   const module = await import('./mockDataService.js');
+  //   return new module.MockDataService();
+  // } else {
+  //   console.log('DataService: Using RealDataService');
+  //   const module = await import('./realDataService.js');
+  //   return new module.RealDataService();
+  // }
 }
 
 /**

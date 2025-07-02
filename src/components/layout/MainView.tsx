@@ -13,12 +13,17 @@ function WorkspaceSessionsPage({ onWorkspaceUIChange }: MainViewProps) {
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const navigate = useNavigate();
 
-  console.log('WorkspaceSessionsPage: Mounted with workspaceId:', workspaceId);
+  console.log('WorkspaceSessionsPage: COMPONENT MOUNTED with workspaceId:', workspaceId);
+  console.log('WorkspaceSessionsPage: Current URL:', window.location.href);
 
   useEffect(() => {
     console.log('WorkspaceSessionsPage: Setting workspace UI to false');
     onWorkspaceUIChange?.(false);
   }, [onWorkspaceUIChange]);
+  
+  useEffect(() => {
+    console.log('WorkspaceSessionsPage: workspaceId changed to:', workspaceId);
+  }, [workspaceId]);
 
   const handleSelectSession = (sessionId: string) => {
     navigate(`/workspace/${workspaceId}/session/${sessionId}`);
@@ -89,9 +94,19 @@ function WorkspaceManagementPage({ onWorkspaceUIChange }: MainViewProps) {
 
   const handleSelectWorkspace = (workspaceId: string) => {
     console.log('MainView: handleSelectWorkspace called with:', workspaceId);
+    console.log('MainView: Current URL before navigation:', window.location.href);
     console.log('MainView: About to navigate to:', `/workspace/${workspaceId}`);
-    navigate(`/workspace/${workspaceId}`);
-    console.log('MainView: Navigation command executed');
+    
+    // Add a small delay to see if there are timing issues
+    setTimeout(() => {
+      navigate(`/workspace/${workspaceId}`);
+      console.log('MainView: Navigation command executed');
+      
+      // Check URL after navigation
+      setTimeout(() => {
+        console.log('MainView: URL after navigation:', window.location.href);
+      }, 100);
+    }, 50);
   };
 
   return <WorkspaceManagement onSelectWorkspace={handleSelectWorkspace} />;
