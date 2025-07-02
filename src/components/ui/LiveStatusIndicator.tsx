@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Wifi, WifiOff, AlertCircle, Clock, Activity } from 'lucide-react';
-import { useRealTime } from '../../hooks/useRealTime.js';
+// import { useRealTime } from '../../hooks/useRealTime.js';
 import type { RealTimeStatus } from '../../hooks/useRealTime.js';
 
 interface LiveStatusIndicatorProps {
@@ -29,18 +29,20 @@ const sizePulse = {
  */
 export default function LiveStatusIndicator({
   workspaceId,
-  userId,
+  userId: _userId,
   className = '',
   showDetails = false,
   size = 'md'
 }: LiveStatusIndicatorProps) {
-  const realTime = useRealTime({
-    workspaceId,
-    userId,
-    enableWorkspaceUpdates: !!workspaceId,
-    enableActivityNotifications: true,
-    autoConnect: true
-  });
+  // Temporarily disabled real-time to fix infinite connection loop
+  const realTime = {
+    isConnected: false,
+    isConnecting: false,
+    connectionStatus: 'disconnected' as const,
+    connect: async () => {},
+    disconnect: () => {},
+    getStatus: () => ({ isConnected: false, isConnecting: false, connectionStatus: 'disconnected' as const })
+  };
 
   const [lastActivity, setLastActivity] = useState<Date | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -221,7 +223,10 @@ export function ConnectionStatusDot({
   className?: string; 
   size?: 'sm' | 'md' | 'lg';
 }) {
-  const realTime = useRealTime({ autoConnect: true });
+  // Temporarily disabled real-time to fix infinite connection loop
+  const realTime = { 
+    connectionStatus: 'disconnected' as 'connecting' | 'connected' | 'disconnected' | 'error'
+  };
   
   const getStatusColor = () => {
     switch (realTime.connectionStatus) {
