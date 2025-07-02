@@ -10,6 +10,37 @@ import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts.js';
 import { useRealTime } from '../../hooks/useRealTime.js';
 import type { Workspace } from '../../types/index.js';
 
+// Mobile debug console
+const MobileDebugPanel = ({ isOpen, onToggle, logs }: { isOpen: boolean; onToggle: () => void; logs: string[] }) => {
+  if (!isOpen) {
+    return (
+      <button
+        onClick={onToggle}
+        className="fixed bottom-4 right-4 bg-red-600 text-white p-3 rounded-full shadow-lg z-50 md:hidden"
+        title="Show Debug Logs"
+      >
+        🐛
+      </button>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 max-h-96 overflow-y-auto">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-bold">Debug Logs</h3>
+          <button onClick={onToggle} className="text-red-400 text-xl">×</button>
+        </div>
+        <div className="text-xs space-y-1">
+          {logs.map((log, i) => (
+            <div key={i} className="border-b border-gray-700 pb-1">{log}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface WorkspaceManagementProps {
   onSelectWorkspace: (workspaceId: string) => void;
 }
@@ -27,7 +58,17 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   
   const [showCreationWizard, setShowCreationWizard] = useState(false);
   const [filteredWorkspaces, setFilteredWorkspaces] = useState<Workspace[]>([]);
+  const [showMobileDebug, setShowMobileDebug] = useState(false);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
   const { saveContext } = useSessionContext();
+  
+  // Mobile debug logging
+  const addDebugLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = `${timestamp}: ${message}`;
+    setDebugLogs(prev => [...prev.slice(-50), logEntry]); // Keep last 50 logs
+    console.log(logEntry);
+  };
 
   // Set up real-time updates for all workspaces (for side effects)
   useRealTime({
@@ -57,25 +98,20 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
   // Initialize filtered workspaces with all workspaces
   useEffect(() => {
-    console.log('WorkspaceManagement: Workspaces updated:', workspaces);
-    console.log('WorkspaceManagement: Setting filtered workspaces to:', workspaces.length, 'items');
+    addDebugLog(`Workspaces updated: ${workspaces.length} items`);
     setFilteredWorkspaces(workspaces);
-  }, [workspaces]);
+  }, [workspaces, addDebugLog]);
 
   // Load workspaces on component mount
   useEffect(() => {
-    console.log('WorkspaceManagement: Component mounted, loading workspaces...');
+    addDebugLog('Component mounted, loading workspaces...');
     loadWorkspacesFromAPI();
-  }, [loadWorkspacesFromAPI]);
+  }, [loadWorkspacesFromAPI, addDebugLog]);
 
   // Debug effect to track all state changes
   useEffect(() => {
-    console.log('WorkspaceManagement: State update:', {
-      workspacesCount: workspaces.length,
-      filteredWorkspacesCount: filteredWorkspaces.length,
-      isLoading
-    });
-  }, [workspaces, filteredWorkspaces, isLoading]);
+    addDebugLog(`State: ${workspaces.length} workspaces, ${filteredWorkspaces.length} filtered, loading: ${isLoading}`);
+  }, [workspaces, filteredWorkspaces, isLoading, addDebugLog]);
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -131,9 +167,9 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   };
 
   const handleWorkspaceSelect = (workspace: Workspace) => {
-    console.log('WorkspaceManagement: Selecting workspace:', workspace.id, workspace.name);
+    addDebugLog(`Selecting workspace: ${workspace.id} (${workspace.name})`);
     saveContext(workspace.id, null, workspace.name);
-    console.log('WorkspaceManagement: About to call onSelectWorkspace with:', workspace.id);
+    addDebugLog(`Calling onSelectWorkspace with: ${workspace.id}`);
     onSelectWorkspace(workspace.id);
   };
 
@@ -402,6 +438,13 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           </div>
         )}
       </div>
+      
+      {/* Mobile Debug Panel */}
+      <MobileDebugPanel 
+        isOpen={showMobileDebug} 
+        onToggle={() => setShowMobileDebug(!showMobileDebug)}
+        logs={debugLogs}
+      />
     </div>
   );
 }

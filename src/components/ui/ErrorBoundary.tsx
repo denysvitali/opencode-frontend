@@ -37,10 +37,25 @@ class ErrorBoundary extends Component<Props, State> {
       errorInfo
     });
 
-    // Log error to console in development
-    if (import.meta.env.DEV) {
-      console.error('ErrorBoundary caught an error:', error);
-      console.error('Error info:', errorInfo);
+    // Always log error for debugging (even in production)
+    console.error('ErrorBoundary caught an error:', error);
+    console.error('Error info:', errorInfo);
+    console.error('Component stack:', errorInfo.componentStack);
+    console.error('Error stack:', error.stack);
+    
+    // Store error details in localStorage for mobile debugging
+    try {
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        timestamp: new Date().toISOString(),
+        url: window.location.href
+      };
+      localStorage.setItem('last-error-details', JSON.stringify(errorDetails, null, 2));
+      console.log('Error details saved to localStorage for mobile debugging');
+    } catch (e) {
+      console.warn('Failed to save error details to localStorage:', e);
     }
 
     // In production, you could send this to an error reporting service
@@ -93,15 +108,37 @@ class ErrorBoundary extends Component<Props, State> {
               The application encountered an unexpected error. This has been logged for investigation.
             </p>
 
-            {import.meta.env.DEV && this.state.error && (
+            {this.state.error && (
               <details className="mb-6 text-left bg-gray-900 rounded-lg p-4 border border-gray-600">
                 <summary className="cursor-pointer text-red-400 text-sm font-medium mb-2">
-                  Error Details (Development Only)
+                  Error Details (Click to expand)
                 </summary>
-                <pre className="text-xs text-gray-300 whitespace-pre-wrap overflow-auto">
-                  {this.state.error.toString()}
-                  {this.state.errorInfo?.componentStack}
-                </pre>
+                <div className="text-xs text-gray-300 space-y-2">
+                  <div>
+                    <strong className="text-red-400">Error:</strong>
+                    <pre className="whitespace-pre-wrap overflow-auto mt-1">{this.state.error.toString()}</pre>
+                  </div>
+                  {this.state.error.stack && (
+                    <div>
+                      <strong className="text-red-400">Stack Trace:</strong>
+                      <pre className="whitespace-pre-wrap overflow-auto mt-1 max-h-32">{this.state.error.stack}</pre>
+                    </div>
+                  )}
+                  {this.state.errorInfo?.componentStack && (
+                    <div>
+                      <strong className="text-red-400">Component Stack:</strong>
+                      <pre className="whitespace-pre-wrap overflow-auto mt-1 max-h-32">{this.state.errorInfo.componentStack}</pre>
+                    </div>
+                  )}
+                  <div>
+                    <strong className="text-red-400">URL:</strong>
+                    <div className="mt-1 break-all">{window.location.href}</div>
+                  </div>
+                  <div>
+                    <strong className="text-red-400">Timestamp:</strong>
+                    <div className="mt-1">{new Date().toISOString()}</div>
+                  </div>
+                </div>
               </details>
             )}
 

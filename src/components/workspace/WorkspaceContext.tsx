@@ -169,7 +169,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     console.log('WorkspaceContext mounted with workspaceId:', workspaceId);
     console.log('WorkspaceContext - Current state:', { workspacesCount: workspaces.length, isLoading });
     
-    // Only load workspaces if we don't have any yet
+      // Only load workspaces if we don't have any yet
     if (workspaces.length === 0 && !isLoading) {
       console.log('WorkspaceContext - Loading workspaces because none exist');
       loadWorkspacesFromAPI();
