@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { execSync } from 'child_process'
@@ -32,10 +32,10 @@ const getVersion = () => {
 }
 
 // Plugin to process service worker and inject build variables
-const processServiceWorkerPlugin = () => {
+const processServiceWorkerPlugin = (): Plugin => {
   return {
     name: 'process-service-worker',
-    generateBundle(this: any) {
+    generateBundle() {
       const swPath = path.resolve('public/sw.js')
       if (fs.existsSync(swPath)) {
         let swContent = fs.readFileSync(swPath, 'utf-8')
