@@ -4,9 +4,13 @@ import TopBar from '../layout/TopBar.js';
 import WorkspaceCreationWizard, { type WorkspaceCreationData } from './WorkspaceCreationWizard.js';
 import SearchAndFilter from '../ui/SearchAndFilter.js';
 import LiveStatusIndicator, { ConnectionStatusDot } from '../ui/LiveStatusIndicator.js';
+import MobileWorkspaceCard from '../mobile/MobileWorkspaceCard.js';
+import MobileHeader from '../mobile/MobileHeader.js';
+import PullToRefresh from '../mobile/PullToRefresh.js';
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
 import { useSessionContext } from '../../utils/sessionContext.js';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts.js';
+import { useUIStore } from '../../stores/uiStore.js';
 import type { Workspace } from '../../types/index.js';
 
 // Mobile debug console
@@ -68,6 +72,8 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
     createWorkspaceAPI,
     loadWorkspacesFromAPI
   } = useWorkspaceAppStore();
+  
+  const { isMobile } = useUIStore();
   
   const [showCreationWizard, setShowCreationWizard] = useState(false);
   const [filteredWorkspaces, setFilteredWorkspaces] = useState<Workspace[]>([]);
@@ -188,6 +194,122 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
     // TODO: Implement workspace actions (start, stop, delete, etc.)
     console.log(`${action} workspace:`, workspaceId);
   };
+
+  const handleRefresh = async () => {
+    await loadWorkspacesFromAPI();
+  };
+
+  const renderMobileView = () => (
+    <div className="min-h-screen bg-gray-900">
+      <MobileHeader
+        title="Workspaces"
+        subtitle={`${workspaces.length} workspace${workspaces.length !== 1 ? 's' : ''}`}
+        showSearchButton
+        onSearch={() => {/* TODO: implement search */}}
+      />
+      
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="px-4 py-6 space-y-4">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-400/20 p-2 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Running</p>
+                  <p className="text-xl font-semibold text-white">
+                    {workspaces.filter(w => w.status === 'running').length}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-400/20 p-2 rounded-lg">
+                  <Server className="h-5 w-5 text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Total</p>
+                  <p className="text-xl font-semibold text-white">{workspaces.length}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Workspaces List */}
+          <div className="space-y-4">
+            {filteredWorkspaces.map((workspace) => (
+              <MobileWorkspaceCard
+                key={workspace.id}
+                id={workspace.id}
+                name={workspace.name}
+                description={workspace.description}
+                status={workspace.status}
+                lastActivity={workspace.lastActivity}
+                repository={workspace.repository}
+                sessionCount={0} // TODO: get actual session count
+                onSelect={onSelectWorkspace}
+                onStart={(id) => console.log('Start workspace:', id)}
+                onStop={(id) => console.log('Stop workspace:', id)}
+                onSettings={(id) => console.log('Workspace settings:', id)}
+                onDelete={(id) => console.log('Delete workspace:', id)}
+                onDuplicate={(id) => console.log('Duplicate workspace:', id)}
+              />
+            ))}
+          </div>
+          
+          {filteredWorkspaces.length === 0 && !isLoading && (
+            <div className="text-center py-16">
+              <Server className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-400 mb-2">No workspaces yet</h3>
+              <p className="text-gray-500 mb-8">Create your first workspace to get started</p>
+              <button
+                onClick={() => setShowCreationWizard(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors font-medium"
+              >
+                Create Workspace
+              </button>
+            </div>
+          )}
+        </div>
+      </PullToRefresh>
+      
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setShowCreationWizard(true)}
+        className="
+          fixed bottom-24 right-4 z-40
+          w-14 h-14
+          bg-blue-600 hover:bg-blue-700
+          text-white rounded-full
+          shadow-lg active:scale-95
+          transition-all duration-200
+          flex items-center justify-center
+        "
+      >
+        <Plus className="h-6 w-6" />
+      </button>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        {renderMobileView()}
+        {showCreationWizard && (
+          <WorkspaceCreationWizard
+            isOpen={showCreationWizard}
+            onClose={() => setShowCreationWizard(false)}
+            onSubmit={handleCreateWorkspace}
+            isLoading={isLoading}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900">

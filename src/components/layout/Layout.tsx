@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { useUIStore } from '../../stores/uiStore.js';
 import Navigation from './Navigation.js';
+import BottomNavigation from '../mobile/BottomNavigation.js';
 
 interface LayoutProps {
   children: ReactNode;
@@ -54,10 +55,13 @@ export default function Layout({ children, showWorkspaceUI = false }: LayoutProp
             <Navigation />
           </>
         )}
-        <main className="flex-1 overflow-hidden">
+        <main className={`flex-1 overflow-hidden ${isMobile ? 'pb-20' : ''}`}>
           {children}
         </main>
       </div>
+      
+      {/* Mobile Bottom Navigation */}
+      <BottomNavigation />
     </div>
   );
 }

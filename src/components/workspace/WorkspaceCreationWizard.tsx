@@ -331,7 +331,7 @@ export default function WorkspaceCreationWizard({
               Template & Name
             </span>
             <span className={currentStep === 2 ? 'text-blue-400' : currentStep > 2 ? 'text-green-400' : 'text-gray-400'}>
-              Repository
+              Repository (Optional)
             </span>
             <span className={currentStep === 3 ? 'text-blue-400' : 'text-gray-400'}>
               Configuration
@@ -402,36 +402,39 @@ export default function WorkspaceCreationWizard({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Workspace Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={workspaceData.name}
-                    onChange={(e) => updateWorkspaceData({ name: e.target.value })}
-                    placeholder="My Awesome Project"
-                    className={`w-full bg-gray-700 text-white rounded-lg px-3 py-2 border ${
-                      errors.name ? 'border-red-500' : 'border-gray-600'
-                    } focus:border-blue-500 focus:outline-none`}
-                  />
-                  {errors.name && (
-                    <p className="text-red-400 text-sm mt-1">{errors.name}</p>
-                  )}
-                </div>
+              <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                <h4 className="font-medium text-white mb-4">Workspace Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Workspace Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={workspaceData.name}
+                      onChange={(e) => updateWorkspaceData({ name: e.target.value })}
+                      placeholder="My Awesome Project"
+                      className={`w-full bg-gray-600 text-white rounded-lg px-3 py-2 border ${
+                        errors.name ? 'border-red-500' : 'border-gray-500'
+                      } focus:border-blue-500 focus:outline-none`}
+                    />
+                    {errors.name && (
+                      <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+                    )}
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Description
-                  </label>
-                  <input
-                    type="text"
-                    value={workspaceData.description}
-                    onChange={(e) => updateWorkspaceData({ description: e.target.value })}
-                    placeholder="Brief description of your project"
-                    className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={workspaceData.description}
+                      onChange={(e) => updateWorkspaceData({ description: e.target.value })}
+                      placeholder="Brief description of your project"
+                      className="w-full bg-gray-600 text-white rounded-lg px-3 py-2 border border-gray-500 focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

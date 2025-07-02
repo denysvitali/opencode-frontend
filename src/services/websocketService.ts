@@ -29,10 +29,33 @@ export interface ActivityNotification {
   autoClose?: boolean;
 }
 
+export interface UserPresence {
+  userId: string;
+  username: string;
+  workspaceId: string;
+  sessionId?: string;
+  status: 'active' | 'idle' | 'away';
+  lastSeen: number;
+  avatar?: string;
+  cursor?: {
+    x: number;
+    y: number;
+    elementId?: string;
+  };
+}
+
+export interface WorkspaceCollaboration {
+  workspaceId: string;
+  activeUsers: UserPresence[];
+  totalUsers: number;
+}
+
 export interface WebSocketEventHandlers {
   onWorkspaceStatusUpdate?: (update: WorkspaceStatusUpdate) => void;
   onActivityNotification?: (notification: ActivityNotification) => void;
   onSessionUpdate?: (sessionData: Record<string, unknown>) => void;
+  onUserPresenceUpdate?: (presence: UserPresence) => void;
+  onWorkspaceCollaboration?: (collaboration: WorkspaceCollaboration) => void;
   onConnected?: () => void;
   onDisconnected?: () => void;
   onError?: (error: Event) => void;
@@ -182,6 +205,34 @@ class WebSocketService {
   }
 
   /**
+   * Join workspace for collaboration
+   */
+  joinWorkspaceCollaboration(workspaceId: string, userInfo: { userId: string; username: string; avatar?: string }): void {
+    this.send('join_workspace_collaboration', { workspaceId, ...userInfo });
+  }
+
+  /**
+   * Leave workspace collaboration
+   */
+  leaveWorkspaceCollaboration(workspaceId: string): void {
+    this.send('leave_workspace_collaboration', { workspaceId });
+  }
+
+  /**
+   * Update user presence in workspace
+   */
+  updateUserPresence(workspaceId: string, sessionId: string | undefined, status: 'active' | 'idle' | 'away'): void {
+    this.send('update_user_presence', { workspaceId, sessionId, status, timestamp: Date.now() });
+  }
+
+  /**
+   * Send cursor position for collaborative editing
+   */
+  sendCursorPosition(workspaceId: string, cursor: { x: number; y: number; elementId?: string }): void {
+    this.send('cursor_position', { workspaceId, cursor, timestamp: Date.now() });
+  }
+
+  /**
    * Check if WebSocket is connected
    */
   isConnected(): boolean {
@@ -210,6 +261,14 @@ class WebSocketService {
       
       case 'session_update':
         this.eventHandlers.onSessionUpdate?.(message.payload);
+        break;
+      
+      case 'user_presence_update':
+        this.eventHandlers.onUserPresenceUpdate?.(message.payload as unknown as UserPresence);
+        break;
+      
+      case 'workspace_collaboration_update':
+        this.eventHandlers.onWorkspaceCollaboration?.(message.payload as unknown as WorkspaceCollaboration);
         break;
       
       case 'connection_ack':
