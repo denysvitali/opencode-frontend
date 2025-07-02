@@ -153,6 +153,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
   const { 
     workspaces, 
     sessions, 
+    isLoading,
     loadWorkspacesFromAPI, 
     loadSessionsFromAPI,
     // createSessionAPI,
@@ -167,11 +168,19 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
   useEffect(() => {
     console.log('WorkspaceContext mounted with workspaceId:', workspaceId);
     console.log('Current workspaces:', workspaces);
-    loadWorkspacesFromAPI();
+    
+    // Only load workspaces if we don't have any yet
+    if (workspaces.length === 0 && !isLoading) {
+      console.log('WorkspaceContext - Loading workspaces because none exist');
+      loadWorkspacesFromAPI();
+    }
+    
+    // Always load sessions for the specific workspace
     if (workspaceId) {
+      console.log('WorkspaceContext - Loading sessions for workspace:', workspaceId);
       loadSessionsFromAPI(workspaceId);
     }
-  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces]);
+  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces, isLoading]);
 
   // Debug logging
   useEffect(() => {
@@ -181,8 +190,22 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     console.log('WorkspaceContext - found workspace:', found);
   }, [workspaces, workspaceId]);
 
-  // If workspace not found, show error or redirect
-  if (!currentWorkspace) {
+  // Show loading state while workspaces are being loaded
+  if (isLoading && workspaces.length === 0) {
+    console.log('WorkspaceContext - Loading workspaces...');
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-white mb-2">Loading workspace...</h2>
+          <p className="text-gray-400">Please wait while we load your workspace data.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If workspace not found after loading, show error or redirect
+  if (!currentWorkspace && !isLoading) {
     console.log('WorkspaceContext - No workspace found, showing error page');
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -246,6 +269,11 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     // TODO: Implement session actions
     console.log(`${action} session:`, sessionId);
   };
+
+  // Additional safety check
+  if (!currentWorkspace) {
+    return null;
+  }
 
   const workspaceStatus = getStatusConfig(currentWorkspace.status);
 

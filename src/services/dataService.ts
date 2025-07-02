@@ -54,10 +54,7 @@ export interface DataService {
  */
 export async function createDataService(): Promise<DataService> {
   console.log('DataService: Creating data service, DEMO_MODE:', __DEMO_MODE__);
-  // Force demo mode for testing
-  const useDemoMode = true; // __DEMO_MODE__ || true;
-  console.log('DataService: Using demo mode:', useDemoMode);
-  if (useDemoMode) {
+  if (__DEMO_MODE__) {
     // Dynamic import to keep mock code out of production builds
     console.log('DataService: Using MockDataService');
     const module = await import('./mockDataService.js');
