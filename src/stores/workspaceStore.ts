@@ -169,10 +169,13 @@ export const useWorkspaceAppStore = create<WorkspaceAppStore>()(
         // API integration methods
         async loadWorkspacesFromAPI() {
           try {
+            console.log('WorkspaceStore: Starting loadWorkspacesFromAPI');
             set({ isLoading: true, error: null });
             const dataService = await getDataService();
             const workspaces = await dataService.loadWorkspaces();
+            console.log('WorkspaceStore: Loaded workspaces, setting state:', workspaces.length, 'workspaces');
             set({ workspaces, isLoading: false });
+            console.log('WorkspaceStore: State updated, isLoading set to false');
           } catch (error) {
             console.error('Failed to load workspaces:', error);
             set({ 

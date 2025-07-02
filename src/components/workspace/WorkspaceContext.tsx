@@ -167,12 +167,14 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
   // Load data on mount
   useEffect(() => {
     console.log('WorkspaceContext mounted with workspaceId:', workspaceId);
-    console.log('Current workspaces:', workspaces);
+    console.log('WorkspaceContext - Current state:', { workspacesCount: workspaces.length, isLoading });
     
     // Only load workspaces if we don't have any yet
     if (workspaces.length === 0 && !isLoading) {
       console.log('WorkspaceContext - Loading workspaces because none exist');
       loadWorkspacesFromAPI();
+    } else {
+      console.log('WorkspaceContext - NOT loading workspaces:', { workspacesCount: workspaces.length, isLoading });
     }
     
     // Always load sessions for the specific workspace
@@ -180,7 +182,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
       console.log('WorkspaceContext - Loading sessions for workspace:', workspaceId);
       loadSessionsFromAPI(workspaceId);
     }
-  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces, isLoading]);
+  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces.length, isLoading]);
 
   // Debug logging
   useEffect(() => {
@@ -189,10 +191,29 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     const found = workspaces.find(w => w.id === workspaceId);
     console.log('WorkspaceContext - found workspace:', found);
   }, [workspaces, workspaceId]);
+  
+  // Track all state changes
+  useEffect(() => {
+    console.log('WorkspaceContext - STATE CHANGE:', {
+      workspaceId,
+      currentWorkspace: currentWorkspace?.id,
+      isLoading,
+      workspacesCount: workspaces.length,
+      sessionsCount: workspaceSessions.length
+    });
+  }, [workspaceId, currentWorkspace, isLoading, workspaces.length, workspaceSessions.length]);
+  
+  // Track component lifecycle
+  useEffect(() => {
+    console.log('WorkspaceContext - COMPONENT MOUNT/UPDATE');
+    return () => {
+      console.log('WorkspaceContext - COMPONENT UNMOUNT/CLEANUP');
+    };
+  }, []);
 
   // Show loading state while workspaces are being loaded
   if (isLoading && workspaces.length === 0) {
-    console.log('WorkspaceContext - Loading workspaces...');
+    console.log('WorkspaceContext - RENDERING LOADING STATE - isLoading:', isLoading, 'workspaces.length:', workspaces.length);
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -206,7 +227,8 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
 
   // If workspace not found after loading, show error or redirect
   if (!currentWorkspace && !isLoading) {
-    console.log('WorkspaceContext - No workspace found, showing error page');
+    console.log('WorkspaceContext - RENDERING ERROR STATE - No workspace found');
+    console.log('WorkspaceContext - Debug info:', { workspaceId, currentWorkspace, isLoading, workspacesCount: workspaces.length });
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -272,8 +294,12 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
 
   // Additional safety check
   if (!currentWorkspace) {
+    console.log('WorkspaceContext - RETURNING NULL - currentWorkspace is null but no loading/error state triggered');
+    console.log('WorkspaceContext - Debug info:', { workspaceId, currentWorkspace, isLoading, workspacesCount: workspaces.length });
     return null;
   }
+  
+  console.log('WorkspaceContext - RENDERING MAIN CONTENT for workspace:', currentWorkspace.name);
 
   const workspaceStatus = getStatusConfig(currentWorkspace.status);
 
