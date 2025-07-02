@@ -1,6 +1,7 @@
 import React from 'react';
 import { WorkspaceList } from './WorkspaceList.js';
 import { SessionList } from './SessionList.js';
+import ChatInterface from '../chat/ChatInterface.js';
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
 import type { Workspace, Session } from '../../types/index.js';
 
@@ -98,10 +99,10 @@ export function WorkspaceView() {
               </div>
             </div>
             <div className="flex-1">
-              <div className="p-4 text-center text-gray-400">
-                <h3 className="text-xl font-semibold mb-2">Chat Interface</h3>
-                <p>Chat functionality will be implemented here.</p>
-              </div>
+              <ChatInterface 
+                sessionId={activeSession.id} 
+                workspaceId={activeWorkspace.id} 
+              />
             </div>
           </div>
         );
