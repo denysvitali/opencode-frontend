@@ -63,12 +63,12 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   const { saveContext } = useSessionContext();
   
   // Mobile debug logging
-  const addDebugLog = (message: string) => {
+  const addDebugLog = useCallback((message: string) => {
     const timestamp = new Date().toLocaleTimeString();
     const logEntry = `${timestamp}: ${message}`;
     setDebugLogs(prev => [...prev.slice(-50), logEntry]); // Keep last 50 logs
     console.log(logEntry);
-  };
+  }, []);
 
   // Set up real-time updates for all workspaces (for side effects)
   useRealTime({
@@ -153,7 +153,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
     }
   };
 
-  const handleCreateWorkspace = async (workspaceData: WorkspaceCreationData) => {
+  const handleCreateWorkspace = useCallback(async (workspaceData: WorkspaceCreationData) => {
     try {
       await createWorkspaceAPI(
         workspaceData.name, 
@@ -164,14 +164,14 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       console.error('Failed to create workspace:', error);
       // Error is handled by the store
     }
-  };
+  }, [createWorkspaceAPI]);
 
-  const handleWorkspaceSelect = (workspace: Workspace) => {
+  const handleWorkspaceSelect = useCallback((workspace: Workspace) => {
     addDebugLog(`Selecting workspace: ${workspace.id} (${workspace.name})`);
     saveContext(workspace.id, null, workspace.name);
     addDebugLog(`Calling onSelectWorkspace with: ${workspace.id}`);
     onSelectWorkspace(workspace.id);
-  };
+  }, [addDebugLog, saveContext, onSelectWorkspace]);
 
   const handleWorkspaceAction = (action: string, workspaceId: string, e: React.MouseEvent) => {
     e.stopPropagation();
