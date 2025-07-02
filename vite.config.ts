@@ -42,7 +42,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: false,
+    sourcemap: true,
+    minify: process.env.VITE_DEMO_MODE === 'true' ? false : 'esbuild', // Disable minification for demo/GitHub Pages
     rollupOptions: {
       output: {
         manualChunks: {
