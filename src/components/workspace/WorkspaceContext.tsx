@@ -169,7 +169,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     console.log('WorkspaceContext mounted with workspaceId:', workspaceId);
     console.log('WorkspaceContext - Current state:', { workspacesCount: workspaces.length, isLoading });
     
-      // Only load workspaces if we don't have any yet
+    // Only load workspaces if we don't have any yet
     if (workspaces.length === 0 && !isLoading) {
       console.log('WorkspaceContext - Loading workspaces because none exist');
       loadWorkspacesFromAPI();
@@ -177,12 +177,25 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
       console.log('WorkspaceContext - NOT loading workspaces:', { workspacesCount: workspaces.length, isLoading });
     }
     
+    // Force a re-check for the current workspace after a short delay
+    // This helps with timing issues where navigation happens before store updates
+    const timeoutId = setTimeout(() => {
+      const foundWorkspace = workspaces.find(w => w.id === workspaceId);
+      console.log('WorkspaceContext - Delayed workspace check:', {
+        workspaceId,
+        foundWorkspace: !!foundWorkspace,
+        workspacesAvailable: workspaces.map(w => w.id)
+      });
+    }, 100);
+    
+    return () => clearTimeout(timeoutId);
+    
     // Always load sessions for the specific workspace
     if (workspaceId) {
       console.log('WorkspaceContext - Loading sessions for workspace:', workspaceId);
       loadSessionsFromAPI(workspaceId);
     }
-  }, [workspaceId, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces.length, isLoading]);
+  }, [workspaceId]); // Simplified dependencies to avoid re-runs when data changes
 
   // Debug logging
   useEffect(() => {
@@ -211,15 +224,16 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     };
   }, []);
 
-  // Show loading state while workspaces are being loaded
-  if (isLoading && workspaces.length === 0) {
-    console.log('WorkspaceContext - RENDERING LOADING STATE - isLoading:', isLoading, 'workspaces.length:', workspaces.length);
+  // Show loading state while workspaces are being loaded OR if we don't have the specific workspace yet
+  if ((isLoading && workspaces.length === 0) || (workspaces.length > 0 && !currentWorkspace)) {
+    console.log('WorkspaceContext - RENDERING LOADING STATE - isLoading:', isLoading, 'workspaces.length:', workspaces.length, 'currentWorkspace:', !!currentWorkspace);
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-white mb-2">Loading workspace...</h2>
           <p className="text-gray-400">Please wait while we load your workspace data.</p>
+          <p className="text-gray-500 text-sm mt-2">Looking for workspace: {workspaceId}</p>
         </div>
       </div>
     );
@@ -300,6 +314,13 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
   }
   
   console.log('WorkspaceContext - RENDERING MAIN CONTENT for workspace:', currentWorkspace.name);
+  console.log('WorkspaceContext - Render details:', {
+    workspaceId,
+    currentWorkspaceId: currentWorkspace?.id,
+    workspacesCount: workspaces.length,
+    isLoading,
+    timestamp: new Date().toISOString()
+  });
 
   const workspaceStatus = getStatusConfig(currentWorkspace.status);
 
