@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Search, 
   Filter, 
@@ -17,7 +17,7 @@ import {
   Heart,
   TrendingUp
 } from 'lucide-react';
-import { WorkspaceTemplate, TemplateCategory, TemplateFilter } from '../../types/templates.js';
+import type { WorkspaceTemplate, TemplateCategory, TemplateFilter } from '../../types/templates.js';
 
 interface TemplateMarketplaceProps {
   onSelectTemplate: (template: WorkspaceTemplate) => void;

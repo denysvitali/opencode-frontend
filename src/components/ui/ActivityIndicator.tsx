@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bot, Code, FileText, Terminal, GitBranch, Loader2, Play, Pause, CheckCircle, AlertCircle } from 'lucide-react';
 
 export interface AgentActivity {

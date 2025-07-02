@@ -381,16 +381,6 @@ class NotificationService {
     }
   }
 
-  private loadNotifications(): void {
-    try {
-      const saved = localStorage.getItem('opencode_notifications');
-      if (saved) {
-        this.notifications = JSON.parse(saved);
-      }
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
-    }
-  }
 }
 
 // Singleton instance

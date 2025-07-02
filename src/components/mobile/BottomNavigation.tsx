@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, MessageCircle, Settings, Plus, Search } from 'lucide-react';
-import { useUIStore } from '../../store/uiStore.js';
+import { useUIStore } from '../../stores/uiStore.js';
 
 interface BottomNavItem {
   id: string;

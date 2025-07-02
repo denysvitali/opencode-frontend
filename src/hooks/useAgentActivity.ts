@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { AgentActivity } from '../components/ui/ActivityIndicator.js';
+import type { AgentActivity } from '../components/ui/ActivityIndicator.js';
 import { websocketService } from '../services/websocketService.js';
 
 export interface UseAgentActivityOptions {

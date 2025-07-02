@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Users, UserCheck, Clock, Eye } from 'lucide-react';
-import { UserPresence, WorkspaceCollaboration } from '../../services/websocketService.js';
+import type { UserPresence, WorkspaceCollaboration } from '../../services/websocketService.js';
 
 interface WorkspaceCollaborationProps {
   workspaceId: string;

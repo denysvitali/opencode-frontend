@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { UserPresence, WorkspaceCollaboration, websocketService } from '../services/websocketService.js';
-import { useAppStore } from '../store/appStore.js';
+import type { UserPresence, WorkspaceCollaboration } from '../services/websocketService.js';
+import { websocketService } from '../services/websocketService.js';
+import { useAppStore } from '../stores/appStore.js';
 
 export interface UseCollaborationOptions {
   workspaceId: string;
@@ -13,7 +14,7 @@ export function useCollaboration({ workspaceId, sessionId, enabled = true }: Use
   const [userPresence, setUserPresence] = useState<Map<string, UserPresence>>(new Map());
   const [isCollaborating, setIsCollaborating] = useState(false);
   
-  const { currentUser } = useAppStore();
+  const { user: currentUser } = useAppStore();
   const lastActivityRef = useRef(Date.now());
   const presenceUpdateTimerRef = useRef<NodeJS.Timeout>();
   const activityDetectionRef = useRef<() => void>();

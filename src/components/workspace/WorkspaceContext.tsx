@@ -146,6 +146,7 @@ interface WorkspaceContextProps {
 export default function WorkspaceContext({ workspaceId, onBack, onSelectSession }: WorkspaceContextProps) {
   const [activeTab, setActiveTab] = useState<'sessions' | 'settings' | 'activity'>('sessions');
   const [isCreatingDefaultSession, setIsCreatingDefaultSession] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionDescription, setNewSessionDescription] = useState('');
 

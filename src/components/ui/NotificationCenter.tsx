@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, X, Settings, Check, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import { NotificationPayload, notificationService } from '../../services/notificationService.js';
+import type { NotificationPayload } from '../../services/notificationService.js';
+import { notificationService } from '../../services/notificationService.js';
 
 interface NotificationCenterProps {
   className?: string;

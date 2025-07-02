@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { notificationService, NotificationSettings } from '../services/notificationService.js';
-import { websocketService, ActivityNotification, WorkspaceStatusUpdate } from '../services/websocketService.js';
-import { useAppStore } from '../store/appStore.js';
+import type { NotificationSettings } from '../services/notificationService.js';
+import { notificationService } from '../services/notificationService.js';
+import type { ActivityNotification, WorkspaceStatusUpdate } from '../services/websocketService.js';
+import { websocketService } from '../services/websocketService.js';
+import { useAppStore } from '../stores/appStore.js';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -17,7 +19,7 @@ export interface Notification {
 // Hook for managing notifications
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { currentWorkspace, currentSession } = useAppStore();
+  const { activeWorkspace: currentWorkspace, activeSession: currentSession } = useAppStore();
 
   // Handle WebSocket activity notifications
   const handleActivityNotification = useCallback((notification: ActivityNotification) => {
