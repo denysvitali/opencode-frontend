@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader2, Wifi, WifiOff } from 'lucide-react';
+import { Loader2, WifiOff } from 'lucide-react';
 
 interface MobileLoaderProps {
   type?: 'spinner' | 'skeleton' | 'dots' | 'pulse';

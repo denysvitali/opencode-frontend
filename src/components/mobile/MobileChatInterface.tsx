@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Plus, Paperclip, Smile, MoreVertical } from 'lucide-react';
+import { Send, Mic, Paperclip, Smile } from 'lucide-react';
 import { useUIStore } from '../../stores/uiStore.js';
 
 interface MobileChatMessage {

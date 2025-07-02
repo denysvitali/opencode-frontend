@@ -185,28 +185,28 @@ export function useAgentActivity({
     const handleSessionUpdate = (sessionData: Record<string, unknown>) => {
       // Handle agent activity updates from WebSocket
       if (sessionData.agentActivity) {
-        const activityData = sessionData.agentActivity as any;
+        const activityData = sessionData.agentActivity as Record<string, unknown>;
         
         if (activityData.type === 'activity_start') {
           addActivity({
-            type: activityData.activityType || 'analysis',
+            type: (activityData.activityType as AgentActivity['type']) || 'analysis',
             status: 'active',
-            title: activityData.title || 'AI Agent Working',
-            description: activityData.description,
-            sessionId: activityData.sessionId || sessionId || '',
-            workspaceId: activityData.workspaceId || workspaceId || '',
-            metadata: activityData.metadata
+            title: (activityData.title as string) || 'AI Agent Working',
+            description: activityData.description as string,
+            sessionId: (activityData.sessionId as string) || sessionId || '',
+            workspaceId: (activityData.workspaceId as string) || workspaceId || '',
+            metadata: activityData.metadata as Record<string, unknown>
           });
         } else if (activityData.type === 'activity_update' && activityData.activityId) {
-          updateActivity(activityData.activityId, {
-            progress: activityData.progress,
-            description: activityData.description,
-            status: activityData.status || 'active'
+          updateActivity(activityData.activityId as string, {
+            progress: activityData.progress as number,
+            description: activityData.description as string,
+            status: (activityData.status as AgentActivity['status']) || 'active'
           });
         } else if (activityData.type === 'activity_complete' && activityData.activityId) {
-          completeActivity(activityData.activityId, activityData.description);
+          completeActivity(activityData.activityId as string, activityData.description as string);
         } else if (activityData.type === 'activity_error' && activityData.activityId) {
-          errorActivity(activityData.activityId, activityData.error || 'An error occurred');
+          errorActivity(activityData.activityId as string, (activityData.error as string) || 'An error occurred');
         }
       }
     };

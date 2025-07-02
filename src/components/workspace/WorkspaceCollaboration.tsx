@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Users, UserCheck, Clock, Eye } from 'lucide-react';
 import { UserPresence, WorkspaceCollaboration } from '../../services/websocketService.js';
 
@@ -10,7 +10,6 @@ interface WorkspaceCollaborationProps {
 }
 
 export function WorkspaceCollaborationComponent({ 
-  workspaceId, 
   collaboration, 
   currentUserId,
   className = '' 

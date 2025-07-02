@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, MoreVertical, Search, Menu, X } from 'lucide-react';
+import { ArrowLeft, MoreVertical, Search, Menu } from 'lucide-react';
 
 interface MobileHeaderProps {
   title?: string;

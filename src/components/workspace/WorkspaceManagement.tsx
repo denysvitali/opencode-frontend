@@ -199,6 +199,10 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
     await loadWorkspacesFromAPI();
   };
 
+  const handleFilteredResults = useCallback((filteredWorkspaces: Workspace[]) => {
+    setFilteredWorkspaces(filteredWorkspaces);
+  }, []);
+
   const renderMobileView = () => (
     <div className="min-h-screen bg-gray-900">
       <MobileHeader
@@ -440,9 +444,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         <div className="mb-6">
           <SearchAndFilter
             workspaces={workspaces}
-            onFilteredResults={useCallback((filteredWorkspaces) => {
-              setFilteredWorkspaces(filteredWorkspaces);
-            }, [])}
+            onFilteredResults={handleFilteredResults}
             placeholder="Search workspaces by name, repository, or description..."
             className="w-full"
           />
