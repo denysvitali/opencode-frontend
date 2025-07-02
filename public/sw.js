@@ -1,5 +1,6 @@
 // Service worker for PWA capabilities
-const CACHE_NAME = 'opencode-frontend-v1';
+// Dynamic cache name - will be replaced during build with actual commit hash
+const CACHE_NAME = 'opencode-frontend-__COMMIT_HASH__';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -9,25 +10,28 @@ const STATIC_ASSETS = [
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
+  console.log('SW Install: Cache name:', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
+      .then(() => self.skipWaiting()) // Force activation of new SW
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  console.log('SW Activate: Current cache name:', CACHE_NAME);
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
+        console.log('SW Activate: Found caches:', cacheNames);
+        const oldCaches = cacheNames.filter((cacheName) => cacheName !== CACHE_NAME);
+        console.log('SW Activate: Deleting old caches:', oldCaches);
         return Promise.all(
-          cacheNames
-            .filter((cacheName) => cacheName !== CACHE_NAME)
-            .map((cacheName) => caches.delete(cacheName))
+          oldCaches.map((cacheName) => caches.delete(cacheName))
         );
       })
-      .then(() => self.clients.claim())
+      .then(() => self.clients.claim()) // Take control of all clients immediately
   );
 });
 
@@ -42,14 +46,19 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
-      .catch(() => {
-        // If both cache and network fail, return offline page for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
+        if (response) {
+          // Return cached version
+          return response;
         }
+        // Fetch from network
+        return fetch(event.request).catch((error) => {
+          console.error('SW Fetch failed for:', event.request.url, error);
+          // For navigation requests, return index.html from cache
+          if (event.request.mode === 'navigate') {
+            return caches.match('/index.html');
+          }
+          throw error;
+        });
       })
   );
 });

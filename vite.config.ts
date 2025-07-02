@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { execSync } from 'child_process'
+import fs from 'fs'
+import path from 'path'
 
 // Get git commit hash at build time
 const getCommitHash = () => {
@@ -29,9 +31,29 @@ const getVersion = () => {
   }
 }
 
+// Plugin to process service worker and inject build variables
+const processServiceWorkerPlugin = () => {
+  return {
+    name: 'process-service-worker',
+    generateBundle(this: any) {
+      const swPath = path.resolve('public/sw.js')
+      if (fs.existsSync(swPath)) {
+        let swContent = fs.readFileSync(swPath, 'utf-8')
+        swContent = swContent.replace('__COMMIT_HASH__', getCommitHash())
+        
+        this.emitFile({
+          type: 'asset',
+          fileName: 'sw.js',
+          source: swContent
+        })
+      }
+    }
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), processServiceWorkerPlugin()],
   base: process.env.VITE_BASE_URL || '/',
   define: {
     __COMMIT_HASH__: JSON.stringify(getCommitHash()),
