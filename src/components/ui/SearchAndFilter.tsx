@@ -159,9 +159,13 @@ export default function SearchAndFilter({
     return { workspaces: filteredWorkspaces, sessions: filteredSessions };
   }, [workspaces, sessions, filters]);
 
-  // Notify parent of filtered results
+  // Notify parent of filtered results (use a timeout to defer the state update)
   React.useEffect(() => {
-    onFilteredResults(filteredResults.workspaces, filteredResults.sessions);
+    const timeoutId = setTimeout(() => {
+      onFilteredResults(filteredResults.workspaces, filteredResults.sessions);
+    }, 0);
+    
+    return () => clearTimeout(timeoutId);
   }, [filteredResults, onFilteredResults]);
 
   const updateFilters = useCallback((updates: Partial<SearchFilters>) => {

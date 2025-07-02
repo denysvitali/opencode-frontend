@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Server, GitBranch, Clock, Settings, Trash2, Play, Square, AlertCircle, CheckCircle } from 'lucide-react';
 import TopBar from '../layout/TopBar.js';
 import WorkspaceCreationWizard, { type WorkspaceCreationData } from './WorkspaceCreationWizard.js';
@@ -308,7 +308,9 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         <div className="mb-6">
           <SearchAndFilter
             workspaces={workspaces}
-            onFilteredResults={(filteredWorkspaces) => setFilteredWorkspaces(filteredWorkspaces)}
+            onFilteredResults={useCallback((filteredWorkspaces) => {
+              setFilteredWorkspaces(filteredWorkspaces);
+            }, [])}
             placeholder="Search workspaces by name, repository, or description..."
             className="w-full"
           />
