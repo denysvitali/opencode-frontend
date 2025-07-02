@@ -97,16 +97,9 @@ function WorkspaceManagementPage({ onWorkspaceUIChange }: MainViewProps) {
     console.log('MainView: Current URL before navigation:', window.location.href);
     console.log('MainView: About to navigate to:', `/workspace/${workspaceId}`);
     
-    // Add a small delay to see if there are timing issues
-    setTimeout(() => {
-      navigate(`/workspace/${workspaceId}`);
-      console.log('MainView: Navigation command executed');
-      
-      // Check URL after navigation
-      setTimeout(() => {
-        console.log('MainView: URL after navigation:', window.location.href);
-      }, 100);
-    }, 50);
+    // Navigate immediately without delay
+    navigate(`/workspace/${workspaceId}`);
+    console.log('MainView: Navigation command executed');
   };
 
   return <WorkspaceManagement onSelectWorkspace={handleSelectWorkspace} />;

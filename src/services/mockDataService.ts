@@ -28,7 +28,7 @@ export class MockDataService implements DataService {
 
   async checkHealth() {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Removed artificial delay for performance
     
     return {
       status: 'connected' as const,
@@ -38,7 +38,7 @@ export class MockDataService implements DataService {
 
   async loadConversations(): Promise<Conversation[]> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     
     return [...this.conversations];
   }
@@ -46,7 +46,7 @@ export class MockDataService implements DataService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createConversation(title: string, ..._args: unknown[]): Promise<Conversation> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Removed artificial delay for performance
     
     const newConversation: Conversation = {
       id: `conv_${Date.now()}`,
@@ -74,7 +74,7 @@ export class MockDataService implements DataService {
 
   async deleteConversation(conversationId: string): Promise<void> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     
     this.conversations = this.conversations.filter(c => c.id !== conversationId);
     this.messages.delete(conversationId);
@@ -82,7 +82,7 @@ export class MockDataService implements DataService {
 
   async getConversation(conversationId: string): Promise<Conversation> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Removed artificial delay for performance
     
     const conversation = this.conversations.find(c => c.id === conversationId);
     if (!conversation) {
@@ -96,14 +96,14 @@ export class MockDataService implements DataService {
   // Workspace methods
   async loadWorkspaces(): Promise<Workspace[]> {
     console.log('MockDataService: loadWorkspaces called');
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     console.log('MockDataService: Returning workspaces:', this.workspaces.length, 'items');
     console.log('MockDataService: Workspace details:', this.workspaces.map(w => ({ id: w.id, name: w.name, status: w.status })));
     return [...this.workspaces];
   }
 
   async createWorkspace(name: string, repositoryUrl?: string): Promise<Workspace> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Removed artificial delay for performance
     
     const newWorkspace: Workspace = {
       id: `ws_${Date.now()}`,
@@ -128,7 +128,7 @@ export class MockDataService implements DataService {
   }
 
   async deleteWorkspace(workspaceId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     
     const index = this.workspaces.findIndex(ws => ws.id === workspaceId);
     if (index >= 0) {
@@ -144,7 +144,7 @@ export class MockDataService implements DataService {
   }
 
   async getWorkspace(workspaceId: string): Promise<Workspace> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Removed artificial delay for performance
     
     const workspace = this.workspaces.find(ws => ws.id === workspaceId);
     if (!workspace) {
@@ -156,12 +156,12 @@ export class MockDataService implements DataService {
 
   // Session methods
   async loadSessions(workspaceId: string): Promise<Session[]> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     return this.sessions.filter(s => s.workspaceId === workspaceId);
   }
 
   async createSession(workspaceId: string, name: string): Promise<Session> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Removed artificial delay for performance
     
     const newSession: Session = {
       id: `sess_${Date.now()}`,
@@ -187,7 +187,7 @@ export class MockDataService implements DataService {
   }
 
   async deleteSession(workspaceId: string, sessionId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     
     const index = this.sessions.findIndex(s => s.id === sessionId && s.workspaceId === workspaceId);
     if (index >= 0) {
@@ -199,7 +199,7 @@ export class MockDataService implements DataService {
   }
 
   async getSession(workspaceId: string, sessionId: string): Promise<Session> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Removed artificial delay for performance
     
     const session = this.sessions.find(s => s.id === sessionId && s.workspaceId === workspaceId);
     if (!session) {
@@ -211,7 +211,7 @@ export class MockDataService implements DataService {
 
   // Message methods (updated for sessions)
   async sendMessage(_workspaceId: string, sessionId: string, content: string): Promise<Message> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Removed artificial delay for performance
     
     const userMessage: Message = {
       id: `msg_${Date.now()}`,
@@ -253,14 +253,14 @@ export class MockDataService implements DataService {
   }
 
   async getMessages(_workspaceId: string, sessionId: string): Promise<Message[]> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Removed artificial delay for performance
     return this.globalMessages.filter(m => m.sessionId === sessionId);
   }
 
   // File methods (updated for sessions)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getFiles(_workspaceId: string, _sessionId: string): Promise<Array<{ path: string; type: 'file' | 'directory' }>> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Removed artificial delay for performance
     
     return [
       { path: '/src', type: 'directory' },
@@ -275,7 +275,7 @@ export class MockDataService implements DataService {
   }
 
   async getFileContent(_workspaceId: string, _sessionId: string, filePath: string): Promise<{ content: string; language?: string }> {
-    await new Promise(resolve => setTimeout(resolve, 150));
+    // Removed artificial delay for performance
     
     const mockContent = this.getMockFileContent(filePath);
     const extension = filePath.split('.').pop()?.toLowerCase();
@@ -297,7 +297,7 @@ export class MockDataService implements DataService {
 
   // Terminal methods (updated for sessions)
   async executeCommand(_workspaceId: string, _sessionId: string, command: string): Promise<{ output: string; exitCode: number }> {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Removed artificial delay for performance
     
     const mockOutput = this.getMockCommandOutput(command);
     
@@ -309,7 +309,7 @@ export class MockDataService implements DataService {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getTerminalHistory(_workspaceId: string, _sessionId: string): Promise<Array<{ command: string; output: string; timestamp: Date }>> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // Removed artificial delay for performance
     
     return [
       {
@@ -331,7 +331,7 @@ export class MockDataService implements DataService {
     status: string;
     files: Array<{ path: string; status: 'modified' | 'added' | 'deleted' | 'untracked' }>;
   }> {
-    await new Promise(resolve => setTimeout(resolve, 150));
+    // Removed artificial delay for performance
     
     return {
       status: 'dirty',
