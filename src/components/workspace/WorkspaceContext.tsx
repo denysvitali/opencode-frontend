@@ -177,6 +177,12 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
       console.log('WorkspaceContext - NOT loading workspaces:', { workspacesCount: workspaces.length, isLoading });
     }
     
+    // Always load sessions for the specific workspace
+    if (workspaceId) {
+      console.log('WorkspaceContext - Loading sessions for workspace:', workspaceId);
+      loadSessionsFromAPI(workspaceId);
+    }
+    
     // Force a re-check for the current workspace after a short delay
     // This helps with timing issues where navigation happens before store updates
     const timeoutId = setTimeout(() => {
@@ -189,13 +195,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     }, 100);
     
     return () => clearTimeout(timeoutId);
-    
-    // Always load sessions for the specific workspace
-    if (workspaceId) {
-      console.log('WorkspaceContext - Loading sessions for workspace:', workspaceId);
-      loadSessionsFromAPI(workspaceId);
-    }
-  }, [workspaceId]); // Simplified dependencies to avoid re-runs when data changes
+  }, [workspaceId, isLoading, loadWorkspacesFromAPI, loadSessionsFromAPI, workspaces]); // Include all dependencies
 
   // Debug logging
   useEffect(() => {

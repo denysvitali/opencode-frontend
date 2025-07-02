@@ -29,11 +29,13 @@ const sizePulse = {
  */
 export default function LiveStatusIndicator({
   workspaceId,
-  userId: _userId,
+  userId,
   className = '',
   showDetails = false,
   size = 'md'
 }: LiveStatusIndicatorProps) {
+  // Temporarily ignore userId since real-time functionality is disabled
+  void userId;
   // Temporarily disabled real-time to fix infinite connection loop
   const realTime = {
     isConnected: false,
