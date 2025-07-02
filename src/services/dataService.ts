@@ -53,11 +53,17 @@ export interface DataService {
  * Factory function to get the appropriate data service based on build mode
  */
 export async function createDataService(): Promise<DataService> {
-  if (__DEMO_MODE__) {
+  console.log('DataService: Creating data service, DEMO_MODE:', __DEMO_MODE__);
+  // Force demo mode for testing
+  const useDemoMode = true; // __DEMO_MODE__ || true;
+  console.log('DataService: Using demo mode:', useDemoMode);
+  if (useDemoMode) {
     // Dynamic import to keep mock code out of production builds
+    console.log('DataService: Using MockDataService');
     const module = await import('./mockDataService.js');
     return new module.MockDataService();
   } else {
+    console.log('DataService: Using RealDataService');
     const module = await import('./realDataService.js');
     return new module.RealDataService();
   }

@@ -13,7 +13,10 @@ function WorkspaceSessionsPage({ onWorkspaceUIChange }: MainViewProps) {
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const navigate = useNavigate();
 
+  console.log('WorkspaceSessionsPage: Mounted with workspaceId:', workspaceId);
+
   useEffect(() => {
+    console.log('WorkspaceSessionsPage: Setting workspace UI to false');
     onWorkspaceUIChange?.(false);
   }, [onWorkspaceUIChange]);
 
@@ -95,6 +98,7 @@ function WorkspaceManagementPage({ onWorkspaceUIChange }: MainViewProps) {
 }
 
 export default function MainView({ onWorkspaceUIChange }: MainViewProps) {
+  console.log('MainView: Rendering with routes');
   return (
     <Routes>
       <Route path="/" element={<WorkspaceManagementPage onWorkspaceUIChange={onWorkspaceUIChange} />} />

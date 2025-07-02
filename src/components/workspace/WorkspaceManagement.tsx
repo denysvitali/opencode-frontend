@@ -57,13 +57,25 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
   // Initialize filtered workspaces with all workspaces
   useEffect(() => {
+    console.log('WorkspaceManagement: Workspaces updated:', workspaces);
+    console.log('WorkspaceManagement: Setting filtered workspaces to:', workspaces.length, 'items');
     setFilteredWorkspaces(workspaces);
   }, [workspaces]);
 
   // Load workspaces on component mount
   useEffect(() => {
+    console.log('WorkspaceManagement: Component mounted, loading workspaces...');
     loadWorkspacesFromAPI();
   }, [loadWorkspacesFromAPI]);
+
+  // Debug effect to track all state changes
+  useEffect(() => {
+    console.log('WorkspaceManagement: State update:', {
+      workspacesCount: workspaces.length,
+      filteredWorkspacesCount: filteredWorkspaces.length,
+      isLoading
+    });
+  }, [workspaces, filteredWorkspaces, isLoading]);
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -232,14 +244,26 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         {/* Workspaces Header with Search */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg md:text-xl font-semibold text-white">Workspaces</h2>
-          <button
-            onClick={() => setShowCreationWizard(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Create Workspace</span>
-            <span className="sm:hidden">Create</span>
-          </button>
+          <div className="flex gap-2">
+            {/* Debug button to test navigation */}
+            <button
+              onClick={() => {
+                console.log('Debug: Testing navigation to ws-1');
+                onSelectWorkspace('ws-1');
+              }}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition-colors font-medium text-sm"
+            >
+              Test Nav
+            </button>
+            <button
+              onClick={() => setShowCreationWizard(true)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Create Workspace</span>
+              <span className="sm:hidden">Create</span>
+            </button>
+          </div>
         </div>
 
         {/* Search and Filter */}
@@ -261,7 +285,12 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
               <div
                 key={workspace.id}
                 className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
-                onClick={() => handleWorkspaceSelect(workspace)}
+                onClick={(e) => {
+                  console.log('Workspace card clicked!', workspace.id, workspace.name, e);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleWorkspaceSelect(workspace);
+                }}
               >
                 <div className="p-4 sm:p-5 md:p-6">
                   {/* Header */}

@@ -95,7 +95,10 @@ export class MockDataService implements DataService {
 
   // Workspace methods
   async loadWorkspaces(): Promise<Workspace[]> {
+    console.log('MockDataService: loadWorkspaces called');
     await new Promise(resolve => setTimeout(resolve, 200));
+    console.log('MockDataService: Returning workspaces:', this.workspaces.length, 'items');
+    console.log('MockDataService: Workspace details:', this.workspaces.map(w => ({ id: w.id, name: w.name, status: w.status })));
     return [...this.workspaces];
   }
 
