@@ -145,7 +145,7 @@ interface WorkspaceContextProps {
 
 export default function WorkspaceContext({ workspaceId, onBack, onSelectSession }: WorkspaceContextProps) {
   const [activeTab, setActiveTab] = useState<'sessions' | 'settings' | 'activity'>('sessions');
-  const [isCreatingDefaultSession, setIsCreatingDefaultSession] = useState(false);
+  // const [isCreatingDefaultSession, setIsCreatingDefaultSession] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionDescription, setNewSessionDescription] = useState('');
@@ -172,38 +172,8 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     }
   }, [workspaceId]); // eslint-disable-line react-hooks/exhaustive-deps -- Intentionally limited to avoid infinite loops
 
-  // Auto-create default session if none exist
-  useEffect(() => {
-    if (currentWorkspace && workspaceSessions.length === 0 && !isLoading && !isCreatingDefaultSession) {
-      console.log('No sessions found for workspace, creating default session');
-      setIsCreatingDefaultSession(true);
-      
-      // Create a default session and navigate to it
-      const createDefaultSession = async () => {
-        try {
-          // Generate a default session name based on workspace
-          const defaultSessionName = `Chat with ${currentWorkspace.name}`;
-          
-          // In a real implementation, this would call the API
-          // For now, we'll simulate session creation and navigate
-          const mockSessionId = `session-${Date.now()}`;
-          
-          console.log('Auto-creating default session:', defaultSessionName);
-          
-          // Simulate API delay
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          // Navigate to the new session
-          onSelectSession(mockSessionId);
-        } catch (error) {
-          console.error('Failed to create default session:', error);
-          setIsCreatingDefaultSession(false);
-        }
-      };
-      
-      createDefaultSession();
-    }
-  }, [currentWorkspace, workspaceSessions.length, isLoading, isCreatingDefaultSession, onSelectSession]);
+  // Don't auto-create default session - let user choose to create one
+  // This allows users to see the session list first before creating a session
 
   // Minimal debug logging - only log significant events
   useEffect(() => {
@@ -212,24 +182,15 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
     }
   }, [workspaceId, currentWorkspace, workspaces]);
 
-  // Show loading state while workspaces are being loaded OR if we don't have the specific workspace yet OR creating default session
-  if ((isLoading && workspaces.length === 0) || (workspaces.length > 0 && !currentWorkspace) || isCreatingDefaultSession) {
-    const loadingMessage = isCreatingDefaultSession 
-      ? "Starting your first chat session..."
-      : "Loading workspace...";
-    const loadingDescription = isCreatingDefaultSession
-      ? "Setting up your workspace chat interface."
-      : "Please wait while we load your workspace data.";
-    
+  // Show loading state while workspaces are being loaded OR if we don't have the specific workspace yet
+  if ((isLoading && workspaces.length === 0) || (workspaces.length > 0 && !currentWorkspace)) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-white mb-2">{loadingMessage}</h2>
-          <p className="text-gray-400">{loadingDescription}</p>
-          {!isCreatingDefaultSession && (
-            <p className="text-gray-500 text-sm mt-2">Looking for workspace: {workspaceId}</p>
-          )}
+          <h2 className="text-xl font-semibold text-white mb-2">Loading workspace...</h2>
+          <p className="text-gray-400">Please wait while we load your workspace data.</p>
+          <p className="text-gray-500 text-sm mt-2">Looking for workspace: {workspaceId}</p>
         </div>
       </div>
     );
@@ -532,7 +493,7 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
               })}
             </div>
 
-            {workspaceSessions.length === 0 && !isCreatingDefaultSession && (
+            {workspaceSessions.length === 0 && (
               <div className="text-center py-16">
                 <MessageCircle className="h-16 w-16 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-400 mb-2">No chat sessions yet</h3>

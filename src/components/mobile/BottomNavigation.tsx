@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, MessageCircle, Settings, Plus, Search } from 'lucide-react';
+import { Home, Settings, Plus, Search, Menu, ArrowLeft } from 'lucide-react';
 import { useUIStore } from '../../stores/uiStore.js';
 
 interface BottomNavItem {
@@ -19,49 +19,87 @@ interface BottomNavigationProps {
   className?: string;
 }
 
-const defaultItems: BottomNavItem[] = [
-  {
-    id: 'home',
-    label: 'Workspaces',
-    icon: Home,
-    path: '/',
-    isActive: (path) => path === '/'
-  },
-  {
-    id: 'chat',
-    label: 'Chat',
-    icon: MessageCircle,
-    isActive: (path) => path.includes('/workspace/') && path.includes('/session/')
-  },
-  {
-    id: 'add',
-    label: 'New',
-    icon: Plus,
-    action: () => console.log('Add action')
-  },
-  {
-    id: 'search',
-    label: 'Search',
-    icon: Search,
-    action: () => console.log('Search action')
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: Settings,
-    path: '/settings',
-    isActive: (path) => path.startsWith('/settings')
+const getContextualItems = (currentPath: string, navigate: (path: string) => void): BottomNavItem[] => {
+  const baseItems: BottomNavItem[] = [
+    {
+      id: 'home',
+      label: 'Workspaces',
+      icon: Home,
+      path: '/',
+      isActive: (path) => path === '/'
+    }
+  ];
+
+  // Add contextual navigation based on current path
+  if (currentPath.includes('/workspace/') && currentPath.includes('/session/')) {
+    // In chat session - show back to sessions
+    baseItems.push({
+      id: 'back',
+      label: 'Sessions',
+      icon: ArrowLeft,
+      action: () => {
+        const workspaceId = currentPath.split('/')[2];
+        navigate(`/workspace/${workspaceId}`);
+      },
+      isActive: () => false
+    });
+  } else if (currentPath.includes('/workspace/')) {
+    // In workspace sessions - show menu/hamburger
+    baseItems.push({
+      id: 'menu',
+      label: 'Menu',
+      icon: Menu,
+      action: () => console.log('Menu action'),
+      isActive: () => true
+    });
+  } else {
+    // Default navigation item
+    baseItems.push({
+      id: 'navigation',
+      label: 'Menu',
+      icon: Menu,
+      action: () => console.log('Menu action'),
+      isActive: () => false
+    });
   }
-];
+
+  // Add remaining items
+  baseItems.push(
+    {
+      id: 'add',
+      label: 'New',
+      icon: Plus,
+      action: () => console.log('Add action')
+    },
+    {
+      id: 'search',
+      label: 'Search',
+      icon: Search,
+      action: () => console.log('Search action')
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: Settings,
+      path: '/settings',
+      isActive: (path) => path.startsWith('/settings')
+    }
+  );
+
+  return baseItems;
+};
 
 export function BottomNavigation({ 
-  items = defaultItems, 
+  items, 
   onItemPress,
   className = '' 
 }: BottomNavigationProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { isMobile } = useUIStore();
+
+  // Use contextual items if no items provided
+  const contextualItems = items || getContextualItems(location.pathname, navigate);
 
   // Only show on mobile
   if (!isMobile) {
@@ -102,7 +140,7 @@ export function BottomNavigation({
     `}>
       {/* Navigation Items */}
       <div className="flex items-center justify-around px-2 py-1">
-        {items.map((item) => {
+        {contextualItems.map((item) => {
           const Icon = item.icon;
           const isActive = isItemActive(item);
           

@@ -65,6 +65,22 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
   const styles = getBubbleStyles();
 
+  // Handle system messages differently - no bubble, just centered text
+  if (message.type === 'system') {
+    return (
+      <div className="flex justify-center mb-6">
+        <div className="text-center">
+          <p className="text-sm text-gray-400 leading-relaxed whitespace-pre-wrap">
+            {message.content}
+          </p>
+          <div className="text-xs text-gray-500 mt-1">
+            {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex items-start space-x-3 mb-6 ${styles.container}`}>
       {/* Profile Picture */}
