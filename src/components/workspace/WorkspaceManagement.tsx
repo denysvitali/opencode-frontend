@@ -266,13 +266,14 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           </div>
           
           {filteredWorkspaces.length === 0 && !isLoading && (
-            <div className="text-center py-16">
-              <Server className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+            <div className="text-center py-16" role="region" aria-label="Empty workspace list">
+              <Server className="h-16 w-16 text-gray-600 mx-auto mb-4" aria-hidden="true" />
               <h3 className="text-xl font-semibold text-gray-400 mb-2">No workspaces yet</h3>
               <p className="text-gray-500 mb-8">Create your first workspace to get started</p>
               <button
                 onClick={() => setShowCreationWizard(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors font-medium"
+                className="bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 text-white px-8 py-3 rounded-lg transition-colors font-medium"
+                aria-label="Create your first workspace"
               >
                 Create Workspace
               </button>
@@ -288,13 +289,16 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           fixed bottom-24 right-4 z-40
           w-14 h-14
           bg-blue-600 hover:bg-blue-700
+          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900
           text-white rounded-full
           shadow-lg active:scale-95
           transition-all duration-200
           flex items-center justify-center
         "
+        aria-label="Create new workspace"
+        title="Create new workspace"
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-6 w-6" aria-hidden="true" />
       </button>
     </div>
   );

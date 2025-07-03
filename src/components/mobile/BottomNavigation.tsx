@@ -132,15 +132,19 @@ export function BottomNavigation({
   };
 
   return (
-    <nav className={`
-      fixed bottom-0 left-0 right-0 z-50
-      bg-gray-900/95 backdrop-blur-xl border-t border-gray-800
-      safe-area-bottom
-      ${className}
-    `}>
+    <nav 
+      className={`
+        fixed bottom-0 left-0 right-0 z-50
+        bg-gray-900/95 backdrop-blur-xl border-t border-gray-800
+        safe-area-bottom
+        ${className}
+      `}
+      role="navigation"
+      aria-label="Main navigation"
+    >
       {/* Navigation Items */}
-      <div className="flex items-center justify-around px-2 py-1">
-        {contextualItems.map((item) => {
+      <div className="flex items-center justify-around px-2 py-1" role="tablist">
+        {contextualItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = isItemActive(item);
           
@@ -148,17 +152,39 @@ export function BottomNavigation({
             <button
               key={item.id}
               onClick={() => handleItemPress(item)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleItemPress(item);
+                }
+                // Arrow key navigation
+                if (e.key === 'ArrowLeft' && index > 0) {
+                  e.preventDefault();
+                  const prevButton = e.currentTarget.parentElement?.children[index - 1] as HTMLButtonElement;
+                  prevButton?.focus();
+                }
+                if (e.key === 'ArrowRight' && index < contextualItems.length - 1) {
+                  e.preventDefault();
+                  const nextButton = e.currentTarget.parentElement?.children[index + 1] as HTMLButtonElement;
+                  nextButton?.focus();
+                }
+              }}
               className={`
                 relative flex flex-col items-center justify-center
                 min-h-[52px] min-w-[52px] px-2 py-1
                 rounded-xl transition-all duration-200
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${isActive 
                   ? 'text-blue-400 bg-blue-400/10' 
                   : 'text-gray-400 hover:text-gray-300 active:bg-gray-800/50'
                 }
                 active:scale-95
               `}
-              aria-label={item.label}
+              aria-label={`${item.label}${isActive ? ' (current)' : ''}`}
+              aria-pressed={isActive}
+              role="tab"
+              aria-selected={isActive}
+              tabIndex={isActive ? 0 : -1}
             >
               {/* Icon with special styling for Add button */}
               <div className={`

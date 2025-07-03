@@ -429,8 +429,17 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                 return (
                   <div
                     key={session.id}
-                    className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
+                    className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-900"
                     onClick={() => onSelectSession(session.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onSelectSession(session.id);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Open session: ${session.name}`}
                   >
                     <div className="p-4 sm:p-6">
                       <div className="flex items-start justify-between">
@@ -472,18 +481,20 @@ export default function WorkspaceContext({ workspaceId, onBack, onSelectSession 
                         
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2 sm:ml-4 flex-shrink-0">
                           <button 
-                            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                            className="p-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 rounded-lg transition-colors"
                             onClick={(e) => handleSessionAction('settings', session.id, e)}
+                            aria-label={`Settings for ${session.name}`}
                             title="Session settings"
                           >
-                            <Settings className="h-4 w-4 text-gray-400" />
+                            <Settings className="h-4 w-4 text-gray-400" aria-hidden="true" />
                           </button>
                           <button 
-                            className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-red-400"
+                            className="p-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 rounded-lg transition-colors text-red-400"
                             onClick={(e) => handleSessionAction('delete', session.id, e)}
+                            aria-label={`Delete ${session.name}`}
                             title="Delete session"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
                           </button>
                         </div>
                       </div>

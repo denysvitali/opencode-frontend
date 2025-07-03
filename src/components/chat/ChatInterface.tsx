@@ -256,11 +256,16 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div 
+        className="flex-1 overflow-y-auto p-4 space-y-4"
+        role="log"
+        aria-label="Chat messages"
+        aria-live="polite"
+      >
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col items-center justify-center h-full text-center" role="region" aria-label="Welcome message">
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 max-w-md">
-              <Bot className="h-16 w-16 text-blue-400 mx-auto mb-4" />
+              <Bot className="h-16 w-16 text-blue-400 mx-auto mb-4" aria-hidden="true" />
               <h3 className="text-xl font-semibold text-white mb-2">Ready to Code!</h3>
               <p className="text-gray-400 mb-6">
                 Start a conversation with your AI coding assistant. Ask questions, get help with code, or explore your workspace.
@@ -272,9 +277,10 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
                     <button
                       key={index}
                       onClick={() => setInput(action.prompt)}
-                      className="flex items-center gap-2 p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-sm text-gray-300 hover:text-white"
+                      className="flex items-center gap-2 p-3 bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg transition-colors text-sm text-gray-300 hover:text-white"
+                      aria-label={`Quick action: ${action.label}`}
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-4 w-4" aria-hidden="true" />
                       <span className="truncate">{action.label}</span>
                     </button>
                   );
@@ -288,13 +294,13 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
               <MessageBubble key={message.id} message={message} />
             ))}
             {isLoading && (
-              <div className="flex items-start space-x-3 mb-6">
+              <div className="flex items-start space-x-3 mb-6" role="status" aria-label="AI is thinking">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
                   AI
                 </div>
                 <div className="bg-gray-700 rounded-2xl px-4 py-3 max-w-xs lg:max-w-md xl:max-w-lg">
                   <div className="flex items-center space-x-2 text-gray-400">
-                    <div className="flex space-x-1">
+                    <div className="flex space-x-1" aria-hidden="true">
                       <div className="w-2 h-2 bg-current rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                       <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
@@ -311,10 +317,14 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
 
       {/* Input Area */}
       <div className="border-t border-white/10 bg-white/5 backdrop-blur-xl p-4">
-        <form onSubmit={handleSubmit} className="relative">
+        <form onSubmit={handleSubmit} className="relative" role="search" aria-label="Chat input form">
           <div className="flex items-end gap-3">
             <div className="flex-1 relative">
+              <label htmlFor="chat-input" className="sr-only">
+                Type your message to the AI assistant
+              </label>
               <textarea
+                id="chat-input"
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -323,13 +333,16 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
                 className="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 pr-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent resize-none min-h-[48px] max-h-32"
                 rows={1}
                 disabled={isLoading}
+                aria-describedby="send-button"
               />
               <button
+                id="send-button"
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="absolute right-2 bottom-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-xl transition-colors text-white"
+                className="absolute right-2 bottom-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-xl transition-colors text-white"
+                aria-label={isLoading ? "Sending message..." : "Send message"}
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           </div>

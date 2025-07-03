@@ -21,6 +21,13 @@ export default function Layout({ children, showWorkspaceUI = false }: LayoutProp
 
   return (
     <div className={`${showWorkspaceUI ? 'flex' : ''} h-screen bg-gray-900`}>
+      {/* Skip to main content link */}
+      <a 
+        href="#main-content" 
+        className="skip-link sr-only focus:not-sr-only fixed top-4 left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-[1000] text-sm font-medium"
+      >
+        Skip to main content
+      </a>
       {/* Sidebar - only show when showWorkspaceUI is true */}
       {showWorkspaceUI && (
         <div
@@ -55,7 +62,7 @@ export default function Layout({ children, showWorkspaceUI = false }: LayoutProp
             <Navigation />
           </>
         )}
-        <main className={`flex-1 overflow-hidden ${isMobile ? 'pb-20' : ''}`}>
+        <main id="main-content" className={`flex-1 overflow-hidden ${isMobile ? 'pb-20' : ''}`} role="main">
           {children}
         </main>
       </div>
