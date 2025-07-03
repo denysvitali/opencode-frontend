@@ -16,8 +16,8 @@ export function useCollaboration({ workspaceId, sessionId, enabled = true }: Use
   
   const { user: currentUser } = useAppStore();
   const lastActivityRef = useRef(Date.now());
-  const presenceUpdateTimerRef = useRef<NodeJS.Timeout>();
-  const activityDetectionRef = useRef<() => void>();
+  const presenceUpdateTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const activityDetectionRef = useRef<(() => void) | null>(null);
 
   // Join workspace collaboration
   const joinCollaboration = useCallback(() => {
