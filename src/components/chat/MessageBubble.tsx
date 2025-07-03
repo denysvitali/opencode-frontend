@@ -70,12 +70,12 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     return (
       <div className="flex justify-center mb-6">
         <div className="text-center">
+          <div className="text-xs text-gray-500 mb-1">
+            {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
           <p className="text-sm text-gray-400 leading-relaxed whitespace-pre-wrap">
             {message.content}
           </p>
-          <div className="text-xs text-gray-500 mt-1">
-            {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </div>
         </div>
       </div>
     );
@@ -89,7 +89,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       </div>
 
       {/* Message Content */}
-      <div className={`max-w-xs lg:max-w-md xl:max-w-lg relative ${isUser ? 'mr-3' : 'ml-3'}`}>
+      <div className={`max-w-2xl lg:max-w-3xl xl:max-w-4xl relative ${isUser ? 'mr-3' : 'ml-3'}`}>
         {/* Speech Bubble */}
         <div className={`px-4 py-3 rounded-2xl shadow-lg ${styles.bubble}`}>
           {/* Arrow pointing to profile */}

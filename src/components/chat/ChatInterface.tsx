@@ -264,7 +264,7 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
       >
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center" role="region" aria-label="Welcome message">
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 max-w-md">
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 max-w-2xl">
               <Bot className="h-16 w-16 text-blue-400 mx-auto mb-4" aria-hidden="true" />
               <h3 className="text-xl font-semibold text-white mb-2">Ready to Code!</h3>
               <p className="text-gray-400 mb-6">
@@ -298,7 +298,7 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
                   AI
                 </div>
-                <div className="bg-gray-700 rounded-2xl px-4 py-3 max-w-xs lg:max-w-md xl:max-w-lg">
+                <div className="bg-gray-700 rounded-2xl px-4 py-3 max-w-2xl lg:max-w-3xl xl:max-w-4xl">
                   <div className="flex items-center space-x-2 text-gray-400">
                     <div className="flex space-x-1" aria-hidden="true">
                       <div className="w-2 h-2 bg-current rounded-full animate-bounce"></div>
@@ -339,7 +339,7 @@ export default function ChatInterface({ sessionId, workspaceId }: ChatInterfaceP
                 id="send-button"
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="absolute right-2 bottom-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-xl transition-colors text-white"
+                className="absolute right-2 bottom-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-xl transition-colors text-white flex items-center justify-center"
                 aria-label={isLoading ? "Sending message..." : "Send message"}
               >
                 <Send className="h-4 w-4" aria-hidden="true" />
