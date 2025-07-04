@@ -31,7 +31,7 @@ interface MenuItem {
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const navigate = useNavigate();
   const { isMobile } = useUIStore();
-  const { user, logout } = useAppStore();
+  const { user, setUser } = useAppStore();
 
   const menuItems: MenuItem[] = [
     {
@@ -70,7 +70,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       label: 'Sign Out',
       icon: LogOut,
       action: () => {
-        logout();
+        setUser(null);
         navigate('/');
       },
       danger: true,
@@ -132,7 +132,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 {user?.name || 'User'}
               </h2>
               <p className="text-sm text-gray-400">
-                {user?.email || 'user@example.com'}
+                {user?.name ? `${user.name.toLowerCase()}@example.com` : 'user@example.com'}
               </p>
             </div>
           </div>
