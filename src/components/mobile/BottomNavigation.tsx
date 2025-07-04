@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Settings, Plus, Search, Menu, ArrowLeft } from 'lucide-react';
 import { useUIStore } from '../../stores/uiStore.js';
 import MobileMenu from './MobileMenu.js';
+import MobileSearch from './MobileSearch.js';
 
 interface BottomNavItem {
   id: string;
@@ -20,7 +21,7 @@ interface BottomNavigationProps {
   className?: string;
 }
 
-const getContextualItems = (currentPath: string, navigate: (path: string) => void, onMenuOpen: () => void): BottomNavItem[] => {
+const getContextualItems = (currentPath: string, navigate: (path: string) => void, onMenuOpen: () => void, onSearchOpen: () => void, onNewAction: () => void): BottomNavItem[] => {
   const baseItems: BottomNavItem[] = [
     {
       id: 'home',
@@ -64,19 +65,29 @@ const getContextualItems = (currentPath: string, navigate: (path: string) => voi
     });
   }
 
+  // Add contextual "New" button
+  let newButtonLabel = 'New';
+  if (currentPath === '/') {
+    newButtonLabel = 'New Workspace';
+  } else if (currentPath.includes('/workspace/') && !currentPath.includes('/session/')) {
+    newButtonLabel = 'New Session';
+  } else if (currentPath.includes('/session/')) {
+    newButtonLabel = 'New Chat';
+  }
+
   // Add remaining items
   baseItems.push(
     {
       id: 'add',
-      label: 'New',
+      label: newButtonLabel,
       icon: Plus,
-      action: () => console.log('Add action')
+      action: onNewAction
     },
     {
       id: 'search',
       label: 'Search',
       icon: Search,
-      action: () => console.log('Search action')
+      action: onSearchOpen
     },
     {
       id: 'settings',
@@ -99,9 +110,31 @@ export function BottomNavigation({
   const navigate = useNavigate();
   const { isMobile } = useUIStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const handleNewAction = () => {
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+
+    // Context-based new actions
+    if (location.pathname === '/') {
+      // On workspaces page - create new workspace
+      // This could trigger a workspace creation modal
+      console.log('Create new workspace');
+    } else if (location.pathname.includes('/workspace/') && !location.pathname.includes('/session/')) {
+      // In workspace - create new session
+      const workspaceId = location.pathname.split('/')[2];
+      navigate(`/workspace/${workspaceId}/new-session`);
+    } else if (location.pathname.includes('/session/')) {
+      // In session - create new chat/message
+      console.log('Create new chat');
+    }
+  };
 
   // Use contextual items if no items provided
-  const contextualItems = items || getContextualItems(location.pathname, navigate, () => setIsMenuOpen(true));
+  const contextualItems = items || getContextualItems(location.pathname, navigate, () => setIsMenuOpen(true), () => setIsSearchOpen(true), handleNewAction);
 
   // Only show on mobile
   if (!isMobile) {
@@ -244,6 +277,12 @@ export function BottomNavigation({
       <MobileMenu 
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
+      />
+      
+      {/* Mobile Search */}
+      <MobileSearch 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
       />
     </>
   );
