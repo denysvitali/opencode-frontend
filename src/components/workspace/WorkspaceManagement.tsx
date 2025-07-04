@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Server, GitBranch, Clock, Play, Square, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Server, GitBranch, Clock, Play, Square, AlertCircle, CheckCircle, ChevronRight } from 'lucide-react';
 import TopBar from '../layout/TopBar.js';
 import WorkspaceCreationWizard, { type WorkspaceCreationData } from './WorkspaceCreationWizard.js';
 import SearchAndFilter from '../ui/SearchAndFilter.js';
@@ -300,22 +300,17 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
       <TopBar />
       
       {/* Header */}
-      <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 min-h-[180px] sm:min-h-[200px] md:h-[280px]" style={{
-        background: `
-          radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
-          linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%)
-        `
-      }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 h-full flex flex-col justify-center">
+      <div className="bg-white border-b border-gray-200 min-h-[180px] sm:min-h-[200px] md:h-[280px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 h-full flex flex-col justify-center">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Workspace Management</h1>
-              <p className="text-gray-400 text-sm md:text-base">Manage your AI development environments</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Workspace Management</h1>
+              <p className="text-gray-600 text-sm md:text-base">Manage your AI development environments</p>
             </div>
             
             {/* Connection Status */}
@@ -330,56 +325,56 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            <div className="bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="bg-green-400/20 p-2 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Running</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-sm text-gray-600">Running</p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {workspaces.filter(w => w.status === 'running').length}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="bg-yellow-400/20 p-2 rounded-lg">
-                  <Play className="h-5 w-5 text-yellow-400" />
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Play className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Starting</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-sm text-gray-600">Starting</p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {workspaces.filter(w => w.status === 'creating').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="bg-gray-400/20 p-2 rounded-lg">
-                  <Square className="h-5 w-5 text-gray-400" />
+                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                  <Square className="h-5 w-5 text-gray-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Stopped</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-sm text-gray-600">Stopped</p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {workspaces.filter(w => w.status === 'stopped').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-400/20 p-2 rounded-lg">
-                  <Server className="h-5 w-5 text-blue-400" />
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Server className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Total</p>
-                  <p className="text-xl font-semibold text-white">{workspaces.length}</p>
+                  <p className="text-sm text-gray-600">Total</p>
+                  <p className="text-2xl font-bold text-gray-900">{workspaces.length}</p>
                 </div>
               </div>
             </div>
@@ -399,23 +394,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Workspaces Header with Search */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">Workspaces ({workspaces.length})</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Workspaces ({workspaces.length})</h2>
           <div className="flex gap-2">
-            {/* Debug navigation buttons */}
-            <button
-              onClick={() => {
-                console.log('DEBUG: Direct navigation test to ws-1');
-                console.log('DEBUG: Available workspaces:', workspaces.map(w => w.id));
-                console.log('DEBUG: Calling onSelectWorkspace with ws-1');
-                onSelectWorkspace('ws-1');
-              }}
-              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-            >
-              Test ws-1
-            </button>
             <button
               onClick={() => setShowCreationWizard(true)}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors font-medium shadow-sm"
             >
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Create Workspace</span>
@@ -437,12 +420,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {filteredWorkspaces.map((workspace) => {
             const statusConfig = getStatusConfig(workspace.status);
-            const StatusIcon = statusConfig.icon;
 
             return (
               <div
                 key={workspace.id}
-                className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
+                className="bg-white rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group"
                 onClick={() => handleWorkspaceSelect(workspace)}
                 role="button"
                 tabIndex={0}
@@ -454,23 +436,22 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                   }
                 }}
               >
-                <div className="p-4 sm:p-5 md:p-6">
+                <div className="p-6">
                   {/* Header */}
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-3 min-w-0 flex-1">
-                      <div className="bg-blue-600/20 p-2 sm:p-3 rounded-lg flex-shrink-0">
-                        <Server className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
+                    <div className="flex items-start gap-4 min-w-0 flex-1">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Server className="h-6 w-6 text-blue-600" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-medium text-white group-hover:text-blue-400 transition-colors truncate">
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
                           {workspace.name}
                         </h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <StatusIcon className={`h-4 w-4 ${statusConfig.color}`} />
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusConfig.color} ${statusConfig.bgColor}`}>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className={`w-2 h-2 rounded-full ${statusConfig.color.replace('text-', 'bg-')}`} />
+                          <span className="text-sm font-medium text-gray-600">
                             {statusConfig.label}
                           </span>
-                          {/* Real-time status indicator for this workspace */}
                           <ConnectionStatusDot 
                             size="sm" 
                             className="ml-1"
@@ -479,19 +460,16 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                       </div>
                     </div>
                     
-                    {/* Small status indicator dot */}
+                    {/* Arrow indicator */}
                     <div className="flex-shrink-0 ml-2">
-                      <div 
-                        className={`w-3 h-3 rounded-full ${statusConfig.color.replace('text-', 'bg-')}`}
-                        title={`Status: ${statusConfig.label}`}
-                      />
+                      <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
                     </div>
                   </div>
 
                   {/* Repository */}
                   {workspace.config?.repository && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-4">
-                      <GitBranch className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-4 p-3 bg-gray-50 rounded-xl">
+                      <GitBranch className="h-4 w-4 flex-shrink-0" />
                       <span className="truncate min-w-0">
                         {workspace.config.repository.url.replace('https://github.com/', '')}
                       </span>
@@ -500,16 +478,16 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                   )}
 
                   {/* Metadata */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs text-gray-500">
-                    <div className="space-y-1">
-                      <p className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 flex-shrink-0" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                    <div className="space-y-2">
+                      <p className="flex items-center gap-2 text-sm text-gray-600">
+                        <Clock className="h-4 w-4 flex-shrink-0" />
                         <span className="truncate">Updated {workspace.updatedAt.toLocaleDateString()}</span>
                       </p>
-                      <p className="truncate"><span className="text-gray-400">Created:</span> {workspace.createdAt.toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-500 truncate">Created {workspace.createdAt.toLocaleDateString()}</p>
                     </div>
                     <div className="sm:text-right">
-                      <p className="truncate"><span className="text-gray-400">User:</span> {workspace.userId}</p>
+                      <p className="text-sm text-gray-500 truncate">User: {workspace.userId}</p>
                     </div>
                   </div>
                 </div>
@@ -520,12 +498,14 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
         {filteredWorkspaces.length === 0 && workspaces.length === 0 && (
           <div className="text-center py-16">
-            <Server className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-400 mb-2">No workspaces yet</h3>
-            <p className="text-gray-500 mb-8">Create your first workspace to start developing with AI</p>
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Server className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No workspaces yet</h3>
+            <p className="text-gray-600 mb-8">Create your first workspace to start developing with AI</p>
             <button
               onClick={() => setShowCreationWizard(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors font-medium"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl transition-colors font-medium shadow-sm"
             >
               Create Your First Workspace
             </button>
@@ -534,9 +514,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
         {filteredWorkspaces.length === 0 && workspaces.length > 0 && (
           <div className="text-center py-16">
-            <Server className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-400 mb-2">No workspaces match your filters</h3>
-            <p className="text-gray-500 mb-8">Try adjusting your search or filter criteria</p>
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Server className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No workspaces match your filters</h3>
+            <p className="text-gray-600 mb-8">Try adjusting your search or filter criteria</p>
           </div>
         )}
       </div>
