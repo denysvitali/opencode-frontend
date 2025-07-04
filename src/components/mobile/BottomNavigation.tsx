@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Settings, Plus, Search, Menu, ArrowLeft } from 'lucide-react';
 import { useUIStore } from '../../stores/uiStore.js';
+import MobileMenu from './MobileMenu.js';
 
 interface BottomNavItem {
   id: string;
@@ -19,7 +20,7 @@ interface BottomNavigationProps {
   className?: string;
 }
 
-const getContextualItems = (currentPath: string, navigate: (path: string) => void): BottomNavItem[] => {
+const getContextualItems = (currentPath: string, navigate: (path: string) => void, onMenuOpen: () => void): BottomNavItem[] => {
   const baseItems: BottomNavItem[] = [
     {
       id: 'home',
@@ -49,7 +50,7 @@ const getContextualItems = (currentPath: string, navigate: (path: string) => voi
       id: 'menu',
       label: 'Menu',
       icon: Menu,
-      action: () => console.log('Menu action'),
+      action: onMenuOpen,
       isActive: () => true
     });
   } else {
@@ -58,7 +59,7 @@ const getContextualItems = (currentPath: string, navigate: (path: string) => voi
       id: 'navigation',
       label: 'Menu',
       icon: Menu,
-      action: () => console.log('Menu action'),
+      action: onMenuOpen,
       isActive: () => false
     });
   }
@@ -97,9 +98,10 @@ export function BottomNavigation({
   const location = useLocation();
   const navigate = useNavigate();
   const { isMobile } = useUIStore();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Use contextual items if no items provided
-  const contextualItems = items || getContextualItems(location.pathname, navigate);
+  const contextualItems = items || getContextualItems(location.pathname, navigate, () => setIsMenuOpen(true));
 
   // Only show on mobile
   if (!isMobile) {
@@ -132,16 +134,17 @@ export function BottomNavigation({
   };
 
   return (
-    <nav 
-      className={`
-        fixed bottom-0 left-0 right-0 z-50
-        bg-gray-900/95 backdrop-blur-xl border-t border-gray-800
-        safe-area-bottom
-        ${className}
-      `}
-      role="navigation"
-      aria-label="Main navigation"
-    >
+    <>
+      <nav 
+        className={`
+          fixed bottom-0 left-0 right-0 z-50
+          bg-gray-900/95 backdrop-blur-xl border-t border-gray-800
+          safe-area-bottom
+          ${className}
+        `}
+        role="navigation"
+        aria-label="Main navigation"
+      >
       {/* Navigation Items */}
       <div className="flex items-center justify-around px-2 py-1" role="tablist">
         {contextualItems.map((item, index) => {
@@ -236,6 +239,13 @@ export function BottomNavigation({
         })}
       </div>
     </nav>
+      
+      {/* Mobile Menu */}
+      <MobileMenu 
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
+    </>
   );
 }
 

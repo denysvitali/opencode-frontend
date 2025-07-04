@@ -493,35 +493,39 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2">
                       {workspace.status === 'stopped' && (
                         <button 
-                          className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-green-400"
+                          className="w-10 h-10 md:w-12 md:h-12 hover:bg-gray-700 rounded-lg transition-colors text-green-400 flex items-center justify-center"
                           onClick={(e) => handleWorkspaceAction('start', workspace.id, e)}
                           title="Start workspace"
+                          aria-label="Start workspace"
                         >
-                          <Play className="h-4 w-4" />
+                          <Play className="h-5 w-5 md:h-6 md:w-6" />
                         </button>
                       )}
                       {workspace.status === 'running' && (
                         <button 
-                          className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-yellow-400"
+                          className="w-10 h-10 md:w-12 md:h-12 hover:bg-gray-700 rounded-lg transition-colors text-yellow-400 flex items-center justify-center"
                           onClick={(e) => handleWorkspaceAction('stop', workspace.id, e)}
                           title="Stop workspace"
+                          aria-label="Stop workspace"
                         >
-                          <Square className="h-4 w-4" />
+                          <Square className="h-5 w-5 md:h-6 md:w-6" />
                         </button>
                       )}
                       <button 
-                        className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                        className="w-10 h-10 md:w-12 md:h-12 hover:bg-gray-700 rounded-lg transition-colors flex items-center justify-center"
                         onClick={(e) => handleWorkspaceAction('settings', workspace.id, e)}
                         title="Workspace settings"
+                        aria-label="Workspace settings"
                       >
-                        <Settings className="h-4 w-4 text-gray-400" />
+                        <Settings className="h-5 w-5 md:h-6 md:w-6 text-gray-400" />
                       </button>
                       <button 
-                        className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-red-400"
+                        className="w-10 h-10 md:w-12 md:h-12 hover:bg-gray-700 rounded-lg transition-colors text-red-400 flex items-center justify-center"
                         onClick={(e) => handleWorkspaceAction('delete', workspace.id, e)}
                         title="Delete workspace"
+                        aria-label="Delete workspace"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-5 w-5 md:h-6 md:w-6" />
                       </button>
                     </div>
                   </div>

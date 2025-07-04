@@ -168,11 +168,14 @@ export function MobileWorkspaceCard({
               setShowActions(true);
             }}
             className="
-              ml-3 p-2 -m-2
+              ml-3 p-3 -m-3
               text-gray-400 hover:text-white
               rounded-lg active:bg-gray-700
               transition-colors
+              min-w-[44px] min-h-[44px]
+              flex items-center justify-center
             "
+            aria-label="More actions"
           >
             <MoreVertical className="h-5 w-5" />
           </button>
@@ -238,7 +241,7 @@ export function MobileWorkspaceCard({
             )}
             className={`
               absolute bottom-4 right-4
-              w-10 h-10
+              w-12 h-12
               rounded-full
               flex items-center justify-center
               transition-all duration-200
@@ -248,11 +251,12 @@ export function MobileWorkspaceCard({
               }
               active:scale-95
             `}
+            aria-label={canStart ? 'Start workspace' : 'Stop workspace'}
           >
             {canStart ? (
-              <Play className="h-4 w-4 ml-0.5" />
+              <Play className="h-6 w-6 ml-0.5" />
             ) : (
-              <Square className="h-4 w-4" />
+              <Square className="h-6 w-6" />
             )}
           </button>
         )}
