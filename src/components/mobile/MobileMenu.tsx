@@ -128,7 +128,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               </span>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-medium text-white">
                 {user?.name || 'User'}
               </h2>
               <p className="text-sm text-gray-400">

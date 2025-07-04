@@ -148,11 +148,20 @@ export function MobileWorkspaceCard({
           transition-all duration-150
           ${className}
         `}
+        role="button"
+        tabIndex={0}
+        aria-label={`${name} workspace. Status: ${statusConfig.label}. ${description || ''}`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCardPress();
+          }
+        }}
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-white truncate">
+            <h3 className="text-lg font-medium text-white truncate">
               {name}
             </h3>
             {description && (
@@ -209,9 +218,9 @@ export function MobileWorkspaceCard({
 
         {/* Stats Row */}
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {activeUsers > 0 && (
-              <div className="flex items-center gap-1.5 text-gray-400">
+              <div className="flex items-center gap-2 text-gray-400">
                 <Users className="h-4 w-4" />
                 <span>{activeUsers}</span>
               </div>
@@ -224,7 +233,7 @@ export function MobileWorkspaceCard({
           </div>
           
           {sessionCount > 0 && (
-            <div className="flex items-center gap-1.5 text-blue-400">
+            <div className="flex items-center gap-2 text-blue-400">
               <span className="text-xs font-medium">
                 {sessionCount} session{sessionCount !== 1 ? 's' : ''}
               </span>
@@ -284,7 +293,7 @@ export function MobileWorkspaceCard({
               <div className="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-6" />
               
               {/* Title */}
-              <h3 className="text-lg font-semibold text-white mb-4 text-center">
+              <h3 className="text-lg font-medium text-white mb-4 text-center">
                 {name}
               </h3>
               

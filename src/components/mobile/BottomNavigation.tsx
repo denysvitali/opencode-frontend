@@ -179,7 +179,7 @@ export function BottomNavigation({
         aria-label="Main navigation"
       >
       {/* Navigation Items */}
-      <div className="flex items-center justify-around px-2 py-1" role="tablist">
+      <div className="flex items-center justify-around px-3 py-2" role="tablist">
         {contextualItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = isItemActive(item);
@@ -207,7 +207,7 @@ export function BottomNavigation({
               }}
               className={`
                 relative flex flex-col items-center justify-center
-                min-h-[52px] min-w-[52px] px-2 py-1
+                min-h-[52px] min-w-[52px] px-3 py-2
                 rounded-xl transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${isActive 

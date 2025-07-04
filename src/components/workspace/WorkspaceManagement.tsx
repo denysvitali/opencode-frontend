@@ -334,7 +334,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 h-full flex flex-col justify-center">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Workspace Management</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">Workspace Management</h1>
               <p className="text-gray-400 text-sm md:text-base">Manage your AI development environments</p>
             </div>
             
@@ -349,11 +349,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-4 sm:mt-6 md:mt-8">
-            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="bg-green-400/20 p-1.5 md:p-2 rounded-lg">
-                  <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            <div className="bg-gray-700/50 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-400/20 p-2 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Running</p>
@@ -364,10 +364,10 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
               </div>
             </div>
             
-            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="bg-yellow-400/20 p-1.5 md:p-2 rounded-lg">
-                  <Play className="h-4 w-4 md:h-5 md:w-5 text-yellow-400" />
+            <div className="bg-gray-700/50 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-yellow-400/20 p-2 rounded-lg">
+                  <Play className="h-5 w-5 text-yellow-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Starting</p>
@@ -378,10 +378,10 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
               </div>
             </div>
 
-            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="bg-gray-400/20 p-1.5 md:p-2 rounded-lg">
-                  <Square className="h-4 w-4 md:h-5 md:w-5 text-gray-400" />
+            <div className="bg-gray-700/50 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-400/20 p-2 rounded-lg">
+                  <Square className="h-5 w-5 text-gray-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Stopped</p>
@@ -392,10 +392,10 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
               </div>
             </div>
 
-            <div className="bg-gray-700/50 rounded-lg p-3 md:p-4">
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="bg-blue-400/20 p-1.5 md:p-2 rounded-lg">
-                  <Server className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
+            <div className="bg-gray-700/50 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-400/20 p-2 rounded-lg">
+                  <Server className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Total</p>
@@ -419,7 +419,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Workspaces Header with Search */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg md:text-xl font-semibold text-white">Workspaces ({workspaces.length})</h2>
+          <h2 className="text-xl font-semibold text-white">Workspaces ({workspaces.length})</h2>
           <div className="flex gap-2">
             {/* Debug navigation buttons */}
             <button
@@ -464,6 +464,15 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                 key={workspace.id}
                 className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all cursor-pointer group"
                 onClick={() => handleWorkspaceSelect(workspace)}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open workspace ${workspace.name}. Status: ${statusConfig.label}`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleWorkspaceSelect(workspace);
+                  }
+                }}
               >
                 <div className="p-4 sm:p-5 md:p-6">
                   {/* Header */}
@@ -473,7 +482,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                         <Server className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-base sm:text-lg font-semibold text-white group-hover:text-blue-400 transition-colors truncate">
+                        <h3 className="text-lg font-medium text-white group-hover:text-blue-400 transition-colors truncate">
                           {workspace.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
