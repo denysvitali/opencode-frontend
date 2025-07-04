@@ -28,11 +28,6 @@ export function MobileSearch({ isOpen, onClose }: MobileSearchProps) {
   const { workspaces } = useWorkspaceAppStore();
   const { isMobile } = useUIStore();
 
-  // Don't render on desktop
-  if (!isMobile) {
-    return null;
-  }
-
   // Focus search input when opened
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
@@ -86,6 +81,11 @@ export function MobileSearch({ isOpen, onClose }: MobileSearchProps) {
 
     return () => clearTimeout(searchTimeout);
   }, [searchQuery, workspaces]);
+
+  // Don't render on desktop
+  if (!isMobile) {
+    return null;
+  }
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
