@@ -241,34 +241,13 @@ export function MobileWorkspaceCard({
           )}
         </div>
 
-        {/* Quick Action Button */}
-        {(canStart || canStop) && (
-          <button
-            onClick={(e) => handleActionPress(
-              () => canStart ? onStart?.(id) : onStop?.(id),
-              e
-            )}
-            className={`
-              absolute bottom-4 right-4
-              w-12 h-12
-              rounded-full
-              flex items-center justify-center
-              transition-all duration-200
-              ${canStart 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
-                : 'bg-red-600 hover:bg-red-700 text-white'
-              }
-              active:scale-95
-            `}
-            aria-label={canStart ? 'Start workspace' : 'Stop workspace'}
-          >
-            {canStart ? (
-              <Play className="h-6 w-6 ml-0.5" />
-            ) : (
-              <Square className="h-6 w-6" />
-            )}
-          </button>
-        )}
+        {/* Small status indicator dot */}
+        <div className="absolute top-4 right-4">
+          <div 
+            className={`w-3 h-3 rounded-full ${statusConfig.color.replace('text-', 'bg-')}`}
+            title={`Status: ${statusConfig.label}`}
+          />
+        </div>
       </div>
 
       {/* Action Sheet */}

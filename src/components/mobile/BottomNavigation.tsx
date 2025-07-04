@@ -263,8 +263,8 @@ export function BottomNavigation({
               {/* Active indicator */}
               {isActive && item.id !== 'add' && (
                 <div className="
-                  absolute top-0 left-1/2 transform -translate-x-1/2
-                  w-6 h-0.5 bg-blue-400 rounded-full
+                  absolute -top-1 left-1/2 transform -translate-x-1/2
+                  w-1 h-1 bg-blue-400 rounded-full
                 " />
               )}
             </button>
