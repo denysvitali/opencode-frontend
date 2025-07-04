@@ -79,8 +79,9 @@ export interface Message {
 export interface MessageMetadata {
   // For command messages
   command?: {
-    name: string;
-    args: string[];
+    command?: string; // Full command string (e.g. "npm install")
+    name?: string; // Command name (e.g. "npm")
+    args?: string[]; // Command arguments (e.g. ["install"])
     exitCode?: number;
     output?: string;
   };

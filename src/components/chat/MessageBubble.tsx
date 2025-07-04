@@ -81,6 +81,11 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     );
   }
 
+  // Skip rendering command messages as separate bubbles - they should be part of AI responses
+  if (message.type === 'command') {
+    return null;
+  }
+
   return (
     <div className={`flex items-start space-x-3 mb-6 ${styles.container}`}>
       {/* Profile Picture */}
@@ -107,18 +112,50 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               </p>
             )}
 
-            {/* Command metadata */}
+            {/* Command metadata - terminal-like display */}
             {message.metadata?.command && (
-              <div className="mt-3 pt-3 border-t border-white/20">
-                <div className="text-xs opacity-80">
-                  <div className="flex items-center space-x-2">
-                    <span>Exit Code: {message.metadata.command.exitCode ?? 'Running'}</span>
+              <div className="mt-4">
+                {/* Terminal header */}
+                <div className="bg-gray-800 rounded-t-lg px-3 py-2 border-b border-gray-600">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <span className="text-xs text-gray-400 font-mono">Terminal</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Exit: {message.metadata.command.exitCode ?? 'Running'}
+                    </div>
                   </div>
+                </div>
+                
+                {/* Terminal content */}
+                <div className="bg-black rounded-b-lg p-4 font-mono text-sm">
+                  {/* Command prompt */}
+                  <div className="text-green-400 mb-2">
+                    <span className="text-blue-400">$</span> {
+                      message.metadata.command.command || 
+                      (message.metadata.command.name && message.metadata.command.args ? 
+                        `${message.metadata.command.name} ${message.metadata.command.args.join(' ')}` : 
+                        message.content)
+                    }
+                  </div>
+                  
+                  {/* Command output */}
                   {message.metadata.command.output && (
-                    <div className="mt-2 p-2 bg-black/30 rounded-lg">
-                      <pre className="text-xs text-green-300 whitespace-pre-wrap">
-                        {message.metadata.command.output}
-                      </pre>
+                    <pre className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+                      {message.metadata.command.output}
+                    </pre>
+                  )}
+                  
+                  {/* Running indicator */}
+                  {message.metadata.command.exitCode === undefined && (
+                    <div className="flex items-center space-x-2 text-yellow-400 mt-2">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                      <span className="text-xs">Running...</span>
                     </div>
                   )}
                 </div>
