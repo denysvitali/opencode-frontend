@@ -5,7 +5,6 @@ import WorkspaceCreationWizard, { type WorkspaceCreationData } from './Workspace
 import SearchAndFilter from '../ui/SearchAndFilter.js';
 import LiveStatusIndicator, { ConnectionStatusDot } from '../ui/LiveStatusIndicator.js';
 import MobileWorkspaceCard from '../mobile/MobileWorkspaceCard.js';
-import MobileHeader from '../mobile/MobileHeader.js';
 import PullToRefresh from '../mobile/PullToRefresh.js';
 import { useWorkspaceAppStore } from '../../stores/workspaceStore.js';
 import { useSessionContext } from '../../utils/sessionContext.js';
@@ -199,47 +198,50 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   }, []);
 
   const renderMobileView = () => (
-    <div className="min-h-screen bg-gray-900">
-      <MobileHeader
-        title="Workspaces"
-        subtitle={`${workspaces.length} workspace${workspaces.length !== 1 ? 's' : ''}`}
-        showSearchButton
-        onSearch={() => {/* TODO: implement search */}}
-      />
+    <div className="min-h-screen bg-gray-50">
+      {/* Clean Header */}
+      <div className="bg-white border-b border-gray-200 safe-area-top">
+        <div className="px-6 py-4">
+          <h1 className="text-2xl font-bold text-gray-900">Workspaces</h1>
+          <p className="text-sm text-gray-600 mt-1">
+            {workspaces.length} workspace{workspaces.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+      </div>
       
       <PullToRefresh onRefresh={handleRefresh}>
-        <div className="px-4 py-6 space-y-4">
+        <div className="px-4 pt-6 pb-24">
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200">
               <div className="flex items-center gap-3">
-                <div className="bg-green-400/20 p-2 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Running</p>
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-sm text-gray-600">Running</p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {workspaces.filter(w => w.status === 'running').length}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-400/20 p-2 rounded-lg">
-                  <Server className="h-5 w-5 text-blue-400" />
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Server className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Total</p>
-                  <p className="text-xl font-semibold text-white">{workspaces.length}</p>
+                  <p className="text-sm text-gray-600">Total</p>
+                  <p className="text-2xl font-bold text-gray-900">{workspaces.length}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Workspaces List */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredWorkspaces.map((workspace) => (
               <MobileWorkspaceCard
                 key={workspace.id}
@@ -262,12 +264,14 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           
           {filteredWorkspaces.length === 0 && !isLoading && (
             <div className="text-center py-16" role="region" aria-label="Empty workspace list">
-              <Server className="h-16 w-16 text-gray-600 mx-auto mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">No workspaces yet</h3>
-              <p className="text-gray-500 mb-8">Create your first workspace to get started</p>
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Server className="h-8 w-8 text-gray-400" aria-hidden="true" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No workspaces yet</h3>
+              <p className="text-gray-600 mb-8">Create your first workspace to get started</p>
               <button
                 onClick={() => setShowCreationWizard(true)}
-                className="bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 text-white px-8 py-3 rounded-lg transition-colors font-medium"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-medium transition-colors"
                 aria-label="Create your first workspace"
               >
                 Create Workspace
@@ -276,25 +280,6 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           )}
         </div>
       </PullToRefresh>
-      
-      {/* Floating Action Button */}
-      <button
-        onClick={() => setShowCreationWizard(true)}
-        className="
-          fixed bottom-24 right-4 z-40
-          w-14 h-14
-          bg-blue-600 hover:bg-blue-700
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900
-          text-white rounded-full
-          shadow-lg active:scale-95
-          transition-all duration-200
-          flex items-center justify-center
-        "
-        aria-label="Create new workspace"
-        title="Create new workspace"
-      >
-        <Plus className="h-6 w-6" aria-hidden="true" />
-      </button>
     </div>
   );
 

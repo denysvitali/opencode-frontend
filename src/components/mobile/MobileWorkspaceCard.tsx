@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import { 
   Play, 
   Square, 
-  MoreVertical, 
+  MoreHorizontal, 
   Clock, 
-  Users, 
   GitBranch,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
   Settings,
   Trash2,
-  Copy
+  Copy,
+  ChevronRight
 } from 'lucide-react';
 
 interface WorkspaceStatus {
@@ -58,47 +55,40 @@ export function MobileWorkspaceCard({
   className = ''
 }: MobileWorkspaceCardProps) {
   const [showActions, setShowActions] = useState(false);
+  
+  // Remove unused variable warning
+  void activeUsers;
 
   const getStatusConfig = () => {
     switch (status) {
       case 'running':
         return {
-          icon: CheckCircle,
-          color: 'text-green-400',
-          bgColor: 'bg-green-400/10',
-          borderColor: 'border-green-400/20',
-          label: 'Running'
+          color: 'bg-green-500',
+          label: 'Running',
+          textColor: 'text-green-600'
         };
       case 'creating':
         return {
-          icon: Loader2,
-          color: 'text-blue-400',
-          bgColor: 'bg-blue-400/10',
-          borderColor: 'border-blue-400/20',
+          color: 'bg-blue-500',
           label: 'Creating',
-          animated: true
+          textColor: 'text-blue-600'
         };
       case 'stopped':
         return {
-          icon: Square,
-          color: 'text-gray-400',
-          bgColor: 'bg-gray-400/10',
-          borderColor: 'border-gray-400/20',
-          label: 'Stopped'
+          color: 'bg-gray-500',
+          label: 'Stopped',
+          textColor: 'text-gray-500'
         };
       case 'error':
         return {
-          icon: AlertCircle,
-          color: 'text-red-400',
-          bgColor: 'bg-red-400/10',
-          borderColor: 'border-red-400/20',
-          label: 'Error'
+          color: 'bg-red-500',
+          label: 'Error',
+          textColor: 'text-red-600'
         };
     }
   };
 
   const statusConfig = getStatusConfig();
-  const StatusIcon = statusConfig.icon;
 
   const formatLastActivity = (date?: Date) => {
     if (!date) return 'Never';
@@ -115,7 +105,6 @@ export function MobileWorkspaceCard({
   };
 
   const handleCardPress = () => {
-    // Haptic feedback
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
     }
@@ -124,7 +113,6 @@ export function MobileWorkspaceCard({
 
   const handleActionPress = (action: () => void, event: React.MouseEvent) => {
     event.stopPropagation();
-    // Haptic feedback
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
     }
@@ -132,20 +120,15 @@ export function MobileWorkspaceCard({
     setShowActions(false);
   };
 
-  const canStart = status === 'stopped' || status === 'error';
-  const canStop = status === 'running';
-
   return (
     <>
       {/* Main Card */}
       <div 
         onClick={handleCardPress}
         className={`
-          relative overflow-hidden
-          bg-gray-800 border border-gray-700
-          rounded-xl p-4
-          active:scale-[0.98] active:bg-gray-750
-          transition-all duration-150
+          bg-white rounded-2xl border border-gray-200
+          shadow-sm active:shadow-md
+          transition-all duration-200 active:scale-[0.98]
           ${className}
         `}
         role="button"
@@ -159,94 +142,64 @@ export function MobileWorkspaceCard({
         }}
       >
         {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-medium text-white truncate">
-              {name}
-            </h3>
-            {description && (
-              <p className="text-sm text-gray-400 line-clamp-2 mt-1">
-                {description}
-              </p>
-            )}
-          </div>
-          
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowActions(true);
-            }}
-            className="
-              ml-3 p-3 -m-3
-              text-gray-400 hover:text-white
-              rounded-lg active:bg-gray-700
-              transition-colors
-              min-w-[44px] min-h-[44px]
-              flex items-center justify-center
-            "
-            aria-label="More actions"
-          >
-            <MoreVertical className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Status Badge */}
-        <div className={`
-          inline-flex items-center gap-2 px-3 py-1.5
-          rounded-full border
-          ${statusConfig.bgColor} ${statusConfig.borderColor}
-          mb-3
-        `}>
-          <StatusIcon className={`
-            h-4 w-4 ${statusConfig.color}
-            ${statusConfig.animated ? 'animate-spin' : ''}
-          `} />
-          <span className={`text-sm font-medium ${statusConfig.color}`}>
-            {statusConfig.label}
-          </span>
-        </div>
-
-        {/* Repository Info */}
-        {repository && (
-          <div className="flex items-center gap-2 mb-3">
-            <GitBranch className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-400 truncate">
-              {repository.branch}
-            </span>
-          </div>
-        )}
-
-        {/* Stats Row */}
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-3">
-            {activeUsers > 0 && (
-              <div className="flex items-center gap-2 text-gray-400">
-                <Users className="h-4 w-4" />
-                <span>{activeUsers}</span>
-              </div>
-            )}
-            
-            <div className="flex items-center gap-1.5 text-gray-400">
-              <Clock className="h-4 w-4" />
-              <span>{formatLastActivity(lastActivity)}</span>
+        <div className="p-4 pb-3">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg font-semibold text-gray-900 truncate mb-1">
+                {name}
+              </h3>
+              {description && (
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {description}
+                </p>
+              )}
             </div>
+            
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowActions(true);
+              }}
+              className="ml-3 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="More actions"
+            >
+              <MoreHorizontal className="h-5 w-5 text-gray-500" />
+            </button>
           </div>
-          
-          {sessionCount > 0 && (
-            <div className="flex items-center gap-2 text-blue-400">
-              <span className="text-xs font-medium">
-                {sessionCount} session{sessionCount !== 1 ? 's' : ''}
+
+          {/* Status */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className={`w-2 h-2 rounded-full ${statusConfig.color}`} />
+            <span className={`text-sm font-medium ${statusConfig.textColor}`}>
+              {statusConfig.label}
+            </span>
+            {sessionCount > 0 && (
+              <>
+                <span className="text-gray-300">•</span>
+                <span className="text-sm text-gray-600">{sessionCount} session{sessionCount !== 1 ? 's' : ''}</span>
+              </>
+            )}
+          </div>
+
+          {/* Repository */}
+          {repository && (
+            <div className="flex items-center gap-2 mb-3">
+              <GitBranch className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-600 truncate">
+                {repository.branch}
               </span>
             </div>
           )}
-        </div>
 
-        {/* Small status indicator dot */}
-        <div className="absolute top-4 right-4">
-          <div 
-            className={`w-3 h-3 rounded-full ${statusConfig.color.replace('text-', 'bg-')}`}
-            title={`Status: ${statusConfig.label}`}
-          />
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+            <div className="flex items-center gap-1 text-gray-500">
+              <Clock className="h-4 w-4" />
+              <span className="text-sm">{formatLastActivity(lastActivity)}</span>
+            </div>
+            
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+          </div>
         </div>
       </div>
 
@@ -255,53 +208,56 @@ export function MobileWorkspaceCard({
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/20 z-40"
             onClick={() => setShowActions(false)}
           />
           
           {/* Action Sheet */}
           <div className="
             fixed bottom-0 left-0 right-0 z-50
-            bg-gray-800 border-t border-gray-700
-            rounded-t-xl
+            bg-white rounded-t-3xl border-t border-gray-200
             animate-slide-up
             safe-area-bottom
           ">
-            <div className="p-4">
+            <div className="p-6">
               {/* Handle */}
-              <div className="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-6" />
+              <div className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
               
               {/* Title */}
-              <h3 className="text-lg font-medium text-white mb-4 text-center">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
                 {name}
               </h3>
               
               {/* Actions */}
-              <div className="space-y-2">
-                {canStart && (
+              <div className="space-y-1">
+                {status === 'stopped' && (
                   <button
                     onClick={(e) => handleActionPress(() => onStart?.(id), e)}
                     className="
-                      w-full flex items-center gap-3 p-4
-                      text-green-400 hover:bg-green-400/10
-                      rounded-lg transition-colors
+                      w-full flex items-center gap-4 p-4
+                      text-green-600 hover:bg-green-50
+                      rounded-xl transition-colors
                     "
                   >
-                    <Play className="h-5 w-5" />
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <Play className="h-5 w-5" />
+                    </div>
                     <span className="font-medium">Start Workspace</span>
                   </button>
                 )}
                 
-                {canStop && (
+                {status === 'running' && (
                   <button
                     onClick={(e) => handleActionPress(() => onStop?.(id), e)}
                     className="
-                      w-full flex items-center gap-3 p-4
-                      text-red-400 hover:bg-red-400/10
-                      rounded-lg transition-colors
+                      w-full flex items-center gap-4 p-4
+                      text-orange-600 hover:bg-orange-50
+                      rounded-xl transition-colors
                     "
                   >
-                    <Square className="h-5 w-5" />
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                      <Square className="h-5 w-5" />
+                    </div>
                     <span className="font-medium">Stop Workspace</span>
                   </button>
                 )}
@@ -309,36 +265,42 @@ export function MobileWorkspaceCard({
                 <button
                   onClick={(e) => handleActionPress(() => onSettings?.(id), e)}
                   className="
-                    w-full flex items-center gap-3 p-4
-                    text-gray-300 hover:bg-gray-700
-                    rounded-lg transition-colors
+                    w-full flex items-center gap-4 p-4
+                    text-gray-700 hover:bg-gray-50
+                    rounded-xl transition-colors
                   "
                 >
-                  <Settings className="h-5 w-5" />
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Settings className="h-5 w-5" />
+                  </div>
                   <span className="font-medium">Settings</span>
                 </button>
                 
                 <button
                   onClick={(e) => handleActionPress(() => onDuplicate?.(id), e)}
                   className="
-                    w-full flex items-center gap-3 p-4
-                    text-gray-300 hover:bg-gray-700
-                    rounded-lg transition-colors
+                    w-full flex items-center gap-4 p-4
+                    text-gray-700 hover:bg-gray-50
+                    rounded-xl transition-colors
                   "
                 >
-                  <Copy className="h-5 w-5" />
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Copy className="h-5 w-5" />
+                  </div>
                   <span className="font-medium">Duplicate</span>
                 </button>
                 
                 <button
                   onClick={(e) => handleActionPress(() => onDelete?.(id), e)}
                   className="
-                    w-full flex items-center gap-3 p-4
-                    text-red-400 hover:bg-red-400/10
-                    rounded-lg transition-colors
+                    w-full flex items-center gap-4 p-4
+                    text-red-600 hover:bg-red-50
+                    rounded-xl transition-colors
                   "
                 >
-                  <Trash2 className="h-5 w-5" />
+                  <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                    <Trash2 className="h-5 w-5" />
+                  </div>
                   <span className="font-medium">Delete</span>
                 </button>
               </div>
@@ -348,9 +310,9 @@ export function MobileWorkspaceCard({
                 onClick={() => setShowActions(false)}
                 className="
                   w-full p-4 mt-4
-                  text-gray-400 hover:text-white
-                  border border-gray-600 rounded-lg
-                  transition-colors
+                  text-gray-700 font-medium
+                  border border-gray-200 rounded-xl
+                  hover:bg-gray-50 transition-colors
                 "
               >
                 Cancel

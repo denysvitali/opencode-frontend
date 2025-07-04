@@ -130,13 +130,13 @@ export function MobileSearch({ isOpen, onClose }: MobileSearchProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-900 safe-area-top">
+    <div className="fixed inset-0 z-50 bg-white safe-area-top">
       {/* Search Header */}
-      <div className="sticky top-0 bg-gray-900 border-b border-gray-800 p-4">
+      <div className="sticky top-0 bg-white border-b border-gray-200 p-4">
         <div className="flex items-center gap-3">
           <button
             onClick={handleClose}
-            className="p-2 -m-2 text-gray-400 hover:text-white rounded-lg transition-colors"
+            className="p-2 -m-2 text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
             aria-label="Close search"
           >
             <ArrowUpLeft className="h-6 w-6" />
@@ -157,8 +157,8 @@ export function MobileSearch({ isOpen, onClose }: MobileSearchProps) {
               }}
               className="
                 w-full pl-10 pr-4 py-3
-                bg-gray-800 border border-gray-700
-                rounded-lg text-white placeholder-gray-400
+                bg-gray-50 border border-gray-200
+                rounded-xl text-gray-900 placeholder-gray-500
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
               "
             />
@@ -171,7 +171,7 @@ export function MobileSearch({ isOpen, onClose }: MobileSearchProps) {
                     searchInputRef.current.focus();
                   }
                 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-white rounded-full"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 rounded-full"
                 aria-label="Clear search"
               >
                 <X className="h-4 w-4" />
