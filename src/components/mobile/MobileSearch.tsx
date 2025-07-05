@@ -130,13 +130,13 @@ export function MobileSearch({ isOpen, onClose }: MobileSearchProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-white safe-area-top">
+    <div className="fixed inset-0 z-50 bg-background-primary safe-area-top">
       {/* Search Header */}
-      <div className="sticky top-0 bg-white border-b border-gray-200 p-4">
+      <div className="sticky top-0 bg-background-primary border-b border-border-primary p-4">
         <div className="flex items-center gap-3">
           <button
             onClick={handleClose}
-            className="p-2 -m-2 text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
+            className="p-2 -m-2 text-text-secondary hover:text-text-primary rounded-lg transition-colors"
             aria-label="Close search"
           >
             <ArrowUpLeft className="h-6 w-6" />

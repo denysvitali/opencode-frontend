@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -18,6 +19,27 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
+        },
+        // Semantic colors that work with both light and dark modes
+        background: {
+          primary: 'rgb(var(--color-background-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-background-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--color-background-tertiary) / <alpha-value>)',
+        },
+        text: {
+          primary: 'rgb(var(--color-text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-text-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--color-text-tertiary) / <alpha-value>)',
+          inverse: 'rgb(var(--color-text-inverse) / <alpha-value>)',
+        },
+        border: {
+          primary: 'rgb(var(--color-border-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-border-secondary) / <alpha-value>)',
+        },
+        surface: {
+          primary: 'rgb(var(--color-surface-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-surface-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--color-surface-tertiary) / <alpha-value>)',
         },
       },
       screens: {

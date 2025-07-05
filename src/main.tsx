@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import ErrorBoundary from './components/ui/ErrorBoundary.tsx'
+import { ThemeProvider } from './contexts/ThemeContext.tsx'
 
 // Register service worker for PWA capabilities
 if ('serviceWorker' in navigator) {
@@ -33,8 +34,10 @@ if ('serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </ThemeProvider>
   </StrictMode>,
 )
