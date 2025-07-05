@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Plus, Search, Menu, ArrowLeft } from 'lucide-react';
+import { Code, Plus, Search, Menu, FolderOpen } from 'lucide-react';
 import { useUIStore } from '../../stores/uiStore.js';
 import MobileMenu from './MobileMenu.js';
 import MobileSearch from './MobileSearch.js';
@@ -25,9 +25,9 @@ interface BottomNavigationProps {
 const getContextualItems = (currentPath: string, navigate: (path: string) => void, onMenuOpen: () => void, onSearchOpen: () => void, onNewAction: () => void): BottomNavItem[] => {
   const baseItems: BottomNavItem[] = [
     {
-      id: 'home',
-      label: 'Home',
-      icon: Home,
+      id: 'workspaces',
+      label: 'Workspaces',
+      icon: FolderOpen,
       path: '/',
       isActive: (path) => path === '/'
     }
@@ -35,11 +35,11 @@ const getContextualItems = (currentPath: string, navigate: (path: string) => voi
 
   // Add contextual navigation based on current path
   if (currentPath.includes('/workspace/') && currentPath.includes('/session/')) {
-    // In chat session - show back to sessions
+    // In chat session - show workspace sessions
     baseItems.push({
-      id: 'back',
-      label: 'Back',
-      icon: ArrowLeft,
+      id: 'sessions',
+      label: 'Sessions',
+      icon: Code,
       action: () => {
         const workspaceId = currentPath.split('/')[2];
         navigate(`/workspace/${workspaceId}`);
@@ -47,16 +47,19 @@ const getContextualItems = (currentPath: string, navigate: (path: string) => voi
       isActive: () => false
     });
   } else if (currentPath.includes('/workspace/')) {
-    // In workspace sessions - show menu/hamburger
+    // In workspace sessions - show code/terminal toggle
     baseItems.push({
-      id: 'menu',
-      label: 'Menu',
-      icon: Menu,
-      action: onMenuOpen,
+      id: 'code',
+      label: 'Code',
+      icon: Code,
+      action: () => {
+        // Toggle to code view or similar contextual action
+        console.log('Show code view');
+      },
       isActive: () => false
     });
   } else {
-    // Default navigation item
+    // Default - show menu
     baseItems.push({
       id: 'menu',
       label: 'Menu',
@@ -69,11 +72,11 @@ const getContextualItems = (currentPath: string, navigate: (path: string) => voi
   // Add contextual "New" button
   let newButtonLabel = 'New';
   if (currentPath === '/') {
-    newButtonLabel = 'Create';
+    newButtonLabel = 'New';
   } else if (currentPath.includes('/workspace/') && !currentPath.includes('/session/')) {
-    newButtonLabel = 'New Session';
+    newButtonLabel = 'New';
   } else if (currentPath.includes('/session/')) {
-    newButtonLabel = 'New Chat';
+    newButtonLabel = 'New';
   }
 
   // Add remaining items
@@ -165,7 +168,7 @@ export function BottomNavigation({
       <nav 
         className={`
           fixed bottom-0 left-0 right-0 z-50
-          bg-white/95 backdrop-blur-xl border-t border-gray-200
+          bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-700
           safe-area-bottom
           ${className}
         `}
@@ -208,8 +211,8 @@ export function BottomNavigation({
                   ${isPrimary 
                     ? 'bg-blue-600 text-white shadow-lg active:scale-95' 
                     : isActive 
-                      ? 'bg-blue-50 text-blue-600' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 active:bg-gray-100'
+                      ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' 
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 active:bg-gray-100 dark:active:bg-gray-700'
                   }
                   active:scale-95
                 `}

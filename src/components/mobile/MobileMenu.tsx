@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useUIStore } from '../../stores/uiStore.js';
 import { useAppStore } from '../../stores/appStore.js';
+import ThemeToggle from '../ui/ThemeToggle.js';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -113,14 +114,14 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         className={`
           fixed top-0 right-0 bottom-0 z-50
           w-80 max-w-[85vw]
-          bg-white border-l border-gray-200
+          bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700
           transform transition-transform duration-300 ease-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
           safe-area-top safe-area-bottom
         `}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-lg">
@@ -128,17 +129,17 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               </span>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {user?.name || 'User'}
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {user?.name ? `${user.name.toLowerCase()}@example.com` : 'user@example.com'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Close menu"
           >
             <X className="h-6 w-6" />
@@ -151,7 +152,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             {menuItems.map((item) => (
               <React.Fragment key={item.id}>
                 {item.divider && (
-                  <div className="h-px bg-gray-200 my-4" />
+                  <div className="h-px bg-gray-200 dark:bg-gray-700 my-4" />
                 )}
                 <button
                   onClick={() => handleItemPress(item)}
@@ -159,21 +160,21 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     w-full flex items-center gap-4 p-4
                     rounded-xl transition-colors
                     ${item.danger 
-                      ? 'text-red-600 hover:bg-red-50' 
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20' 
+                      : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'
                     }
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                   `}
                 >
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    item.danger ? 'bg-red-100' : 'bg-gray-100'
+                    item.danger ? 'bg-red-100 dark:bg-red-900/30' : 'bg-gray-100 dark:bg-gray-800'
                   }`}>
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                   </div>
                   <span className="font-medium flex-1 text-left">
                     {item.label}
                   </span>
-                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                  <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                 </button>
               </React.Fragment>
             ))}
@@ -181,8 +182,14 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100">
-          <div className="text-center text-xs text-gray-500">
+        <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+          {/* Theme Toggle */}
+          <div className="mb-4">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Theme</p>
+            <ThemeToggle variant="dropdown" />
+          </div>
+          
+          <div className="text-center text-xs text-gray-500 dark:text-gray-400">
             OpenCode v1.0.0
           </div>
         </div>

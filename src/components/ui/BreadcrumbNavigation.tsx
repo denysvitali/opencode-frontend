@@ -30,7 +30,7 @@ export default function BreadcrumbNavigation({
     : items;
 
   return (
-    <nav className={`flex items-center space-x-1 text-sm ${className}`} aria-label="Breadcrumb">
+    <nav className={`flex items-center space-x-1 text-base ${className}`} aria-label="Breadcrumb">
       <ol className="flex items-center space-x-1">
         {displayItems.map((item, index) => {
           const Icon = item.icon;
@@ -40,26 +40,32 @@ export default function BreadcrumbNavigation({
           return (
             <li key={item.id} className="flex items-center">
               {index > 0 && (
-                <ChevronRight className="h-4 w-4 text-gray-500 mx-1" />
+                <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500 mx-1" />
               )}
               
               {isEllipsis ? (
-                <span className="text-gray-500">...</span>
+                <span className="text-gray-500 dark:text-gray-400 px-2">...</span>
               ) : (
                 <button
                   onClick={item.onClick}
                   disabled={!item.onClick || item.isActive}
-                  className={`flex items-center gap-1 px-2 py-1 rounded transition-colors ${
-                    item.isActive || isLast
-                      ? 'text-white bg-gray-700 cursor-default'
-                      : item.onClick
-                        ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                        : 'text-gray-400 cursor-default'
-                  }`}
+                  className={`
+                    flex items-center gap-2 px-3 py-2 rounded-lg 
+                    transition-all duration-200 ease-out
+                    transform-gpu will-change-transform
+                    hover:scale-105 active:scale-95
+                    ${
+                      item.isActive || isLast
+                        ? 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 cursor-default shadow-sm'
+                        : item.onClick
+                          ? 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'
+                          : 'text-gray-400 dark:text-gray-500 cursor-default'
+                    }
+                  `}
                   aria-current={item.isActive || isLast ? 'page' : undefined}
                 >
-                  {Icon && <Icon className="h-4 w-4" />}
-                  <span className="truncate max-w-32">{item.label}</span>
+                  {Icon && <Icon className="h-5 w-5" />}
+                  <span className="truncate max-w-32 font-medium">{item.label}</span>
                 </button>
               )}
             </li>
