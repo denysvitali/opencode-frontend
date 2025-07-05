@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package opencode.orchestrator.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/opencode-ai/opencode/internal/proto/orchestrator/v1";
+
+// OrchestratorService manages OpenCode sessions in Kubernetes
+service OrchestratorService {
+  // Health check for orchestrator
+  rpc Health(HealthRequest) returns (HealthResponse) {
+    option (google.api.http) = {
+      get: "/health"
+    };
+  }
+
+  // Create a new session
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {
+    option (google.api.http) = {
+      post: "/sessions"
+      body: "*"
+    };
+  }
+
+  // Get session information
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {
+    option (google.api.http) = {
+      get: "/sessions/{session_id}"
+    };
+  }
+
+  // List user sessions
+  rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
+    option (google.api.http) = {
+      get: "/sessions"
+    };
+  }
+
+  // Delete a session
+  rpc DeleteSession(DeleteSessionRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/sessions/{session_id}"
+    };
+  }
+
+  // Proxy HTTP requests to session
+  rpc ProxyHTTP(ProxyHTTPRequest) returns (ProxyHTTPResponse) {
+    option (google.api.http) = {
+      post: "/sessions/{session_id}/proxy"
+      body: "*"
+      additional_bindings {
+        get: "/sessions/{session_id}/proxy"
+      }
+      additional_bindings {
+        put: "/sessions/{session_id}/proxy"
+      }
+      additional_bindings {
+        delete: "/sessions/{session_id}/proxy"
+      }
+    };
+  }
+
+  // Stream proxy for real-time communication
+  rpc ProxyStream(stream ProxyStreamRequest) returns (stream ProxyStreamResponse);
+}
+
+// Health check messages
+message HealthRequest {}
+
+message HealthResponse {
+  enum Status {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  Status status = 1;
+  string version = 2;
+  map<string, string> details = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// Session management messages
+message CreateSessionRequest {
+  string user_id = 1;
+  string name = 2;
+  map<string, string> labels = 3;
+  SessionConfig config = 4;
+}
+
+message CreateSessionResponse {
+  Session session = 1;
+}
+
+message GetSessionRequest {
+  string session_id = 1;
+  string user_id = 2;
+}
+
+message GetSessionResponse {
+  Session session = 1;
+}
+
+message ListSessionsRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+  string filter = 4;
+}
+
+message ListSessionsResponse {
+  repeated Session sessions = 1;
+  string next_page_token = 2;
+  int32 total_size = 3;
+}
+
+message DeleteSessionRequest {
+  string session_id = 1;
+  string user_id = 2;
+  bool force = 3;
+}
+
+// Proxy messages
+message ProxyHTTPRequest {
+  string session_id = 1;
+  string user_id = 2;
+  string method = 3;
+  string path = 4;
+  map<string, string> headers = 5;
+  bytes body = 6;
+}
+
+message ProxyHTTPResponse {
+  int32 status_code = 1;
+  map<string, string> headers = 2;
+  bytes body = 3;
+}
+
+message ProxyStreamRequest {
+  string session_id = 1;
+  string user_id = 2;
+  oneof payload {
+    bytes data = 3;
+    string control = 4;
+  }
+}
+
+message ProxyStreamResponse {
+  oneof payload {
+    bytes data = 1;
+    string error = 2;
+  }
+}
+
+// Session data structures
+message Session {
+  string id = 1;
+  string user_id = 2;
+  string name = 3;
+  SessionState state = 4;
+  SessionConfig config = 5;
+  SessionStatus status = 6;
+  map<string, string> labels = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp last_accessed = 10;
+}
+
+enum SessionState {
+  SESSION_STATE_UNKNOWN = 0;
+  SESSION_STATE_CREATING = 1;
+  SESSION_STATE_RUNNING = 2;
+  SESSION_STATE_STOPPING = 3;
+  SESSION_STATE_STOPPED = 4;
+  SESSION_STATE_ERROR = 5;
+}
+
+message SessionConfig {
+  // Repository configuration
+  RepositoryConfig repository = 1;
+  
+  // Environment variables for the development session
+  map<string, string> environment = 2;
+}
+
+message RepositoryConfig {
+  // Git repository URL
+  string url = 1;
+  
+  // Branch, tag, or commit to checkout (optional, defaults to main/master)
+  string ref = 2;
+}
+
+message SessionStatus {
+  string pod_name = 1;
+  string pod_namespace = 2;
+  string pvc_name = 3;
+  string internal_endpoint = 4;
+  bool ready = 5;
+  string message = 6;
+  google.protobuf.Timestamp ready_at = 7;
+}
