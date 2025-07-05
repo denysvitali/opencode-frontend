@@ -198,12 +198,12 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   }, []);
 
   const renderMobileView = () => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-900">
       {/* Clean Header */}
-      <div className="bg-white border-b border-gray-200 safe-area-top">
+      <div className="bg-gray-800/50 border-b border-gray-700 safe-area-top">
         <div className="px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Workspaces</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold text-white">Workspaces</h1>
+          <p className="text-sm text-gray-400 mt-1">
             {workspaces.length} workspace{workspaces.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -213,28 +213,28 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
         <div className="px-4 pt-6 pb-24">
           {/* Quick Stats */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="bg-gray-800/50 rounded-2xl p-4 border border-gray-700">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-600/20 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Running</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-400">Running</p>
+                  <p className="text-2xl font-bold text-white">
                     {workspaces.filter(w => w.status === 'running').length}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="bg-gray-800/50 rounded-2xl p-4 border border-gray-700">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Server className="h-5 w-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center">
+                  <Server className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total</p>
-                  <p className="text-2xl font-bold text-gray-900">{workspaces.length}</p>
+                  <p className="text-sm text-gray-400">Total</p>
+                  <p className="text-2xl font-bold text-white">{workspaces.length}</p>
                 </div>
               </div>
             </div>
@@ -264,11 +264,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
           
           {filteredWorkspaces.length === 0 && !isLoading && (
             <div className="text-center py-16" role="region" aria-label="Empty workspace list">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Server className="h-8 w-8 text-gray-400" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No workspaces yet</h3>
-              <p className="text-gray-600 mb-8">Create your first workspace to get started</p>
+              <h3 className="text-xl font-semibold text-white mb-2">No workspaces yet</h3>
+              <p className="text-gray-400 mb-8">Create your first workspace to get started</p>
               <button
                 onClick={() => setShowCreationWizard(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-medium transition-colors"
@@ -300,17 +300,17 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-900">
       {/* Top Bar */}
       <TopBar />
       
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 min-h-[180px] sm:min-h-[200px] md:h-[280px]">
+      <div className="bg-gray-800/50 border-b border-gray-700 min-h-[180px] sm:min-h-[200px] md:h-[280px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 h-full flex flex-col justify-center">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Workspace Management</h1>
-              <p className="text-gray-600 text-sm md:text-base">Manage your AI development environments</p>
+              <h1 className="text-3xl font-bold text-white mb-2">Workspace Management</h1>
+              <p className="text-gray-400 text-sm md:text-base">Manage your AI development environments</p>
             </div>
             
             {/* Connection Status */}
@@ -325,56 +325,56 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
+            <div className="bg-gray-800/50 rounded-2xl p-4 border border-gray-700 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-600/20 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Running</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-400">Running</p>
+                  <p className="text-2xl font-bold text-white">
                     {workspaces.filter(w => w.status === 'running').length}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
+            <div className="bg-gray-800/50 rounded-2xl p-4 border border-gray-700 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Play className="h-5 w-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center">
+                  <Play className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Starting</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-400">Starting</p>
+                  <p className="text-2xl font-bold text-white">
                     {workspaces.filter(w => w.status === 'creating').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
+            <div className="bg-gray-800/50 rounded-2xl p-4 border border-gray-700 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                  <Square className="h-5 w-5 text-gray-600" />
+                <div className="w-10 h-10 bg-gray-600/20 rounded-full flex items-center justify-center">
+                  <Square className="h-5 w-5 text-gray-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Stopped</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-400">Stopped</p>
+                  <p className="text-2xl font-bold text-white">
                     {workspaces.filter(w => w.status === 'stopped').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
+            <div className="bg-gray-800/50 rounded-2xl p-4 border border-gray-700 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Server className="h-5 w-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-600/20 rounded-full flex items-center justify-center">
+                  <Server className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Total</p>
-                  <p className="text-2xl font-bold text-gray-900">{workspaces.length}</p>
+                  <p className="text-sm text-gray-400">Total</p>
+                  <p className="text-2xl font-bold text-white">{workspaces.length}</p>
                 </div>
               </div>
             </div>
@@ -394,7 +394,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Workspaces Header with Search */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Workspaces ({workspaces.length})</h2>
+          <h2 className="text-xl font-semibold text-white">Workspaces ({workspaces.length})</h2>
           <div className="flex gap-2">
             <button
               onClick={() => setShowCreationWizard(true)}
@@ -424,7 +424,7 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
             return (
               <div
                 key={workspace.id}
-                className="bg-white rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group"
+                className="bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-gray-600 hover:shadow-md transition-all cursor-pointer group"
                 onClick={() => handleWorkspaceSelect(workspace)}
                 role="button"
                 tabIndex={0}
@@ -440,16 +440,16 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                   {/* Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-4 min-w-0 flex-1">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Server className="h-6 w-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Server className="h-6 w-6 text-blue-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                        <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors truncate">
                           {workspace.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-2">
                           <div className={`w-2 h-2 rounded-full ${statusConfig.color.replace('text-', 'bg-')}`} />
-                          <span className="text-sm font-medium text-gray-600">
+                          <span className="text-sm font-medium text-gray-400">
                             {statusConfig.label}
                           </span>
                           <ConnectionStatusDot 
@@ -462,13 +462,13 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                     
                     {/* Arrow indicator */}
                     <div className="flex-shrink-0 ml-2">
-                      <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                      <ChevronRight className="h-5 w-5 text-gray-500 group-hover:text-gray-400 transition-colors" />
                     </div>
                   </div>
 
                   {/* Repository */}
                   {workspace.config?.repository && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-4 p-3 bg-gray-50 rounded-xl">
+                    <div className="flex items-center gap-2 text-sm text-gray-400 mb-4 p-3 bg-gray-700/50 rounded-xl">
                       <GitBranch className="h-4 w-4 flex-shrink-0" />
                       <span className="truncate min-w-0">
                         {workspace.config.repository.url.replace('https://github.com/', '')}
@@ -478,9 +478,9 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
                   )}
 
                   {/* Metadata */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-700">
                     <div className="space-y-2">
-                      <p className="flex items-center gap-2 text-sm text-gray-600">
+                      <p className="flex items-center gap-2 text-sm text-gray-400">
                         <Clock className="h-4 w-4 flex-shrink-0" />
                         <span className="truncate">Updated {workspace.updatedAt.toLocaleDateString()}</span>
                       </p>
@@ -498,11 +498,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
         {filteredWorkspaces.length === 0 && workspaces.length === 0 && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <Server className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No workspaces yet</h3>
-            <p className="text-gray-600 mb-8">Create your first workspace to start developing with AI</p>
+            <h3 className="text-xl font-semibold text-white mb-2">No workspaces yet</h3>
+            <p className="text-gray-400 mb-8">Create your first workspace to start developing with AI</p>
             <button
               onClick={() => setShowCreationWizard(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl transition-colors font-medium shadow-sm"
@@ -514,11 +514,11 @@ export default function WorkspaceManagement({ onSelectWorkspace }: WorkspaceMana
 
         {filteredWorkspaces.length === 0 && workspaces.length > 0 && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <Server className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No workspaces match your filters</h3>
-            <p className="text-gray-600 mb-8">Try adjusting your search or filter criteria</p>
+            <h3 className="text-xl font-semibold text-white mb-2">No workspaces match your filters</h3>
+            <p className="text-gray-400 mb-8">Try adjusting your search or filter criteria</p>
           </div>
         )}
       </div>
