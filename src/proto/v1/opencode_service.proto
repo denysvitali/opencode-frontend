@@ -1,0 +1,377 @@
+syntax = "proto3";
+
+package opencode.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "v1/common.proto";
+
+option go_package = "github.com/opencode-ai/opencode/internal/proto/v1";
+
+// OpenCodeService is the main API service for a single-session container
+service OpenCodeService {
+  // Health check for container status
+  rpc Health(HealthRequest) returns (HealthResponse) {
+    option (google.api.http) = {
+      get: "/health"
+    };
+  }
+
+  // Get current session info (auto-created if none exists)
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {
+    option (google.api.http) = {
+      get: "/session"
+    };
+  }
+
+  // Reset/clear the current session
+  rpc ResetSession(ResetSessionRequest) returns (ResetSessionResponse) {
+    option (google.api.http) = {
+      post: "/session/reset"
+      body: "*"
+    };
+  }
+
+  // Get session statistics
+  rpc GetSessionStats(GetSessionStatsRequest) returns (GetSessionStatsResponse) {
+    option (google.api.http) = {
+      get: "/session/stats"
+    };
+  }
+
+  // Send a message and get streaming response
+  rpc SendMessage(SendMessageRequest) returns (stream SendMessageResponse) {
+    option (google.api.http) = {
+      post: "/messages"
+      body: "*"
+    };
+  }
+
+  // List message history
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse) {
+    option (google.api.http) = {
+      get: "/messages"
+    };
+  }
+
+  // Stream real-time message updates
+  rpc StreamMessages(StreamMessagesRequest) returns (stream StreamMessagesResponse) {
+    option (google.api.http) = {
+      get: "/messages/stream"
+    };
+  }
+
+  // Clear all messages
+  rpc ClearMessages(ClearMessagesRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/messages"
+    };
+  }
+
+  // List workspace files
+  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse) {
+    option (google.api.http) = {
+      get: "/files"
+    };
+  }
+
+  // Read file content
+  rpc ReadFile(ReadFileRequest) returns (ReadFileResponse) {
+    option (google.api.http) = {
+      get: "/files/{path=**}"
+    };
+  }
+
+  // Write file content
+  rpc WriteFile(WriteFileRequest) returns (WriteFileResponse) {
+    option (google.api.http) = {
+      put: "/files/{path=**}"
+      body: "*"
+    };
+  }
+
+  // Delete file
+  rpc DeleteFile(DeleteFileRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/files/{path=**}"
+    };
+  }
+
+  // Get file changes/diff
+  rpc GetFileChanges(GetFileChangesRequest) returns (GetFileChangesResponse) {
+    option (google.api.http) = {
+      get: "/files/changes"
+    };
+  }
+
+  // Cancel current agent operation
+  rpc CancelAgent(CancelAgentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/agent/cancel"
+      body: "*"
+    };
+  }
+
+  // Get agent status
+  rpc GetAgentStatus(GetAgentStatusRequest) returns (GetAgentStatusResponse) {
+    option (google.api.http) = {
+      get: "/agent/status"
+    };
+  }
+
+  // List available models
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {
+    option (google.api.http) = {
+      get: "/models"
+    };
+  }
+
+  // Set agent model
+  rpc SetModel(SetModelRequest) returns (SetModelResponse) {
+    option (google.api.http) = {
+      put: "/agent/model"
+      body: "*"
+    };
+  }
+}
+
+// Health check messages
+message HealthRequest {}
+
+// Session messages
+message GetSessionRequest {}
+
+message GetSessionResponse {
+  Session session = 1;
+}
+
+message ResetSessionRequest {
+  string title = 1; // Optional new title
+}
+
+message ResetSessionResponse {
+  Session session = 1;
+}
+
+message GetSessionStatsRequest {}
+
+message GetSessionStatsResponse {
+  int64 total_messages = 1;
+  int64 user_messages = 2;
+  int64 assistant_messages = 3;
+  int64 tool_messages = 4;
+  int64 prompt_tokens = 5;
+  int64 completion_tokens = 6;
+  double total_cost = 7;
+  google.protobuf.Timestamp last_activity = 8;
+  repeated string models_used = 9;
+  string current_model = 10;
+}
+
+// Message messages
+message SendMessageRequest {
+  repeated ContentPart parts = 1;
+  repeated Attachment attachments = 2;
+  string model = 3; // Optional model override
+}
+
+message SendMessageResponse {
+  oneof response {
+    MessageStarted message_started = 1;
+    ContentDelta content_delta = 2;
+    ToolCallStarted tool_call_started = 3;
+    ToolCallCompleted tool_call_completed = 4;
+    MessageCompleted message_completed = 5;
+    ErrorResponse error = 6;
+  }
+}
+
+message MessageStarted {
+  string message_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+}
+
+message ContentDelta {
+  string text = 1;
+}
+
+message ToolCallStarted {
+  string tool_call_id = 1;
+  string tool_name = 2;
+  string input = 3; // JSON string
+}
+
+message ToolCallCompleted {
+  string tool_call_id = 1;
+  string output = 2;
+  bool is_error = 3;
+}
+
+message MessageCompleted {
+  string message_id = 1;
+  FinishReason finish_reason = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  TokenUsage usage = 4;
+}
+
+message TokenUsage {
+  int64 prompt_tokens = 1;
+  int64 completion_tokens = 2;
+  double cost = 3;
+}
+
+message ErrorResponse {
+  string code = 1;
+  string message = 2;
+  string details = 3;
+}
+
+message ListMessagesRequest {
+  Pagination pagination = 1;
+  MessageRole role_filter = 2;
+}
+
+message ListMessagesResponse {
+  repeated Message messages = 1;
+  PaginationResponse pagination = 2;
+}
+
+message StreamMessagesRequest {}
+
+message StreamMessagesResponse {
+  oneof event {
+    MessageCreated message_created = 1;
+    MessageUpdated message_updated = 2;
+    MessageDeleted message_deleted = 3;
+  }
+}
+
+message MessageCreated {
+  Message message = 1;
+}
+
+message MessageUpdated {
+  Message message = 1;
+}
+
+message MessageDeleted {
+  string message_id = 1;
+}
+
+message ClearMessagesRequest {}
+
+// File messages
+message ListFilesRequest {
+  string path = 1; // Directory path, empty for workspace root
+  bool recursive = 2;
+  repeated string patterns = 3; // Glob patterns to include
+  repeated string exclude_patterns = 4; // Glob patterns to exclude
+}
+
+message ListFilesResponse {
+  repeated FileInfo files = 1;
+}
+
+message FileInfo {
+  string path = 1;
+  bool is_directory = 2;
+  int64 size = 3;
+  google.protobuf.Timestamp modified_at = 4;
+  string mime_type = 5;
+}
+
+message ReadFileRequest {
+  string path = 1;
+}
+
+message ReadFileResponse {
+  string content = 1;
+  FileInfo file_info = 2;
+}
+
+message WriteFileRequest {
+  string path = 1;
+  string content = 2;
+  bool create_dirs = 3; // Create parent directories if they don't exist
+}
+
+message WriteFileResponse {
+  FileInfo file_info = 1;
+}
+
+message DeleteFileRequest {
+  string path = 1;
+}
+
+message GetFileChangesRequest {
+  string since_version = 1; // Optional: get changes since this version
+}
+
+message GetFileChangesResponse {
+  repeated FileChange changes = 1;
+  string current_version = 2;
+}
+
+message FileChange {
+  string path = 1;
+  FileChangeType type = 2;
+  string old_content = 3; // For modified files
+  string new_content = 4; // For modified/created files
+  google.protobuf.Timestamp timestamp = 5;
+}
+
+enum FileChangeType {
+  FILE_CHANGE_TYPE_UNSPECIFIED = 0;
+  FILE_CHANGE_TYPE_CREATED = 1;
+  FILE_CHANGE_TYPE_MODIFIED = 2;
+  FILE_CHANGE_TYPE_DELETED = 3;
+}
+
+// Agent messages
+message CancelAgentRequest {}
+
+message GetAgentStatusRequest {}
+
+message GetAgentStatusResponse {
+  AgentStatus status = 1;
+  string current_operation = 2;
+  google.protobuf.Timestamp started_at = 3;
+  string model = 4;
+}
+
+enum AgentStatus {
+  AGENT_STATUS_UNSPECIFIED = 0;
+  AGENT_STATUS_IDLE = 1;
+  AGENT_STATUS_PROCESSING = 2;
+  AGENT_STATUS_WAITING_PERMISSION = 3;
+  AGENT_STATUS_ERROR = 4;
+}
+
+message ListModelsRequest {
+  string provider = 1; // Optional: filter by provider
+}
+
+message ListModelsResponse {
+  repeated ModelInfo models = 1;
+}
+
+message ModelInfo {
+  string id = 1;
+  string name = 2;
+  string provider = 3;
+  int32 context_window = 4;
+  double cost_per_1m_input = 5;
+  double cost_per_1m_output = 6;
+  bool supports_attachments = 7;
+  bool supports_tools = 8;
+  repeated string capabilities = 9;
+}
+
+message SetModelRequest {
+  string model_id = 1;
+}
+
+message SetModelResponse {
+  ModelInfo model = 1;
+}

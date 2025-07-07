@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package opencode.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/opencode-ai/opencode/internal/proto/v1";
+
+// Common types used across the API
+
+message Pagination {
+  int32 limit = 1;
+  int32 offset = 2;
+  string cursor = 3;
+}
+
+message PaginationResponse {
+  int32 total = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  string next_cursor = 4;
+  bool has_more = 5;
+}
+
+// Content part represents different types of content in messages
+message ContentPart {
+  oneof content {
+    TextContent text = 1;
+    BinaryContent binary = 2;
+    ToolCallContent tool_call = 3;
+    ToolResultContent tool_result = 4;
+    FinishContent finish = 5;
+    ReasoningContent reasoning = 6;
+  }
+}
+
+message TextContent {
+  string text = 1;
+}
+
+message BinaryContent {
+  string path = 1;
+  string mime_type = 2;
+  bytes data = 3;
+  string base64_data = 4; // Alternative to raw bytes
+}
+
+message ToolCallContent {
+  string id = 1;
+  string name = 2;
+  string input = 3; // JSON string
+}
+
+message ToolResultContent {
+  string tool_call_id = 1;
+  string content = 2;
+  string metadata = 3; // JSON string
+  bool is_error = 4;
+}
+
+message FinishContent {
+  FinishReason reason = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+message ReasoningContent {
+  string thinking = 1;
+}
+
+enum FinishReason {
+  FINISH_REASON_UNSPECIFIED = 0;
+  FINISH_REASON_END_TURN = 1;
+  FINISH_REASON_STOP = 2;
+  FINISH_REASON_CANCELED = 3;
+  FINISH_REASON_ERROR = 4;
+  FINISH_REASON_PERMISSION_DENIED = 5;
+}
+
+// Message represents a conversation message
+message Message {
+  string id = 1;
+  string session_id = 2;
+  MessageRole role = 3;
+  repeated ContentPart parts = 4;
+  string model = 5; // Model ID used for this message
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp finished_at = 8;
+}
+
+enum MessageRole {
+  MESSAGE_ROLE_UNSPECIFIED = 0;
+  MESSAGE_ROLE_USER = 1;
+  MESSAGE_ROLE_ASSISTANT = 2;
+  MESSAGE_ROLE_TOOL = 3;
+}
+
+// Session represents a conversation session
+message Session {
+  string id = 1;
+  string parent_session_id = 2;
+  string title = 3;
+  int64 message_count = 4;
+  int64 prompt_tokens = 5;
+  int64 completion_tokens = 6;
+  string summary_message_id = 7;
+  double cost = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// File represents a file in the workspace
+message File {
+  string id = 1;
+  string session_id = 2;
+  string path = 3;
+  string content = 4;
+  string version = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// Attachment represents file attachments to messages
+message Attachment {
+  string path = 1;
+  string content = 2;
+  string mime_type = 3;
+  int64 size = 4;
+}
+
+// Error details for API responses
+message ErrorDetail {
+  string code = 1;
+  string message = 2;
+  string field = 3;
+}
+
+// Health check response
+message HealthResponse {
+  HealthStatus status = 1;
+  map<string, string> details = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_SERVING = 1;
+  HEALTH_STATUS_NOT_SERVING = 2;
+  HEALTH_STATUS_UNKNOWN = 3;
+}
